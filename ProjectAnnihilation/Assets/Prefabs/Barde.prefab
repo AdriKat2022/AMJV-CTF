@@ -9,12 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8933156791209631213}
+  - component: {fileID: 1597686496856142594}
   - component: {fileID: 1398557648854254738}
   - component: {fileID: 3283021558013871775}
   - component: {fileID: 3244073552676465427}
   - component: {fileID: 346681681588252191}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: Barde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,6 +36,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1597686496856142594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8803664582860776871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 406b5c9c280db2b468c4655bb7f7c37c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 10
+  speed: 5
+  armor: 0
 --- !u!33 &1398557648854254738
 MeshFilter:
   m_ObjectHideFlags: 0

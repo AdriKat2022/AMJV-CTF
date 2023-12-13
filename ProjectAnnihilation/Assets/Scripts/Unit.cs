@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum AttackType
+/*public enum AttackType
 {
     melee,
     distance,
     knockback,
     trap,
     build
-}
+}*/
 
 
 public abstract class Unit : MonoBehaviour
@@ -19,6 +19,11 @@ public abstract class Unit : MonoBehaviour
     private float maxHp;
     [SerializeField]
     private float speed;
+    [SerializeField]
+    private float armor;
+
+    public bool IsAttacker => isAttacker;
+    private bool isAttacker; // Defines the team of the unit
 
     private float hp;
     private float speedBonus;
@@ -27,9 +32,11 @@ public abstract class Unit : MonoBehaviour
     private bool isInvulnerable = false;
 
 
-    private AttackType attackType;
+    /*[SerializeField]
+    private AttackType attackType;*/
 
-    public abstract void Attack();
+    public abstract void Action();
+    public abstract void SpecialAttack();
 
 
     public void Damage(float damage)
@@ -57,5 +64,10 @@ public abstract class Unit : MonoBehaviour
             Destroy(gameObject);
             // Or launch a fancy coroutine to show it died idk
         }
+    }
+
+    private void MoveUnit()
+    {
+        
     }
 }
