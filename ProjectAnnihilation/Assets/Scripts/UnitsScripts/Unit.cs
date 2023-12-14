@@ -180,7 +180,7 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
     /// <summary>
-    /// Moves towards a position (not a unit)
+    /// Moves towards a position (not a unit)<br />
     /// If focus mode is enabled (isFocused), the unit doesn't care about attacking other units.
     /// </summary>
     protected virtual void MovingState()
@@ -197,8 +197,9 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
     /// <summary>
-    /// Targets any other unit (followedUnit).
-    /// Move towards them, and attack them once possible.
+    /// Targets any other unit (followedUnit).<br />
+    /// Move towards them, and attack them once possible.<br />
+    /// Keeps chasing the target if gets out of its attack range.
     /// </summary>
     protected virtual void MoveNAttack()
     {
@@ -220,7 +221,8 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
     /// <summary>
-    /// 
+    /// Follows an unit.<br />
+    /// Like MoveNAttack but without targeting the followed unit
     /// </summary>
     protected virtual void FollowingState()
     {
@@ -237,7 +239,8 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
     /// <summary>
-    /// 
+    ///  Goes on and on between two positions.<br />
+    ///  Attacks anyone in sight.
     /// </summary>
     protected virtual void PatrollingState()
     {
