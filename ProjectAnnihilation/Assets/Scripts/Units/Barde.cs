@@ -9,6 +9,8 @@ public class Barde : Unit
         // Box detection for melee attacks
 
         // Or projectile launch
+
+        // Or even just applying buffs to allies
     }
 
     public override void SpecialAttack()

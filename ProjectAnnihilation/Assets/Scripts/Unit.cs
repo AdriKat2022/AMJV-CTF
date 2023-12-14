@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-/*public enum AttackType
-{
-    melee,
-    distance,
-    knockback,
-    trap,
-    build
-}*/
-
 
 public abstract class Unit : MonoBehaviour
 {
@@ -32,9 +23,6 @@ public abstract class Unit : MonoBehaviour
     private bool isInvulnerable = false;
 
 
-    /*[SerializeField]
-    private AttackType attackType;*/
-
     public abstract void Action();
     public abstract void SpecialAttack();
 
@@ -45,7 +33,7 @@ public abstract class Unit : MonoBehaviour
             hp -= damage;
         else
         {
-            // Do some fancy block effect
+            // Do some fancy block effect or not
         }
 
         if(hp <= 0)
