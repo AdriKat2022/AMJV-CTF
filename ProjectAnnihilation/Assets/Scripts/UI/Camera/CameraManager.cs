@@ -9,6 +9,16 @@ public class CameraManager : MonoBehaviour
     [SerializeField]
     private float minSpeed = 0;
 
+    [Space]
+
+    [SerializeField]
+    private bool prioritizeKeys;
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float keyMultiplier = 0.75f;
+
+    [Space]
+
     [SerializeField]
     [Range(0, 100)]
     private int borderX = 20;
@@ -51,36 +61,63 @@ public class CameraManager : MonoBehaviour
 
     private void GetDestination()
     {
+        // Update the destination var according to the keys, then to the mouse (keys are prioritized)
+
         Vector2 mousePos = Input.mousePosition;
 
         int marginX = (int)(screenWidth * borderX/100f);
         int marginY = (int)(screenHeight * borderY/100f);
 
+        bool inputKeyboard = false;
 
-        if (mousePos.x <= marginX)
+        if (Input.GetKey("d"))
         {
-            float speed = Mathf.Lerp(maxSpeed, minSpeed, mousePos.x / marginX);
-
-            destination += speed * Time.deltaTime * Vector3.left;
+            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.right;
+            inputKeyboard = true;
         }
-        else if (mousePos.x >= screenWidth - marginX)
+        if (Input.GetKey("q"))
         {
-            float speed = Mathf.Lerp(minSpeed, maxSpeed, (mousePos.x - screenWidth + marginX) / marginX);
-
-            destination += speed * Time.deltaTime * Vector3.right;
+            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.left;
+            inputKeyboard = true;
+        }
+        if (Input.GetKey("z"))
+        {
+            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.forward;
+            inputKeyboard = true;
+        }
+        if (Input.GetKey("s"))
+        {
+            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.back;
+            inputKeyboard = true;
         }
 
-        if (mousePos.y <= marginY)
+        if(!prioritizeKeys || !inputKeyboard)
         {
-            float speed = Mathf.Lerp(maxSpeed, minSpeed, mousePos.y / marginY);
+            if (mousePos.x <= marginX)
+            {
+                float speed = Mathf.Lerp(maxSpeed, minSpeed, mousePos.x / marginX);
 
-            destination += speed * Time.deltaTime * new Vector3(0, 0, -1);
-        }
-        else if (mousePos.y >= screenHeight - marginY)
-        {
-            float speed = Mathf.Lerp(minSpeed, maxSpeed, (mousePos.y - screenHeight + marginY) / marginY);
+                destination += speed * Time.deltaTime * Vector3.left;
+            }
+            else if (mousePos.x >= screenWidth - marginX)
+            {
+                float speed = Mathf.Lerp(minSpeed, maxSpeed, (mousePos.x - screenWidth + marginX) / marginX);
 
-            destination += speed * Time.deltaTime * new Vector3(0, 0, 1);
+                destination += speed * Time.deltaTime * Vector3.right;
+            }
+
+            if (mousePos.y <= marginY)
+            {
+                float speed = Mathf.Lerp(maxSpeed, minSpeed, mousePos.y / marginY);
+
+                destination += speed * Time.deltaTime * Vector3.back;
+            }
+            else if (mousePos.y >= screenHeight - marginY)
+            {
+                float speed = Mathf.Lerp(minSpeed, maxSpeed, (mousePos.y - screenHeight + marginY) / marginY);
+
+                destination += speed * Time.deltaTime * Vector3.forward;
+            }
         }
     }
 }
