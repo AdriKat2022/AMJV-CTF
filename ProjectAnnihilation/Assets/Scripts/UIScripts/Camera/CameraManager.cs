@@ -70,22 +70,22 @@ public class CameraManager : MonoBehaviour
 
         bool inputKeyboard = false;
 
-        if (Input.GetKey("d"))
+        if (Input.GetKey(KeyCode.D))
         {
             destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.right;
             inputKeyboard = true;
         }
-        if (Input.GetKey("q"))
+        if (Input.GetKey(KeyCode.Q))
         {
             destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.left;
             inputKeyboard = true;
         }
-        if (Input.GetKey("z"))
+        if (Input.GetKey(KeyCode.Z))
         {
             destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.forward;
             inputKeyboard = true;
         }
-        if (Input.GetKey("s"))
+        if (Input.GetKey(KeyCode.S))
         {
             destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.back;
             inputKeyboard = true;

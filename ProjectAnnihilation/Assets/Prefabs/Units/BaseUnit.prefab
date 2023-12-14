@@ -9,18 +9,18 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8933156791209631213}
-  - component: {fileID: 1597686496856142594}
+  - component: {fileID: 2312375731673704885}
   - component: {fileID: 1398557648854254738}
   - component: {fileID: 3283021558013871775}
   - component: {fileID: 3244073552676465427}
   - component: {fileID: 346681681588252191}
   m_Layer: 0
-  m_Name: Barde
+  m_Name: BaseUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8933156791209631213
 Transform:
   m_ObjectHideFlags: 0
@@ -30,13 +30,13 @@ Transform:
   m_GameObject: {fileID: 8803664582860776871}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.61, z: 56.4}
+  m_LocalPosition: {x: 0, y: 0.5, z: -58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1597686496856142594
+--- !u!114 &2312375731673704885
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,12 +45,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8803664582860776871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 406b5c9c280db2b468c4655bb7f7c37c, type: 3}
+  m_Script: {fileID: 11500000, guid: f594be99c64c33e4a8236114e785e322, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 10
-  speed: 5
-  armor: 0
+  unitData: {fileID: 0}
 --- !u!33 &1398557648854254738
 MeshFilter:
   m_ObjectHideFlags: 0
