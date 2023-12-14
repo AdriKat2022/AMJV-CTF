@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Barde : Unit
 {
-    public override void Action()
+    protected override void Action()
     {
         // Box detection for melee attacks
 
@@ -13,8 +13,8 @@ public class Barde : Unit
         // Or even just applying buffs to allies
     }
 
-    public override void SpecialAttack()
+    protected override void SpecialAction()
     {
-        // Throw a special attack
+        // Throw a special attack (or special action
     }
 }

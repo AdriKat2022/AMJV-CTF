@@ -8,4 +8,7 @@ public class UnitData : ScriptableObject
     public float maxHp;
     public float speed;
     public float armor;
+    public float attackRange;
+
+    public float attackEndLag;
 }
