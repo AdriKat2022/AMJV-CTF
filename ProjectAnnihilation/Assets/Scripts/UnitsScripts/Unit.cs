@@ -31,6 +31,7 @@ public class Unit : MonoBehaviour, ISelectable
     private bool isSelected;
 
 
+
     [Header("Debug")]
     [SerializeField]
     private UnitState unitState;
@@ -114,7 +115,44 @@ public class Unit : MonoBehaviour, ISelectable
 
     protected virtual void ManageInput()
     {
-        // TODO : manages inputs and switch currentOrder
+        // TODO : Selection is done from the game manager script (with Select())
+
+        if (!isSelected)
+            return;
+
+        if (Input.GetAxis("Idle") == 1)
+        {
+            if (Input.GetAxis("Focus") == 1)
+                unitState = UnitState.NOTHING;
+            else
+                unitState = UnitState.IDLE;
+        }
+        else if (Input.GetAxis("MoveOrAndAttack") == 1)
+        {
+            Vector3? location = GetMousePositionOnTerrain(out GameObject other);
+
+            Unit unit;
+
+            if(other.TryGetComponent(out unit))
+            {
+                followedTarget = unit.transform;
+                unitState = UnitState.MOVENATTACK;
+            }
+            else
+            {
+                SetDestination(location);
+            }
+        }
+        else if (Input.GetAxis("Follow") == 1)
+        {
+            GetMousePositionOnTerrain(out GameObject other);
+
+            if (other.TryGetComponent(out Unit unit))
+            {
+                followedTarget = unit.transform;
+                unitState = UnitState.FOLLOWING;
+            }
+        }
     }
 
     #region State Machine
@@ -277,20 +315,23 @@ public class Unit : MonoBehaviour, ISelectable
     {
         navigation.isStopped = false;
     }
-    private Vector3? GetMousePositionOnTerrain() // Return mouse position on terrain, returns null if nothing was hit.
+    private Vector3? GetMousePositionOnTerrain(out GameObject other) // Return mouse position on terrain, returns null if nothing was hit.
     {
+        other = default;
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             if (hit.collider.CompareTag("Terrain"))
             {
+                other = hit.collider.gameObject;
                 return hit.point;
             }
         }
         return null;
     }
-    private void SetDestination(Vector3? dest) // if null, 
+    private void SetDestination(Vector3? dest) // if null, reset and stops the navigation
     {
         if(dest != null)
         {

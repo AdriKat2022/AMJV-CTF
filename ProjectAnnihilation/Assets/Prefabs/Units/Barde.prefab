@@ -12,17 +12,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barde
       objectReference: {fileID: 0}
+    - target: {fileID: 8803664582860776871, guid: c7c0510ed43b5884692b424a2ee459a7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8933156791209631213, guid: c7c0510ed43b5884692b424a2ee459a7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8933156791209631213, guid: c7c0510ed43b5884692b424a2ee459a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8933156791209631213, guid: c7c0510ed43b5884692b424a2ee459a7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -62
       objectReference: {fileID: 0}
     - target: {fileID: 8933156791209631213, guid: c7c0510ed43b5884692b424a2ee459a7, type: 3}
       propertyPath: m_LocalRotation.w

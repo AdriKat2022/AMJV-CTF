@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
+
+
     public bool PlayerIsAttacker => playerIsAttacker;
     private bool playerIsAttacker;
 
