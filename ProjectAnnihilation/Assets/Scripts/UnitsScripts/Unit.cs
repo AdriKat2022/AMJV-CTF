@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Unit : MonoBehaviour, ISelectable
 {
@@ -28,6 +29,7 @@ public class Unit : MonoBehaviour, ISelectable
     private bool isInvulnerable = false;
 
     public bool IsSelected => isSelected;
+    [SerializeField]
     private bool isSelected;
 
 
@@ -37,6 +39,8 @@ public class Unit : MonoBehaviour, ISelectable
     private UnitState unitState;
     [SerializeField]
     private UnitState currentOrder;
+    [SerializeField]
+    private LayerMask terrainLayer;
 
     private bool inEndLag;
     private float endLagTimer;
@@ -82,12 +86,15 @@ public class Unit : MonoBehaviour, ISelectable
     {
         hp = unitData.maxHp;
         inEndLag = false;
+        unitState = UnitState.IDLE;
     }
 
 
     private void Update()
     {
         Debug.Log(unitState);
+
+        ManageInput();
 
         if (inEndLag)
         {
@@ -106,6 +113,9 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void OnEndLag()
     {
+        if (!inEndLag)
+            return;
+
         endLagTimer -= Time.deltaTime;
         if (endLagTimer <= 0f)
         {
@@ -120,37 +130,43 @@ public class Unit : MonoBehaviour, ISelectable
         if (!isSelected)
             return;
 
+        /*Debug.Log(Input.GetAxis("Idle"));
+        Debug.Log(Input.GetAxis("Focus"));
+        Debug.Log(Input.GetMouseButtonDown(0));*/
+
         if (Input.GetAxis("Idle") == 1)
         {
+            Debug.Log("Set to idle or nothing");
             if (Input.GetAxis("Focus") == 1)
-                unitState = UnitState.NOTHING;
+                currentOrder = UnitState.NOTHING;
             else
-                unitState = UnitState.IDLE;
+                currentOrder = UnitState.IDLE;
         }
-        else if (Input.GetAxis("MoveOrAndAttack") == 1)
+        else if (Input.GetMouseButtonDown(0))
         {
-            Vector3? location = GetMousePositionOnTerrain(out GameObject other);
+            Vector3? location = GetMousePositionOnTerrain(out Unit unit);
 
-            Unit unit;
-
-            if(other.TryGetComponent(out unit))
+            if(unit != null)
             {
                 followedTarget = unit.transform;
-                unitState = UnitState.MOVENATTACK;
+                currentOrder = UnitState.MOVENATTACK;
             }
             else
             {
+                Debug.Log("Set a destination");
                 SetDestination(location);
+                Debug.Log(location);
+                currentOrder = UnitState.MOVING;
             }
         }
         else if (Input.GetAxis("Follow") == 1)
         {
-            GetMousePositionOnTerrain(out GameObject other);
+            GetMousePositionOnTerrain(out Unit unit);
 
-            if (other.TryGetComponent(out Unit unit))
+            if (unit != null)
             {
                 followedTarget = unit.transform;
-                unitState = UnitState.FOLLOWING;
+                currentOrder = UnitState.FOLLOWING;
             }
         }
     }
@@ -182,7 +198,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             case UnitState.MOVENATTACK:
 
-                MoveNAttack();
+                MoveNAttackState();
 
                 break;
 
@@ -207,14 +223,14 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void IdlingState()
     {
-        if (CanAttack() && currentOrder != UnitState.NOTHING)
+        if (CanAttack() && currentOrder == UnitState.IDLE)
         {
             Action();
         }
         else
         {
             if(currentOrder != UnitState.NOTHING)
-                unitState = UnitState.IDLE;
+                unitState = currentOrder;
         }
     }
     /// <summary>
@@ -231,15 +247,21 @@ public class Unit : MonoBehaviour, ISelectable
         }
         else if(CanAttack() && !isFocused)
         {
-
+            Action();
         }
+
+        /*if(navigation.pathStatus == NavMeshPathStatus.PathComplete)
+        {
+            navigation.isStopped = true;
+            currentOrder = UnitState.IDLE;
+        }*/
     }
     /// <summary>
     /// Targets any other unit (followedUnit).<br />
     /// Move towards them, and attack them once possible.<br />
     /// Keeps chasing the target if gets out of its attack range.
     /// </summary>
-    protected virtual void MoveNAttack()
+    protected virtual void MoveNAttackState()
     {
 
         if (CanAttack() && unitState == UnitState.MOVENATTACK)
@@ -260,7 +282,7 @@ public class Unit : MonoBehaviour, ISelectable
     }
     /// <summary>
     /// Follows an unit.<br />
-    /// Like MoveNAttack but without targeting the followed unit
+    /// Like MoveNAttackState but without targeting the followed unit
     /// </summary>
     protected virtual void FollowingState()
     {
@@ -315,20 +337,24 @@ public class Unit : MonoBehaviour, ISelectable
     {
         navigation.isStopped = false;
     }
-    private Vector3? GetMousePositionOnTerrain(out GameObject other) // Return mouse position on terrain, returns null if nothing was hit.
+    private Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
     {
-        other = default;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.collider.CompareTag("Terrain"))
-            {
-                other = hit.collider.gameObject;
+            // If it's an unit - set is as other and pass the collision point
+            if(hit.collider.gameObject.TryGetComponent(out other))
                 return hit.point;
-            }
+
+            other = default;
+
+            if ((terrainLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
+                return hit.point;
+
         }
+        other = default;
         return null;
     }
     private void SetDestination(Vector3? dest) // if null, reset and stops the navigation
@@ -348,8 +374,6 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
     #endregion State Machine
-
-
 
 
     #region Health Related

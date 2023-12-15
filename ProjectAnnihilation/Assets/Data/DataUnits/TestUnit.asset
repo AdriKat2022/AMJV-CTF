@@ -15,3 +15,5 @@ MonoBehaviour:
   maxHp: 10
   speed: 2
   armor: 0
+  attackRange: 1
+  attackEndLag: 1

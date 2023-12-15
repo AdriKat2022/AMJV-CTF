@@ -48,9 +48,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f594be99c64c33e4a8236114e785e322, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitData: {fileID: 0}
+  unitData: {fileID: 11400000, guid: 0c2918fc7840572479b3843dd1f12051, type: 2}
+  isSelected: 1
   unitState: 0
   currentOrder: 0
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!33 &1398557648854254738
 MeshFilter:
   m_ObjectHideFlags: 0
