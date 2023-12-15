@@ -5,10 +5,18 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Unit/New UnitData", order = 1)]
 public class UnitData : ScriptableObject
 {
+    [Header("Stats")]
     public float maxHp;
     public float speed;
     public float armor;
-    public float attackRange;
 
+    [Header("Attacks and targets")]
+
+    public float attackRange;
+    public PossibleTargets attackTargets;
+    public PossibleTargets specialAttackTargets;
+
+    [Header("End lag")]
     public float attackEndLag;
+    public float specialAttackEndLag;
 }

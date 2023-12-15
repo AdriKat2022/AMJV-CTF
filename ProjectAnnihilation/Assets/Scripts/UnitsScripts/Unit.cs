@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
+
+public enum PossibleTargets
+{
+    All,
+    EnemiesOnly,
+    AlliesOnly,
+    None
+}
+
+
 public class Unit : MonoBehaviour, ISelectable
 {
 
@@ -17,8 +28,9 @@ public class Unit : MonoBehaviour, ISelectable
     private bool isAttacker; // Defines the team of the unit
 
 
-    private float hp;
+    private float currentHp;
     private float speedBonus;
+    private float attackBonus;
 
     private bool isFocused;
 
@@ -55,7 +67,9 @@ public class Unit : MonoBehaviour, ISelectable
     protected virtual void Action() {
         endLagTimer = unitData.attackEndLag;
     }
-    protected virtual void SpecialAction() { }
+    protected virtual void SpecialAction() {
+        endLagTimer = unitData.specialAttackEndLag;
+    }
 
     #endregion
 
@@ -69,11 +83,12 @@ public class Unit : MonoBehaviour, ISelectable
         PATROLLING
     }
 
-    private void OnValidate()
+
+    /*private void OnValidate()
     {
 
     }
-
+*/
     private void Start()
     {
         gameManager = GameManager.Instance;
@@ -89,9 +104,13 @@ public class Unit : MonoBehaviour, ISelectable
 
     protected virtual void Initialize(UnitData unitData) // Can be overriden if a unit needs a specific initialization
     {
-        hp = unitData.maxHp;
+        currentHp = unitData.maxHp;
         inEndLag = false;
+
         unitState = UnitState.IDLE;
+
+        speedBonus = 0;
+        attackBonus = 0;
     }
 
 
@@ -135,7 +154,7 @@ public class Unit : MonoBehaviour, ISelectable
         if (!isSelected)
             return;
 
-        // IDEA (TODO : create a seperate script that manages inputs)
+        // TODO : create two scripts 1) for player input ; 2) for player AI
 
         /*Debug.Log(Input.GetAxis("Idle"));
         Debug.Log(Input.GetAxis("Focus"));
@@ -283,25 +302,23 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void MoveNAttackState()
     {
-        if(followedTarget == null)
+        if (followedTarget != null && currentOrder == UnitState.MOVENATTACK)
         {
-            currentOrder = UnitState.IDLE;
-            return;
-        }
+            SetDestination(followedTarget.position);
 
-        if (CanAttack(followedTarget.gameObject) && unitState == UnitState.MOVENATTACK)
+            if (CanAttack(followedTarget.gameObject))
+            {
+                Action();
+            }
+        }
+        else if(currentOrder == UnitState.MOVENATTACK)
         {
-            Action();
+            SetDestination(null);
+            currentOrder = UnitState.IDLE;
         }
         else
         {
-            if (unitState != currentOrder)
-            {
-                unitState = currentOrder;  // Exit condition
-                return;
-            }
-            SetDestination(followedTarget.position);
-            ResumeNavigation();
+            unitState = currentOrder;  // Exit condition
         }
     }
     /// <summary>
@@ -310,17 +327,22 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void FollowingState()
     {
-        navigation.destination = followedTarget.position;
-        navigation.isStopped = false;
+        if(followedTarget != null)
+            SetDestination(followedTarget.position);
+        else
+        {
+            SetDestination(null);
+            currentOrder = UnitState.IDLE;
+        }
 
-        if (CanAttack())
+        ResumeNavigation();
+
+        if (CanAttack() && currentOrder == UnitState.FOLLOWING)
         {
             Action();
         }
         else
-        {
             unitState = currentOrder;  // Exit condition
-        }
     }
     /// <summary>
     ///  Goes on and on between two positions.<br />
@@ -328,7 +350,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void PatrollingState()
     {
-        if (CanAttack())
+        if (CanAttack() && currentOrder != UnitState.PATROLLING)
         {
             Action();
             PauseNavigation();
@@ -336,9 +358,8 @@ public class Unit : MonoBehaviour, ISelectable
         else if(!inEndLag)
         {
             ResumeNavigation();
+            unitState = currentOrder;
         }
-
-        unitState = currentOrder;
     }
 
     #endregion
@@ -412,20 +433,20 @@ public class Unit : MonoBehaviour, ISelectable
     public void Damage(float damage)
     {
         if(!isInvincible)
-            hp -= damage;
+            currentHp -= damage;
         else
         {
             // Do some fancy block effect or not
         }
 
-        if(hp <= 0)
+        if(currentHp <= 0)
             KnockedDown();
     }
 
     public void Heal(float heal)
     {
-        hp += heal;
-        hp = Mathf.Clamp(hp, 0, unitData.maxHp);
+        currentHp += heal;
+        currentHp = Mathf.Clamp(currentHp, 0, unitData.maxHp);
     }
 
     private void KnockedDown()
