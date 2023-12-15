@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Unit : MonoBehaviour, ISelectable
 {
@@ -22,6 +21,8 @@ public class Unit : MonoBehaviour, ISelectable
     private float speedBonus;
 
     private bool isFocused;
+
+
 
     public bool IsInvisible => isInvisible;
     private bool isInvisible = false; // If other units can see them
@@ -58,7 +59,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private enum UnitState
     {
-        NOTHING, // Forces nothing
+        NOTHING, // Forces nothing (pointless to be honest)
         IDLE,
         MOVING,
         MOVENATTACK,
@@ -108,8 +109,8 @@ public class Unit : MonoBehaviour, ISelectable
     }
 
     /// <summary>
-    /// Runs once per frame while in end lag.
-    /// UpdateStateMachine is NOT called during end lag. This function is where you can act during those frames.
+    /// Runs once per frame while in end lag.<br />
+    /// UpdateStateMachine is NOT called during end lag. This function is where you can act during those frames.<br />
     /// 
     /// By default DECREASES the endLagTimer (in seconds) normally.
     /// </summary>
@@ -131,6 +132,8 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (!isSelected)
             return;
+
+        // IDEA (TODO : create a seperate script that manages inputs)
 
         /*Debug.Log(Input.GetAxis("Idle"));
         Debug.Log(Input.GetAxis("Focus"));
@@ -182,7 +185,7 @@ public class Unit : MonoBehaviour, ISelectable
         {
             case UnitState.NOTHING:
 
-                IdlingState();
+                NothingState();
 
                 break;
 
@@ -221,27 +224,37 @@ public class Unit : MonoBehaviour, ISelectable
     #region States
 
     /// <summary>
+    /// Does nothing.<br />
+    /// Absolutely nothing.
+    /// </summary>
+    protected virtual void NothingState()
+    {
+        PauseNavigation();
+        unitState = currentOrder;
+    }
+    /// <summary>
     /// Does nothing, but launches attacks any unit in range
     /// </summary>
     protected virtual void IdlingState()
     {
+        PauseNavigation();
+
         if (CanAttack() && currentOrder == UnitState.IDLE)
         {
             Action();
         }
         else
         {
-            if(currentOrder != UnitState.NOTHING)
-                unitState = currentOrder;
+            unitState = currentOrder;
         }
     }
     /// <summary>
     /// Moves towards a position (not a unit)<br />
-    /// If focus mode is enabled (isFocused), the unit doesn't care about attacking other units.
+    /// If focus mode is enabled (isFocused), the unit doesn't care about attacking other units, until it has reached the end of his path.
     /// </summary>
     protected virtual void MovingState()
     {
-        navigation.isStopped = false;
+        ResumeNavigation();
 
         if(currentOrder != UnitState.MOVING)
         {
@@ -252,6 +265,9 @@ public class Unit : MonoBehaviour, ISelectable
             Action();
         }
 
+        if (HasArrived())
+            currentOrder = UnitState.IDLE;
+            
         /*if (navigation.pathStatus == NavMeshPathStatus.PathComplete)
         {
             navigation.isStopped = true;
@@ -265,11 +281,15 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void MoveNAttackState()
     {
+        if(followedTarget == null)
+        {
+            currentOrder = UnitState.IDLE;
+            return;
+        }
 
-        if (CanAttack() && unitState == UnitState.MOVENATTACK)
+        if (CanAttack(followedTarget.gameObject) && unitState == UnitState.MOVENATTACK)
         {
             Action();
-            PauseNavigation();
         }
         else
         {
@@ -323,7 +343,15 @@ public class Unit : MonoBehaviour, ISelectable
 
     #region Helper functions
 
-    private bool CanAttack()
+    private bool HasArrived()
+    {
+        return (transform.position - navigation.destination).magnitude < navigation.stoppingDistance*1.01f;
+    }
+    /// <summary>
+    /// Check if the unit can attack a unit.
+    /// </summary>
+    /// <param name="target">Null to test for any target. Specify one to test if this one can be attacked.</param>
+    private bool CanAttack(GameObject target = null)
     {
         // TODO : Implement basic requirement for a unit to attack
 
