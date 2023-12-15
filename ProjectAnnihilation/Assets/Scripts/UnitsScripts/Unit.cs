@@ -52,7 +52,9 @@ public class Unit : MonoBehaviour, ISelectable
     private Vector3 pointB;
 
     #region UNIT ACTIONS (TO OVERRIDE BY UNIT)
-    protected virtual void Action() { }
+    protected virtual void Action() {
+        endLagTimer = unitData.attackEndLag;
+    }
     protected virtual void SpecialAction() { }
 
     #endregion
@@ -101,7 +103,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (inEndLag)
         {
-            OnEndLag();
+            OnActionEndLag();
             return;
         }
 
@@ -114,7 +116,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// 
     /// By default DECREASES the endLagTimer (in seconds) normally.
     /// </summary>
-    protected virtual void OnEndLag()
+    protected virtual void OnActionEndLag()
     {
         if (!inEndLag)
             return;
