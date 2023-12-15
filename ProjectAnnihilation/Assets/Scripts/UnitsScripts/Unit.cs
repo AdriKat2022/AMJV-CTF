@@ -79,6 +79,8 @@ public class Unit : MonoBehaviour, ISelectable
         isSelected = false;
         isFocused = false;
 
+        navigation.speed = unitData.speed;
+
         Initialize(unitData);
     }
 
@@ -250,7 +252,7 @@ public class Unit : MonoBehaviour, ISelectable
             Action();
         }
 
-        /*if(navigation.pathStatus == NavMeshPathStatus.PathComplete)
+        /*if (navigation.pathStatus == NavMeshPathStatus.PathComplete)
         {
             navigation.isStopped = true;
             currentOrder = UnitState.IDLE;
@@ -327,7 +329,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         // TODO : Verify it's toward the unit we are attacking (if MOVENATTACK state)
 
-        return true;
+        return false;
     }
     private void PauseNavigation()
     {
