@@ -76,6 +76,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Start()
     {
+        //Time.timeScale = 10f;
         gameManager = GameManager.Instance;
         navigation = GetComponent<NavMeshAgent>();
 
@@ -135,7 +136,7 @@ public class Unit : MonoBehaviour, ISelectable
         if (!isSelected)
             return;
 
-        // IDEA (TODO : create a seperate script that manages inputs)
+        // TODO : create two scripts 1) for player input ; 2) for player AI
 
         /*Debug.Log(Input.GetAxis("Idle"));
         Debug.Log(Input.GetAxis("Focus"));
@@ -283,25 +284,23 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void MoveNAttackState()
     {
-        if(followedTarget == null)
+        if (followedTarget != null && currentOrder == UnitState.MOVENATTACK)
         {
-            currentOrder = UnitState.IDLE;
-            return;
-        }
+            SetDestination(followedTarget.position);
 
-        if (CanAttack(followedTarget.gameObject) && unitState == UnitState.MOVENATTACK)
+            if (CanAttack(followedTarget.gameObject))
+            {
+                Action();
+            }
+        }
+        else if(currentOrder == UnitState.MOVENATTACK)
         {
-            Action();
+            SetDestination(null);
+            currentOrder = UnitState.IDLE;
         }
         else
         {
-            if (unitState != currentOrder)
-            {
-                unitState = currentOrder;  // Exit condition
-                return;
-            }
-            SetDestination(followedTarget.position);
-            ResumeNavigation();
+            unitState = currentOrder;  // Exit condition
         }
     }
     /// <summary>
@@ -310,17 +309,22 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void FollowingState()
     {
-        navigation.destination = followedTarget.position;
-        navigation.isStopped = false;
+        if(followedTarget != null)
+            SetDestination(followedTarget.position);
+        else
+        {
+            SetDestination(null);
+            currentOrder = UnitState.IDLE;
+        }
 
-        if (CanAttack())
+        ResumeNavigation();
+
+        if (CanAttack() && currentOrder == UnitState.FOLLOWING)
         {
             Action();
         }
         else
-        {
             unitState = currentOrder;  // Exit condition
-        }
     }
     /// <summary>
     ///  Goes on and on between two positions.<br />
@@ -328,7 +332,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void PatrollingState()
     {
-        if (CanAttack())
+        if (CanAttack() && currentOrder != UnitState.PATROLLING)
         {
             Action();
             PauseNavigation();
@@ -336,9 +340,8 @@ public class Unit : MonoBehaviour, ISelectable
         else if(!inEndLag)
         {
             ResumeNavigation();
+            unitState = currentOrder;
         }
-
-        unitState = currentOrder;
     }
 
     #endregion
