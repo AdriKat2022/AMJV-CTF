@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -34,7 +35,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private bool isFocused;
 
-
+    private GameObject targetableUnit;
 
     public bool IsInvisible => isInvisible;
     private bool isInvisible = false; // If other units can see them
@@ -55,6 +56,13 @@ public class Unit : MonoBehaviour, ISelectable
     [SerializeField]
     private LayerMask terrainLayer;
 
+
+    [Header("Memory usage")]
+    [SerializeField]
+    private int enemyDetectionBuffer = 30;
+
+
+
     private bool inEndLag;
     private float endLagTimer;
 
@@ -64,10 +72,10 @@ public class Unit : MonoBehaviour, ISelectable
     private Vector3 pointB;
 
     #region UNIT ACTIONS (TO OVERRIDE BY UNIT)
-    protected virtual void Action() {
+    protected virtual void Action(GameObject target = null) {
         endLagTimer = unitData.attackEndLag;
     }
-    protected virtual void SpecialAction() {
+    protected virtual void SpecialAction(GameObject target = null) {
         endLagTimer = unitData.specialAttackEndLag;
     }
 
@@ -83,12 +91,6 @@ public class Unit : MonoBehaviour, ISelectable
         PATROLLING
     }
 
-
-    /*private void OnValidate()
-    {
-
-    }
-*/
     private void Start()
     {
         //Time.timeScale = 10f;
@@ -372,14 +374,76 @@ public class Unit : MonoBehaviour, ISelectable
         return (transform.position - navigation.destination).magnitude < navigation.stoppingDistance*1.01f;
     }
     /// <summary>
-    /// Check if the unit can attack a unit.
+    /// Check if the unit can attack a unit.<br/>
+    /// Will update the variable 'targetableUnit' with the closest gameObject each time this is called with the parameter target = null.
     /// </summary>
     /// <param name="target">Null to test for any target. Specify one to test if this one can be attacked.</param>
     private bool CanAttack(GameObject target = null)
     {
-        // TODO : Implement basic requirement for a unit to attack
+        // TODO: Implement basic requirement for a unit to attack
 
-        // TODO : Verify it's toward the unit we are attacking (if MOVENATTACK state)
+        if (target == null)
+        {
+            GameObject closestGameObject = null;
+            float distance = unitData.attackRange;
+
+            Collider[] colliders = new Collider[30];
+
+            Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders);
+
+            foreach (Collider collider in colliders)
+            {
+                if (gameObject.layer != collider.gameObject.layer)
+                    continue;
+
+                float currentDistance = (transform.position - collider.gameObject.transform.position).magnitude;
+
+                if (IsTargetTeam(collider.gameObject) || currentDistance < distance)
+                {
+                    closestGameObject = collider.gameObject;
+                    distance = currentDistance;
+                }
+            }
+
+            targetableUnit = closestGameObject;
+
+            if(closestGameObject != null)
+                return true;
+        }
+        else
+        {
+            Collider[] colliders = new Collider[30];
+
+            Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders);
+
+            foreach (Collider collider in colliders)
+            {
+                if (gameObject.layer != collider.gameObject.layer)
+                    continue;
+
+                if(target == collider.gameObject)
+                {
+                    targetableUnit = target;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    /// <summary>
+    /// Check if the given units can be attacked according to the teamTarget tag (not specialTeamTarget) specified in unitData.
+    /// </summary>
+    /// <param name="target">A null target will return false.</param>
+    /// <returns></returns>
+    private bool IsTargetTeam(GameObject target)
+    {
+        if(target.TryGetComponent(out Unit unit))
+        {
+            return PossibleTargets.All == unitData.teamTarget ||
+                (unit.IsAttacker == IsAttacker && unitData.teamTarget == PossibleTargets.AlliesOnly) ||
+                (unit.IsAttacker != IsAttacker && unitData.teamTarget == PossibleTargets.EnemiesOnly);
+        }
 
         return false;
     }

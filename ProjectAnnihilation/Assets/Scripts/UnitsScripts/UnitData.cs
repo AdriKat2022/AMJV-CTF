@@ -13,8 +13,8 @@ public class UnitData : ScriptableObject
     [Header("Attacks and targets")]
 
     public float attackRange;
-    public PossibleTargets attackTargets;
-    public PossibleTargets specialAttackTargets;
+    public PossibleTargets teamTarget;
+    public PossibleTargets specialTeamTargets;
 
     [Header("End lag")]
     public float attackEndLag;

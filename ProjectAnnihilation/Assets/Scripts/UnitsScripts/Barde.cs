@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Barde : Unit
 {
-    protected override void Action()
+    protected override void Action(GameObject target = null)
     {
+        base.Action();
         // Box detection for melee attacks
 
         // Or projectile launch
@@ -13,8 +14,9 @@ public class Barde : Unit
         // Or even just applying buffs to allies
     }
 
-    protected override void SpecialAction()
+    protected override void SpecialAction(GameObject target = null)
     {
+        base.SpecialAction();
         // Throw a special attack (or special action
     }
 }
