@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestUnit : Unit
+public class ExampleUnit : Unit
 {
     private bool firstFrame = true;
 
