@@ -110,6 +110,7 @@ public class Unit : MonoBehaviour, ISelectable
         NOTHING, // Forces nothing (pointless to be honest)
         IDLE,
         MOVING,
+        MOVING_FOCUS,
         MOVENATTACK,
         FOLLOWING,
         PATROLLING
@@ -202,7 +203,10 @@ public class Unit : MonoBehaviour, ISelectable
             else
             {
                 SetDestination(location);
-                currentOrder = UnitState.MOVING;
+                if(Input.GetAxis("Focus") == 1)
+                    currentOrder = UnitState.MOVING_FOCUS;
+                else
+                    currentOrder = UnitState.MOVING;
             }
             ResetTimeBeforeTargetting();
         }
@@ -249,6 +253,12 @@ public class Unit : MonoBehaviour, ISelectable
             case UnitState.MOVING:
 
                 MovingState();
+
+                break;
+
+            case UnitState.MOVING_FOCUS:
+
+                MovingFocusState();
 
                 break;
 
@@ -302,7 +312,7 @@ public class Unit : MonoBehaviour, ISelectable
     }
     /// <summary>
     /// Moves towards a position (not a unit)<br />
-    /// If focus mode is enabled (isFocused), the unit doesn't care about attacking other units, until it has reached the end of his path.
+    /// The unit will attack anyone in sight.
     /// </summary>
     protected virtual void MovingState()
     {
@@ -315,6 +325,22 @@ public class Unit : MonoBehaviour, ISelectable
         else if(!isFocused && CanAttack() && CheckTimeBeforeTargetting())
         {
             Action();
+        }
+
+        if (HasArrived())
+            currentOrder = UnitState.IDLE;
+    }
+    /// <summary>
+    /// Moves towards a position (not a unit)<br />
+    /// The unit doesn't care about attacking other units, until it has reached the end of his path.
+    /// </summary>
+    protected virtual void MovingFocusState()
+    {
+        ResumeNavigation();
+
+        if (currentOrder != UnitState.MOVING_FOCUS)
+        {
+            unitState = currentOrder;
         }
 
         if (HasArrived())
