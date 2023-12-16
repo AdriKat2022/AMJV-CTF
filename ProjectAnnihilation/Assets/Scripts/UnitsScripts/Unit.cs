@@ -91,6 +91,7 @@ public class Unit : MonoBehaviour, ISelectable
 */
     private void Start()
     {
+        //Time.timeScale = 10f;
         gameManager = GameManager.Instance;
         navigation = GetComponent<NavMeshAgent>();
 
