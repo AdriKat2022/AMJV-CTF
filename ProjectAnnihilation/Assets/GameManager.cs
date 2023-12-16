@@ -1,15 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
-
-
     public bool PlayerIsAttacker => playerIsAttacker;
     private bool playerIsAttacker;
-
 
     static public GameManager Instance {
         get {
@@ -18,22 +15,21 @@ public class GameManager : MonoBehaviour
     }
     static private GameManager instance;
 
+    [Header("Game settings")]
+    public float timeBeforeTargettingUnit;
 
 
-    void Start()
+    void Awake()
     {
         if (instance == null)
+        {
             instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
         {
             Debug.LogWarning("Cannot have multiple instances of GameManager !");
-            Destroy(this);
+            Destroy(gameObject);
         }
-    }
-
-
-    void Update()
-    {
-        
     }
 }

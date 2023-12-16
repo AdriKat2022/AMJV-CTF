@@ -15,8 +15,12 @@ public class UnitData : ScriptableObject
     public float attackRange;
     public PossibleTargets teamTarget;
     public PossibleTargets specialTeamTargets;
+    public bool canSelfAttack;
 
     [Header("End lag")]
     public float attackEndLag;
     public float specialAttackEndLag;
+
+    [Header("Others")]
+    public LayerMask unitLayer;
 }

@@ -26,6 +26,7 @@ public class Unit : MonoBehaviour, ISelectable
     private GameManager gameManager;
 
     public bool IsAttacker => isAttacker;
+    [SerializeField]
     private bool isAttacker; // Defines the team of the unit
 
 
@@ -55,27 +56,50 @@ public class Unit : MonoBehaviour, ISelectable
     private UnitState currentOrder;
     [SerializeField]
     private LayerMask terrainLayer;
+    [SerializeField]
+    private bool canAttack;
+    [SerializeField]
+    private bool showAttackRange;
 
 
     [Header("Memory usage")]
-    [SerializeField]
-    private int enemyDetectionBuffer = 30;
+    static private int enemyDetectionBuffer = 10;
 
 
 
     private bool inEndLag;
     private float endLagTimer;
 
+    private float timeBeforeTargetting;
+
     private Transform followedTarget; // Following
 
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
+
+
+    #region DEBUG (Gizmos)
+    void OnDrawGizmosSelected()
+    {
+        if (showAttackRange)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, unitData.attackRange);
+        }
+    }
+
+    #endregion
+
     #region UNIT ACTIONS (TO OVERRIDE BY UNIT)
     protected virtual void Action(GameObject target = null) {
+        PauseNavigation();
+        inEndLag = true;
         endLagTimer = unitData.attackEndLag;
     }
     protected virtual void SpecialAction(GameObject target = null) {
+        PauseNavigation();
+        inEndLag = true;
         endLagTimer = unitData.specialAttackEndLag;
     }
 
@@ -93,8 +117,8 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Start()
     {
-        //Time.timeScale = 10f;
         gameManager = GameManager.Instance;
+        Debug.Log(gameManager);
         navigation = GetComponent<NavMeshAgent>();
 
         isSelected = false;
@@ -114,13 +138,12 @@ public class Unit : MonoBehaviour, ISelectable
 
         speedBonus = 0;
         attackBonus = 0;
-    }
 
+        timeBeforeTargetting = 0;
+    }
 
     private void Update()
     {
-        Debug.Log(unitState);
-
         ManageInput();
 
         if (inEndLag)
@@ -152,16 +175,12 @@ public class Unit : MonoBehaviour, ISelectable
 
     protected virtual void ManageInput()
     {
-        // TODO : Selection is done from the game manager script (with Select())
+        // TODO : Selection is done from the game manager script (with Select() (use the interface ISelectable))
 
         if (!isSelected)
             return;
 
-        // TODO : create two scripts 1) for player input ; 2) for player AI
-
-        /*Debug.Log(Input.GetAxis("Idle"));
-        Debug.Log(Input.GetAxis("Focus"));
-        Debug.Log(Input.GetMouseButtonDown(0));*/
+        // TODO : create two scripts 1) for player input (including this function) ; 2) for player AI
 
         if (Input.GetAxis("Idle") == 1)
         {
@@ -182,11 +201,10 @@ public class Unit : MonoBehaviour, ISelectable
             }
             else
             {
-                Debug.Log("Set a destination");
                 SetDestination(location);
-                Debug.Log(location);
                 currentOrder = UnitState.MOVING;
             }
+            ResetTimeBeforeTargetting();
         }
         else if (Input.GetAxis("Follow") == 1)
         {
@@ -197,14 +215,23 @@ public class Unit : MonoBehaviour, ISelectable
                 followedTarget = unit.transform;
                 currentOrder = UnitState.FOLLOWING;
             }
+            ResetTimeBeforeTargetting();
         }
+    }
+
+    private void ResetTimeBeforeTargetting()
+    {
+        timeBeforeTargetting = gameManager.timeBeforeTargettingUnit;
+    }
+    private bool CheckTimeBeforeTargetting()
+    {
+        return timeBeforeTargetting <= 0f;
     }
 
     #region State Machine
 
     private void UpdateStateMachine()
     {
-
         switch (unitState)
         {
             case UnitState.NOTHING:
@@ -243,6 +270,7 @@ public class Unit : MonoBehaviour, ISelectable
 
                 break;
         }
+        timeBeforeTargetting -= Time.deltaTime;
     }
 
     #region States
@@ -284,19 +312,13 @@ public class Unit : MonoBehaviour, ISelectable
         {
             unitState = currentOrder;
         }
-        else if(CanAttack() && !isFocused)
+        else if(!isFocused && CanAttack() && CheckTimeBeforeTargetting())
         {
             Action();
         }
 
         if (HasArrived())
             currentOrder = UnitState.IDLE;
-            
-        /*if (navigation.pathStatus == NavMeshPathStatus.PathComplete)
-        {
-            navigation.isStopped = true;
-            currentOrder = UnitState.IDLE;
-        }*/
     }
     /// <summary>
     /// Targets any other unit (followedUnit).<br />
@@ -308,6 +330,7 @@ public class Unit : MonoBehaviour, ISelectable
         if (followedTarget != null && currentOrder == UnitState.MOVENATTACK)
         {
             SetDestination(followedTarget.position);
+            ResumeNavigation();
 
             if (CanAttack(followedTarget.gameObject))
             {
@@ -340,7 +363,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         ResumeNavigation();
 
-        if (CanAttack() && currentOrder == UnitState.FOLLOWING)
+        if (CanAttack() && currentOrder == UnitState.FOLLOWING && CheckTimeBeforeTargetting())
         {
             Action();
         }
@@ -353,6 +376,8 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void PatrollingState()
     {
+        // TODO : make it oscillate between pointA and pointB
+
         if (CanAttack() && currentOrder != UnitState.PATROLLING)
         {
             Action();
@@ -368,7 +393,10 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
     #region Helper functions
-
+    /// <summary>
+    /// Check if the unit has arrived to its destination point of the NavMesh
+    /// </summary>
+    /// <returns></returns>
     private bool HasArrived()
     {
         return (transform.position - navigation.destination).magnitude < navigation.stoppingDistance*1.01f;
@@ -380,20 +408,22 @@ public class Unit : MonoBehaviour, ISelectable
     /// <param name="target">Null to test for any target. Specify one to test if this one can be attacked.</param>
     private bool CanAttack(GameObject target = null)
     {
-        // TODO: Implement basic requirement for a unit to attack
-
         if (target == null)
         {
             GameObject closestGameObject = null;
             float distance = unitData.attackRange;
 
-            Collider[] colliders = new Collider[30];
+            Collider[] colliders = new Collider[enemyDetectionBuffer];
 
-            Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders);
+            int nColliders = Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders, unitData.unitLayer);
 
-            foreach (Collider collider in colliders)
+            for(int i = 0; i<nColliders; i++)
             {
-                if (gameObject.layer != collider.gameObject.layer)
+                Collider collider = colliders[i];
+                
+                //Debug.Log(collider);
+
+                if (collider == null || gameObject.layer != collider.gameObject.layer || gameObject == collider.gameObject)
                     continue;
 
                 float currentDistance = (transform.position - collider.gameObject.transform.position).magnitude;
@@ -408,27 +438,39 @@ public class Unit : MonoBehaviour, ISelectable
             targetableUnit = closestGameObject;
 
             if(closestGameObject != null)
+            {
+                canAttack = true;
                 return true;
+            }
+        }
+        else if (target == gameObject)
+        {
+            return unitData.canSelfAttack;
         }
         else
         {
             Collider[] colliders = new Collider[30];
 
-            Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders);
+            int nColliders = Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders, unitData.unitLayer);
 
-            foreach (Collider collider in colliders)
+            for (int i = 0; i < nColliders; i++)
             {
-                if (gameObject.layer != collider.gameObject.layer)
+                Collider collider = colliders[i];
+
+                // Skip if the collider is null or not a unit
+                if (collider == null || gameObject.layer != collider.gameObject.layer)
                     continue;
 
                 if(target == collider.gameObject)
                 {
                     targetableUnit = target;
+                    canAttack = true;
                     return true;
                 }
             }
         }
 
+        canAttack = false;
         return false;
     }
     /// <summary>
@@ -447,15 +489,15 @@ public class Unit : MonoBehaviour, ISelectable
 
         return false;
     }
-    private void PauseNavigation()
+    protected void PauseNavigation()
     {
         navigation.isStopped = true;
     }
-    private void ResumeNavigation()
+    protected void ResumeNavigation()
     {
         navigation.isStopped = false;
     }
-    private Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
+    protected Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
     {
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -475,12 +517,11 @@ public class Unit : MonoBehaviour, ISelectable
         other = default;
         return null;
     }
-    private void SetDestination(Vector3? dest) // if null, reset and stops the navigation
+    protected void SetDestination(Vector3? dest) // if null, reset and stops the navigation
     {
         if(dest != null)
         {
             navigation.destination = (Vector3)dest;
-            navigation.isStopped = false;
         }
         else
         {

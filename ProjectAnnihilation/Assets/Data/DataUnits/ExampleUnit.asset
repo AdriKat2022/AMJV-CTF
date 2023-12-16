@@ -15,5 +15,12 @@ MonoBehaviour:
   maxHp: 10
   speed: 2
   armor: 0
-  attackRange: 1
-  attackEndLag: 1
+  attackRange: 5
+  teamTarget: 1
+  specialTeamTargets: 0
+  canSelfAttack: 0
+  attackEndLag: 2
+  specialAttackEndLag: 0
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 128
