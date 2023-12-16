@@ -63,7 +63,7 @@ public class Unit : MonoBehaviour, ISelectable
 
 
     [Header("Memory usage")]
-    static private int enemyDetectionBuffer = 10;
+    private static readonly int enemyDetectionBuffer = 10;
 
 
 
@@ -76,7 +76,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
-
 
 
     #region DEBUG (Gizmos)
