@@ -39,6 +39,7 @@ public class VisualTargetUnit : MonoBehaviour
     public void AttachTargetTo(Unit unit, bool activate = true)
     {
         spriteTargetTo.transform.SetParent(unit.transform, false);
+        spriteTargetTo.transform.localPosition = 0.1f * Vector3.up;
         spriteTargetTo.SetActive(activate);
     }
 
