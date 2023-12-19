@@ -12,6 +12,8 @@ public class CameraManager : MonoBehaviour
     [Space]
 
     [SerializeField]
+    private bool disableMouse;
+    [SerializeField]
     private bool prioritizeKeys;
     [SerializeField]
     [Range(0f, 1f)]
@@ -91,7 +93,7 @@ public class CameraManager : MonoBehaviour
             inputKeyboard = true;
         }
 
-        if(!prioritizeKeys || !inputKeyboard)
+        if( (!prioritizeKeys || !inputKeyboard) && !disableMouse)
         {
             if (mousePos.x <= marginX)
             {
