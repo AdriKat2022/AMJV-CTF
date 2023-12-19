@@ -82,8 +82,5 @@ MonoBehaviour:
   isSelected: 0
   unitState: 0
   currentOrder: 0
-  terrainLayer:
-    serializedVersion: 2
-    m_Bits: 0
   canAttack: 0
-  showAttackRange: 0
+  showAttackRange: 1

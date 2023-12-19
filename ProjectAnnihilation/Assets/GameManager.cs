@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public float timeBeforeTargettingUnit;
 
 
-    void Awake()
+    private void Awake()
     {
         if (instance == null)
         {
