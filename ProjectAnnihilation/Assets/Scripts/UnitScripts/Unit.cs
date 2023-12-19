@@ -216,6 +216,8 @@ public class Unit : MonoBehaviour, ISelectable
 
         navigation.speed = unitData.speed;
 
+        UpdateStateVisual();
+
         Initialize(unitData);
     }
 
