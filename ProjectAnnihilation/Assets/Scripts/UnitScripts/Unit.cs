@@ -43,8 +43,6 @@ public class Unit : MonoBehaviour, ISelectable
     private float speedBonus;
     private float attackBonus;
 
-    // Removed property isFocused
-
     private GameObject targetableUnit;
 
     public bool IsInvisible => isInvisible;
@@ -53,9 +51,7 @@ public class Unit : MonoBehaviour, ISelectable
     private bool isInvulnerable = false;
 
     public bool IsSelected => isSelected;
-    [SerializeField]
     private bool isSelected;
-
 
 
     [Header("Debug")]
@@ -67,6 +63,9 @@ public class Unit : MonoBehaviour, ISelectable
     private bool canAttack;
     [SerializeField]
     private bool showAttackRange;
+
+
+    private UnitState lastCurrentOrder;
 
 
     [Header("Memory usage")]
@@ -84,6 +83,99 @@ public class Unit : MonoBehaviour, ISelectable
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
+
+    #region Status visuals
+
+    private GameObject statusObject;
+
+    public void SetStatusObject(GameObject obj) => statusObject = obj;
+    private void CheckCurrentOrderChange()
+    {
+        if(currentOrder != lastCurrentOrder)
+        {
+            lastCurrentOrder = currentOrder;
+            UpdateStateVisual();
+        }
+    }
+    private void UpdateStateVisual()
+    {
+
+        if (statusObject == null || !statusObject.TryGetComponent(out Renderer rend))
+            return;
+
+        Debug.Log("Update color");
+
+        switch (currentOrder)
+        {
+            case UnitState.NOTHING:
+                rend.material.color = unitData.nothingColor;
+                break;
+
+            case UnitState.IDLE:
+                rend.material.color = unitData.idleColor;
+                break;
+
+            case UnitState.MOVING:
+                rend.material.color = unitData.movingColor;
+                break;
+
+            case UnitState.MOVING_FOCUS:
+                rend.material.color = unitData.movingFocusedColor;
+                break;
+
+            case UnitState.MOVENATTACK:
+                rend.material.color = unitData.chaseColor;
+                break;
+
+            case UnitState.FOLLOWING:
+                //rend.material.color = unitData.color;
+                break;
+
+            case UnitState.PATROLLING:
+                //rend.material.color = unitData.nothingColor;
+                break;
+        }
+    }
+
+    private IEnumerator BlinkIfSelected()
+    {
+        statusObject.TryGetComponent(out Renderer rend);
+
+        float blinkTimer = unitData.blinkSpeed;
+        bool state = true;
+
+        while (isSelected)
+        {
+            if(state && blinkTimer >= unitData.blinkSpeed)
+            {
+                blinkTimer = 0;
+                state = !state;
+                rend.material.color = unitData.selectedColor;
+
+                if(unitData.useFullBlink)
+                    statusObject.SetActive(false);
+            }
+            else if(!state && blinkTimer >= unitData.blinkSpeed)
+            {
+                blinkTimer = 0;
+                state = !state;
+
+                if (unitData.useFullBlink)
+                    statusObject.SetActive(true);
+
+                UpdateStateVisual();
+            }
+
+            blinkTimer += Time.deltaTime;
+
+            yield return null;
+        }
+        statusObject.SetActive(true);
+
+        UpdateStateVisual();
+    }
+
+    #endregion
 
     #region DEBUG (Gizmos)
     void OnDrawGizmosSelected()
@@ -112,6 +204,8 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
 
+    // TODO : create attack visual
+
     private void Start()
     {
         gameManager = GameManager.Instance;
@@ -119,7 +213,10 @@ public class Unit : MonoBehaviour, ISelectable
 
         isSelected = false;
 
+
         navigation.speed = unitData.speed;
+
+        UpdateStateVisual();
 
         Initialize(unitData);
     }
@@ -139,6 +236,8 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
+        CheckCurrentOrderChange();
+
         if (inEndLag)
         {
             OnActionEndLag();
@@ -417,6 +516,7 @@ public class Unit : MonoBehaviour, ISelectable
             if(closestGameObject != null)
             {
                 canAttack = true;
+                Debug.Log(closestGameObject);
                 return true;
             }
         }
@@ -527,9 +627,10 @@ public class Unit : MonoBehaviour, ISelectable
 
     public void Select()
     {
-        // TODO : Check if player is in the same team than this unit
         isSelected = true;
-        // Unit is selected (with pointer mouse)
+
+        if(unitData.blinkOnSelected)
+            StartCoroutine(BlinkIfSelected());
     }
 
     public void Deselect()

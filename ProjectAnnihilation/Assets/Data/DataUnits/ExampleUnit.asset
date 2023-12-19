@@ -21,6 +21,15 @@ MonoBehaviour:
   canSelfAttack: 0
   attackEndLag: 2
   specialAttackEndLag: 0
+  selectedColor: {r: 1, g: 1, b: 1, a: 0}
+  blinkOnSelected: 1
+  useFullBlink: 1
+  blinkSpeed: 0.5
+  nothingColor: {r: 0, g: 0, b: 0, a: 1}
+  idleColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  movingColor: {r: 0, g: 0, b: 1, a: 1}
+  movingFocusedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  chaseColor: {r: 1, g: 1, b: 1, a: 1}
   unitLayer:
     serializedVersion: 2
     m_Bits: 128

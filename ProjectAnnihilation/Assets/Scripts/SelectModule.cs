@@ -55,17 +55,21 @@ public class SelectModule : MonoBehaviour
     {
         if(unit == null) return;
 
-        unit.Select();
-        if(!selectedUnits.Contains(unit))
+        if (!selectedUnits.Contains(unit))
+        {
+            unit.Select();
             selectedUnits.Add(unit);
+        }
     }
     private void DeselectUnit(Unit unit)
     {
         if(unit == null) return;
 
-        unit.Deselect();
-        if(selectedUnits.Contains(unit))
+        if (selectedUnits.Contains(unit))
+        {
+            unit.Deselect();
             selectedUnits.Remove(unit);
+        }
     }
     private void DeselectAllUnits()
     {

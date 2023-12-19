@@ -14,6 +14,7 @@ public class UserInput : MonoBehaviour
     [SerializeField]
     private GameObject selectedVisual;
 
+
     private void Start()
     {
         unit = GetComponent<Unit>();
@@ -22,13 +23,15 @@ public class UserInput : MonoBehaviour
         {
             Debug.LogWarning("Warning: UserInput requires a unit to work.");
         }
+
+        unit.SetStatusObject(selectedVisual);
     }
 
     private void Update()
     {
         ManageInput();
 
-        selectedVisual.SetActive(unit.IsSelected);
+        //selectedVisual.SetActive(unit.IsSelected);
     }
 
     protected virtual void ManageInput()
@@ -102,4 +105,5 @@ public class UserInput : MonoBehaviour
         other = default;
         return null;
     }
+
 }
