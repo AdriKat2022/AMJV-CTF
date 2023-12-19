@@ -14,6 +14,16 @@ public enum PossibleTargets
     None
 }
 
+public enum UnitState
+{
+    NOTHING, // Forces nothing (pointless to be honest)
+    IDLE,
+    MOVING,
+    MOVING_FOCUS,
+    MOVENATTACK,
+    FOLLOWING,
+    PATROLLING
+}
 
 public class Unit : MonoBehaviour, ISelectable
 {
@@ -22,7 +32,6 @@ public class Unit : MonoBehaviour, ISelectable
     private UnitData unitData;
 
     private NavMeshAgent navigation;
-
     private GameManager gameManager;
 
     public bool IsAttacker => isAttacker;
@@ -34,7 +43,7 @@ public class Unit : MonoBehaviour, ISelectable
     private float speedBonus;
     private float attackBonus;
 
-    private bool isFocused;
+    // Removed property isFocused
 
     private GameObject targetableUnit;
 
@@ -54,8 +63,6 @@ public class Unit : MonoBehaviour, ISelectable
     private UnitState unitState;
     [SerializeField]
     private UnitState currentOrder;
-    [SerializeField]
-    private LayerMask terrainLayer;
     [SerializeField]
     private bool canAttack;
     [SerializeField]
@@ -104,25 +111,13 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    private enum UnitState
-    {
-        NOTHING, // Forces nothing (pointless to be honest)
-        IDLE,
-        MOVING,
-        MOVING_FOCUS,
-        MOVENATTACK,
-        FOLLOWING,
-        PATROLLING
-    }
 
     private void Start()
     {
         gameManager = GameManager.Instance;
-        Debug.Log(gameManager);
         navigation = GetComponent<NavMeshAgent>();
 
         isSelected = false;
-        isFocused = false;
 
         navigation.speed = unitData.speed;
 
@@ -144,8 +139,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
-        ManageInput();
-
         if (inEndLag)
         {
             OnActionEndLag();
@@ -173,60 +166,21 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
 
-    protected virtual void ManageInput()
+    // MANAGED INPUT HAS BEEN MOVED TO USERINPUT.CS
+
+    public void SetCurrentOrderState(UnitState order)
     {
-        // TODO : Selection is done from the game manager script (with Select() (use the interface ISelectable))
-
-        if (!isSelected)
-            return;
-
-        // TODO : create two scripts 1) for player input (including this function) ; 2) for player AI
-
-        if (Input.GetAxis("Idle") == 1)
-        {
-            Debug.Log("Set to idle or nothing");
-            if (Input.GetAxis("Focus") == 1)
-                currentOrder = UnitState.NOTHING;
-            else
-                currentOrder = UnitState.IDLE;
-        }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            Vector3? location = GetMousePositionOnTerrain(out Unit unit);
-
-            if(unit != null)
-            {
-                followedTarget = unit.transform;
-                currentOrder = UnitState.MOVENATTACK;
-            }
-            else
-            {
-                SetDestination(location);
-                if(Input.GetAxis("Focus") == 1)
-                    currentOrder = UnitState.MOVING_FOCUS;
-                else
-                    currentOrder = UnitState.MOVING;
-            }
-            ResetTimeBeforeTargetting();
-        }
-        else if (Input.GetAxis("Follow") == 1)
-        {
-            GetMousePositionOnTerrain(out Unit unit);
-
-            if (unit != null)
-            {
-                followedTarget = unit.transform;
-                currentOrder = UnitState.FOLLOWING;
-            }
-            ResetTimeBeforeTargetting();
-        }
+        currentOrder = order;
     }
-
-    private void ResetTimeBeforeTargetting()
+    public void SetFollowedTarget(Transform target)
+    {
+        followedTarget = target;
+    }
+    public void ResetTimeBeforeTargetting()
     {
         timeBeforeTargetting = gameManager.timeBeforeTargettingUnit;
     }
-    private bool CheckTimeBeforeTargetting()
+    public bool CheckTimeBeforeTargetting()
     {
         return timeBeforeTargetting <= 0f;
     }
@@ -321,7 +275,7 @@ public class Unit : MonoBehaviour, ISelectable
         {
             unitState = currentOrder;
         }
-        else if(!isFocused && CanAttack() && CheckTimeBeforeTargetting())
+        else if(CanAttack() && CheckTimeBeforeTargetting())
         {
             Action();
         }
@@ -445,8 +399,6 @@ public class Unit : MonoBehaviour, ISelectable
             for(int i = 0; i<nColliders; i++)
             {
                 Collider collider = colliders[i];
-                
-                //Debug.Log(collider);
 
                 if (collider == null || gameObject.layer != collider.gameObject.layer || gameObject == collider.gameObject)
                     continue;
@@ -522,27 +474,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         navigation.isStopped = false;
     }
-    protected Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
-    {
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            // If it's an unit - set is as other and pass the collision point
-            if(hit.collider.gameObject.TryGetComponent(out other))
-                return hit.point;
-
-            other = default;
-
-            if ((terrainLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
-                return hit.point;
-
-        }
-        other = default;
-        return null;
-    }
-    protected void SetDestination(Vector3? dest) // if null, reset and stops the navigation
+    public void SetDestination(Vector3? dest) // if null, reset and stops the navigation
     {
         if(dest != null)
         {
@@ -590,6 +522,9 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion Health Related
 
+
+    #region Unit selection (interface)
+
     public void Select()
     {
         // TODO : Check if player is in the same team than this unit
@@ -601,4 +536,6 @@ public class Unit : MonoBehaviour, ISelectable
     {
         isSelected = false;
     }
+
+    #endregion
 }
