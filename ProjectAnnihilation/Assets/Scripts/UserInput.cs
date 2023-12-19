@@ -12,7 +12,10 @@ public class UserInput : MonoBehaviour
     [SerializeField]
     private LayerMask terrainLayer;
     [SerializeField]
-    private GameObject selectedVisual;
+    private GameObject stateVisual;
+
+
+    private VisualTargetUnit visualTargetManager;
 
 
     private bool wasSelected;
@@ -20,21 +23,24 @@ public class UserInput : MonoBehaviour
     private void Start()
     {
         unit = GetComponent<Unit>();
+        visualTargetManager = GetComponent<VisualTargetUnit>();
 
-        if(unit == null)
+        if (unit == null)
         {
             Debug.LogWarning("Warning: UserInput requires a unit to work.");
         }
 
         wasSelected = false;
-        unit.SetStatusObject(selectedVisual);
+        unit.SetStatusObject(stateVisual);
+
+        visualTargetManager.DetachTarget(false);
+        visualTargetManager.ShowTarget(false);
     }
 
     private void Update()
     {
+        visualTargetManager.ShowTarget(unit.IsSelected && unit.CurrentOrder != UnitState.NOTHING && unit.CurrentOrder != UnitState.IDLE);
         ManageInput();
-
-        //selectedVisual.SetActive(unit.IsSelected);
     }
 
     private void ManageInput()
@@ -69,6 +75,8 @@ public class UserInput : MonoBehaviour
             {
                 unit.SetFollowedTarget(otherUnit.transform);
                 unit.SetCurrentOrderState(UnitState.MOVENATTACK);
+
+                visualTargetManager.AttachTargetTo(otherUnit);
             }
             // ...est-ce sur une position ?
             else
@@ -80,6 +88,8 @@ public class UserInput : MonoBehaviour
                     unit.SetCurrentOrderState(UnitState.MOVING);
                 else // ... ou attaquer au passage ?
                     unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
+
+                visualTargetManager.PlaceTargetAt((Vector3)location);
             }
             unit.ResetTimeBeforeTargetting();
         }
@@ -94,6 +104,8 @@ public class UserInput : MonoBehaviour
             }
 
             unit.ResetTimeBeforeTargetting();
+
+            // FOLLOW IS DEPRECATED FOR THE MOMENT
         }
     }
     public Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.

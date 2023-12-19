@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,16 +25,14 @@ public enum UnitState
 
 public class Unit : MonoBehaviour, ISelectable
 {
-
     [SerializeField]
     private UnitData unitData;
+
+
 
     private NavMeshAgent navigation;
     private GameManager gameManager;
 
-    public bool IsAttacker => isAttacker;
-    [SerializeField]
-    private bool isAttacker; // Defines the team of the unit
 
 
     private float currentHp;
@@ -44,6 +40,11 @@ public class Unit : MonoBehaviour, ISelectable
     private float attackBonus;
 
     private GameObject targetableUnit;
+
+
+    [SerializeField]
+    private bool isAttacker; // Defines the team of the unit
+    public bool IsAttacker => isAttacker;
 
     public bool IsInvisible => isInvisible;
     private bool isInvisible = false; // If other units can see them
@@ -53,6 +54,10 @@ public class Unit : MonoBehaviour, ISelectable
     public bool IsSelected => isSelected;
     private bool isSelected;
 
+    public bool IsKing => isKing;
+    private bool isKing;
+
+    public UnitState CurrentOrder => currentOrder;
 
     [Header("Debug")]
     [SerializeField]
@@ -212,7 +217,7 @@ public class Unit : MonoBehaviour, ISelectable
         navigation = GetComponent<NavMeshAgent>();
 
         isSelected = false;
-
+        isKing = false;
 
         navigation.speed = unitData.speed;
 
