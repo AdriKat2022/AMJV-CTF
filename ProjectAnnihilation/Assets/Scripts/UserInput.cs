@@ -91,6 +91,7 @@ public class UserInput : MonoBehaviour
                 else // ... ou attaquer au passage ?
                     unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
 
+                visualTargetManager.DetachTarget();
                 visualTargetManager.PlaceTargetAt((Vector3)location);
                 visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
             }
