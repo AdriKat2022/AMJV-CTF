@@ -7,11 +7,11 @@ public class VisualTargetUnit : MonoBehaviour
     [SerializeField]
     private GameObject spriteTargetTo;
 
-    [SerializeField]
-    private Color simpleMoveColor;
-    [SerializeField]
-    private Color attackUnitColor;
+    public Color simpleMoveColor;
+    public Color attackUnitColor;
 
+
+    private SpriteRenderer spriteRenderer;
 
     /// The targetTo will be moved towards the unit's destination 
     /// It will be red if it's attached to another unit
@@ -21,6 +21,13 @@ public class VisualTargetUnit : MonoBehaviour
     {
         spriteTargetTo.SetActive(false);
         spriteTargetTo.transform.localPosition = 0.1f * Vector3.up;
+
+        spriteRenderer = spriteTargetTo.GetComponent<SpriteRenderer>();
+    }
+
+    public void SetColor(Color color)
+    {
+        spriteRenderer.color = color;
     }
 
     #region Manage functions

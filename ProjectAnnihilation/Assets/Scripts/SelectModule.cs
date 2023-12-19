@@ -4,14 +4,29 @@ using UnityEngine;
 
 public class SelectModule : MonoBehaviour
 {
-    [SerializeField]
-    private KeyCode keepSelectionKey;
+    public KeyCode keepSelectionKey;
     [SerializeField]
     private KeyCode deselectionKey;
 
     private List<Unit> selectedUnits;
 
     private Camera mainCamera;
+
+    #region Singleton instance
+
+    public static SelectModule Instance => instance;
+    private static SelectModule instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+    }
+
+    #endregion
+
 
     private void Start()
     {

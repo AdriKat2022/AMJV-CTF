@@ -69,8 +69,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteTargetTo: {fileID: 2084775690716917240}
-  simpleMoveColor: {r: 0.16165967, g: 0.9056604, b: 0, a: 0}
-  attackUnitColor: {r: 1, g: 0.023584902, b: 0.023584902, a: 0}
+  simpleMoveColor: {r: 0.16165967, g: 0.9056604, b: 0, a: 1}
+  attackUnitColor: {r: 1, g: 0.023584902, b: 0.023584902, a: 1}
 --- !u!54 &2807951573426850550
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -236,10 +236,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5066679407121158828, guid: 6b134f5d3cc15304ea75521b6e052f2c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5066679407121158828, guid: 6b134f5d3cc15304ea75521b6e052f2c, type: 3}
-      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5066679407121158828, guid: 6b134f5d3cc15304ea75521b6e052f2c, type: 3}

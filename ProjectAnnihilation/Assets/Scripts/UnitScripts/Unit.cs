@@ -626,10 +626,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion Health Related
 
-    public void BecomeKing()
-    {
-        isKing = true;
-    }
+    public void BecomeKing() => isKing = true;
 
     #region Unit selection (interface)
 

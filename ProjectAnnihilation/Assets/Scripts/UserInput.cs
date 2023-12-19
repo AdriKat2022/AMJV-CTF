@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 public class UserInput : MonoBehaviour
@@ -47,7 +48,7 @@ public class UserInput : MonoBehaviour
     {
         wasSelected &= unit.IsSelected;
 
-        if (!unit.IsSelected)
+        if (!unit.IsSelected || Input.GetKey(SelectModule.Instance.keepSelectionKey))
             return;
 
         if (!wasSelected) // Prevents selection from killing the current action
@@ -77,6 +78,7 @@ public class UserInput : MonoBehaviour
                 unit.SetCurrentOrderState(UnitState.MOVENATTACK);
 
                 visualTargetManager.AttachTargetTo(otherUnit);
+                visualTargetManager.SetColor(visualTargetManager.attackUnitColor);
             }
             // ...est-ce sur une position ?
             else
@@ -90,6 +92,7 @@ public class UserInput : MonoBehaviour
                     unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
 
                 visualTargetManager.PlaceTargetAt((Vector3)location);
+                visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
             }
             unit.ResetTimeBeforeTargetting();
         }
