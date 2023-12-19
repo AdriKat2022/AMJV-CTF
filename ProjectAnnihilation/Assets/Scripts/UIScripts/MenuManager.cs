@@ -22,6 +22,7 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         parametersMenu.SetActive(false);
+        selectionMenu.SetActive(false);
         mainMenu.SetActive(true);
         mainStart.onClick.AddListener(OnMainStartClick);
         mainParameters.onClick.AddListener(OnMainParametersClick);
@@ -30,16 +31,20 @@ public class MenuManager : MonoBehaviour
         parametersReturn.onClick.AddListener(OnParametersReturnClick);
 
     }
-
-    // Update is called once per frame
-    void Update()
+    public void OnSelectionReturnClicked()
     {
-        
+        mainMenu.SetActive(true);
+        selectionMenu.SetActive(false);
+    }
+    public void StartLevel(int level)
+    {
+        SceneManager.LoadScene(level);
     }
 
     private void OnMainStartClick()
     {
-        SceneManager.LoadScene("Adrien");
+        selectionMenu.SetActive(true);
+        mainMenu.SetActive(false);
     }
 
     private void OnMainParametersClick()
@@ -53,7 +58,8 @@ public class MenuManager : MonoBehaviour
     }
     private void OnParametersStartClick()
     {
-        SceneManager.LoadScene("Adrien");
+        selectionMenu.SetActive(true);
+        parametersMenu.SetActive(false);
     }
     private void OnParametersReturnClick()
     {
