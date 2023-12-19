@@ -15,6 +15,8 @@ public class UserInput : MonoBehaviour
     private GameObject selectedVisual;
 
 
+    private bool wasSelected;
+
     private void Start()
     {
         unit = GetComponent<Unit>();
@@ -24,6 +26,7 @@ public class UserInput : MonoBehaviour
             Debug.LogWarning("Warning: UserInput requires a unit to work.");
         }
 
+        wasSelected = false;
         unit.SetStatusObject(selectedVisual);
     }
 
@@ -34,19 +37,27 @@ public class UserInput : MonoBehaviour
         //selectedVisual.SetActive(unit.IsSelected);
     }
 
-    protected virtual void ManageInput()
+    private void ManageInput()
     {
+        wasSelected &= unit.IsSelected;
+
         if (!unit.IsSelected)
             return;
+
+        if (!wasSelected) // Prevents selection from killing the current action
+        {
+            wasSelected = true;
+            return;
+        }
 
         // Si le joueur veut reset l'unité
         if (Input.GetAxis("Idle") == 1)
         {
             // Si le joueur veut que l'unité ne fasse rien du tout jusqu'à nouvel ordre
             if (Input.GetAxis("Focus") == 1)
-                unit.SetCurrentOrderState(UnitState.NOTHING);
-            else
                 unit.SetCurrentOrderState(UnitState.IDLE);
+            else
+                unit.SetCurrentOrderState(UnitState.NOTHING);
         }
         else if (Input.GetMouseButtonDown(0))
         {
@@ -66,9 +77,9 @@ public class UserInput : MonoBehaviour
                 
                 // ... doit-on se concentrer sur la position ?
                 if (Input.GetAxis("Focus") == 1)
-                    unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
-                else // ... ou attaquer au passage ?
                     unit.SetCurrentOrderState(UnitState.MOVING);
+                else // ... ou attaquer au passage ?
+                    unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
             }
             unit.ResetTimeBeforeTargetting();
         }

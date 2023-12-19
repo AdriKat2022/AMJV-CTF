@@ -103,7 +103,7 @@ public class Unit : MonoBehaviour, ISelectable
         if (statusObject == null || !statusObject.TryGetComponent(out Renderer rend))
             return;
 
-        Debug.Log("Update color");
+        //Debug.Log("Update color");
 
         switch (currentOrder)
         {
@@ -236,7 +236,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
-        CheckCurrentOrderChange();
+        CheckCurrentOrderChange(); // For the bubble on top of the unit
 
         if (inEndLag)
         {
@@ -516,7 +516,6 @@ public class Unit : MonoBehaviour, ISelectable
             if(closestGameObject != null)
             {
                 canAttack = true;
-                Debug.Log(closestGameObject);
                 return true;
             }
         }

@@ -19,7 +19,7 @@ MonoBehaviour:
   teamTarget: 1
   specialTeamTargets: 0
   canSelfAttack: 0
-  attackEndLag: 0
+  attackEndLag: 1
   specialAttackEndLag: 0
   selectedColor: {r: 1, g: 1, b: 1, a: 0}
   blinkOnSelected: 1
@@ -27,9 +27,9 @@ MonoBehaviour:
   blinkSpeed: 0.5
   nothingColor: {r: 0, g: 0, b: 0, a: 1}
   idleColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  movingColor: {r: 0, g: 0, b: 1, a: 1}
-  movingFocusedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  chaseColor: {r: 1, g: 1, b: 1, a: 1}
+  movingColor: {r: 0, g: 0.75686276, b: 1, a: 1}
+  movingFocusedColor: {r: 0, g: 0.23921569, b: 1, a: 1}
+  chaseColor: {r: 1, g: 0.49803922, b: 0, a: 1}
   unitLayer:
     serializedVersion: 2
     m_Bits: 128

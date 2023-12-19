@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 
-public class UIManager : MonoBehaviour
+public class MenuManager : MonoBehaviour
 {
     //Useful variables
 
