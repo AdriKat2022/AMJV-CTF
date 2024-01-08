@@ -55,7 +55,7 @@ public class Unit : MonoBehaviour, ISelectable
     private bool isSelected;
 
     public bool IsKing => isKing;
-    private bool isKing;
+    [SerializeField] private bool isKing;
 
     public UnitState CurrentOrder => currentOrder;
 
@@ -626,7 +626,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion Health Related
 
-    public void BecomeKing() => isKing = true;
+    public void BecomeKing() { isKing = true; }
 
     #region Unit selection (interface)
 

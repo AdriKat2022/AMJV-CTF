@@ -6,7 +6,7 @@ public class Flag : MonoBehaviour
 {
     #region variables
 
-    private bool isFlagAvalaible = true;
+    [SerializeField] private bool isFlagAvalaible = true;
     #endregion
 
     // Start is called before the first frame update
