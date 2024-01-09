@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Flag : MonoBehaviour
+public class Flag : Tile
 {
     #region variables
 
@@ -12,7 +12,7 @@ public class Flag : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        tileType = 0;
     }
 
     // Update is called once per frame

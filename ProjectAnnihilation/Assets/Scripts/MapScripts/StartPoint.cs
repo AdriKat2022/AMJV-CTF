@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.WSA;
 
-public class StartPoint : MonoBehaviour
+public class StartPoint : Tile
 {
     #region variables
     
@@ -10,7 +11,7 @@ public class StartPoint : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-    
+        tileType = 0;
     }
 
     // Update is called once per frame
