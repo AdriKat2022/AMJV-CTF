@@ -20761,6 +20761,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExampleUnit
       objectReference: {fileID: 0}
+    - target: {fileID: 8393502504253399233, guid: c7c0510ed43b5884692b424a2ee459a7, type: 3}
+      propertyPath: m_Speed
+      value: 300
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -31684,7 +31688,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8961463681103623983, guid: 9552cfeaed4c36543a470f9775183bc9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

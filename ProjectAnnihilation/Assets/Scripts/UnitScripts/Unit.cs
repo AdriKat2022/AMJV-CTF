@@ -57,6 +57,8 @@ public class Unit : MonoBehaviour, ISelectable
     public bool IsKing => isKing;
     [SerializeField] private bool isKing;
 
+    public bool IsInWater => isInWater;
+    [SerializeField] private bool isInWater = false;
     public UnitState CurrentOrder => currentOrder;
 
     [Header("Debug")]
@@ -249,6 +251,7 @@ public class Unit : MonoBehaviour, ISelectable
         }
 
         UpdateStateMachine();
+        GroundUpdate();
     }
 
     /// <summary>
@@ -291,6 +294,35 @@ public class Unit : MonoBehaviour, ISelectable
     }
     #endregion
 
+    private void GroundUpdate()
+    {
+        RaycastHit hit;
+        Ray ray = new Ray(gameObject.transform.position, -Vector3.up);
+        if (Physics.Raycast(ray, out hit))
+        {
+            int tileType = hit.collider.gameObject.GetComponent<Tile>().tileType;
+            
+            // type 0 is the default tile, there is nothing to special. 
+            if (tileType == 0)
+            {
+                navigation.speed = unitData.speed;
+            }
+
+            // type 1 is the wall type, you should not be up there.
+
+            // Type 2 is the slow type, it slows down the unit by half her speed (might change).
+            if (tileType == 2)
+            {
+                navigation.speed = unitData.speed/2;
+            }
+            
+            // Type 3 is the void type, every unit on this tile must die.
+            if (tileType == 3)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
     #region State Machine
 
     private void UpdateStateMachine()
