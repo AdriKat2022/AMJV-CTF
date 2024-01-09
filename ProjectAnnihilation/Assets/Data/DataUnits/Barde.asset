@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 10
   speed: 2
+  attack: 2
   armor: 0
-  attackRange: 2
+  attackRange: 7.33
   teamTarget: 1
   specialTeamTargets: 0
   canSelfAttack: 0

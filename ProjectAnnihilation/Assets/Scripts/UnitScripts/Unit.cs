@@ -83,9 +83,9 @@ public class Unit : MonoBehaviour, ISelectable
     [Header("Memory usage")]
     private static readonly int enemyDetectionBuffer = 10;
 
-    private List<Unit> attackBoostedUnits;
-    private List<Unit> speedBoostedUnits;
-    private List<Unit> defenseBoostedUnits;
+    //private List<Unit> attackBoostedUnits;
+    //private List<Unit> speedBoostedUnits;
+    //private List<Unit> defenseBoostedUnits;
 
     private bool inEndLag;
     private float endLagTimer;
@@ -200,6 +200,9 @@ public class Unit : MonoBehaviour, ISelectable
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, unitData.attackRange);
         }
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, Vector3.down);
     }
 
     #endregion
@@ -335,10 +338,12 @@ public class Unit : MonoBehaviour, ISelectable
     private void GroundUpdate()
     {
         RaycastHit hit;
-        Ray ray = new Ray(gameObject.transform.position, -Vector3.up);
+        Ray ray = new Ray(gameObject.transform.position, Vector3.down);
         if (Physics.Raycast(ray, out hit))
         {
             Tile tile;
+
+            Debug.Log(hit.collider.gameObject);
 
             if(!hit.collider.gameObject.TryGetComponent(out tile))
             {
@@ -373,6 +378,7 @@ public class Unit : MonoBehaviour, ISelectable
             }
         }
     }
+
     #region State Machine
 
     private void UpdateStateMachine()
