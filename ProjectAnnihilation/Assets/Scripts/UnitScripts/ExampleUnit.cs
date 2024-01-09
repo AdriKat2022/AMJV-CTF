@@ -9,7 +9,7 @@ public class ExampleUnit : Unit
     protected override void Action(GameObject target = null)
     {
         base.Action();
-        Debug.Log("Attack !");
+        //Debug.Log("Attack !");
         firstFrame = true;
     }
     protected override void SpecialAction(GameObject target = null)
@@ -23,7 +23,7 @@ public class ExampleUnit : Unit
 
         if(firstFrame)
         {
-            Debug.Log("On end lag !");
+            //Debug.Log("On end lag !");
             firstFrame = false;
         }
     }

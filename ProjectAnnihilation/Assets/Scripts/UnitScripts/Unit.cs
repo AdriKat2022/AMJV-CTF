@@ -27,7 +27,7 @@ public class Unit : MonoBehaviour, ISelectable
 {
     [SerializeField]
     private UnitData unitData;
-
+    public UnitData UnitData => unitData;
 
 
     private NavMeshAgent navigation;
@@ -35,9 +35,9 @@ public class Unit : MonoBehaviour, ISelectable
 
 
 
-    private float currentHp;
     private float speedBonus;
     private float attackBonus;
+
 
     private GameObject targetableUnit;
 
@@ -228,7 +228,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     protected virtual void Initialize(UnitData unitData) // Can be overriden if a unit needs a specific initialization
     {
-        currentHp = unitData.maxHp;
         inEndLag = false;
 
         unitState = UnitState.IDLE;
@@ -241,7 +240,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
-        CheckCurrentOrderChange(); // For the bubble on top of the unit
+        CheckCurrentOrderChange(); // For the visual of the unit
 
         if (inEndLag)
         {
@@ -272,6 +271,8 @@ public class Unit : MonoBehaviour, ISelectable
 
     // MANAGED INPUT HAS BEEN MOVED TO USERINPUT.CS
 
+    #region State management functions
+
     public void SetCurrentOrderState(UnitState order)
     {
         currentOrder = order;
@@ -288,6 +289,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         return timeBeforeTargetting <= 0f;
     }
+    #endregion
 
     #region State Machine
 
@@ -360,7 +362,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (CanAttack() && currentOrder == UnitState.IDLE)
         {
-            Action();
+            Action(targetableUnit);
         }
         else
         {
@@ -381,7 +383,7 @@ public class Unit : MonoBehaviour, ISelectable
         }
         else if(CanAttack() && CheckTimeBeforeTargetting())
         {
-            Action();
+            Action(targetableUnit);
         }
 
         if (HasArrived())
@@ -417,7 +419,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             if (CanAttack(followedTarget.gameObject))
             {
-                Action();
+                Action(followedTarget.gameObject);
             }
         }
         else if(currentOrder == UnitState.MOVENATTACK)
@@ -448,7 +450,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (CanAttack() && currentOrder == UnitState.FOLLOWING && CheckTimeBeforeTargetting())
         {
-            Action();
+            Action(targetableUnit);
         }
         else
             unitState = currentOrder;  // Exit condition
@@ -463,7 +465,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (CanAttack() && currentOrder != UnitState.PATROLLING)
         {
-            Action();
+            Action(targetableUnit);
             PauseNavigation();
         }
         else if(!inEndLag)
@@ -597,32 +599,8 @@ public class Unit : MonoBehaviour, ISelectable
 
 
     #region Health Related
-    public void Damage(float damage)
-    {
-        if(!isInvincible)
-            currentHp -= damage;
-        else
-        {
-            // Do some fancy block effect or not
-        }
 
-        if(currentHp <= 0)
-            KnockedDown();
-    }
-
-    public void Heal(float heal)
-    {
-        currentHp += heal;
-        currentHp = Mathf.Clamp(currentHp, 0, unitData.maxHp);
-    }
-
-    private void KnockedDown()
-    {
-        if (!isInvulnerable) {
-            Destroy(gameObject);
-            // Or launch a fancy coroutine to show it died idk
-        }
-    }
+    // Went to HealthModule.cs !
 
     #endregion Health Related
 

@@ -12,6 +12,14 @@ public class Barde : Unit
         // Or projectile launch
 
         // Or even just applying buffs to allies
+        if (target == null)
+            return;
+
+        if (TryGetComponent(out IDamageable damageableTarget))
+        {
+            DamageData dd = new DamageData(5);
+            damageableTarget.Damage(dd);
+        }
     }
 
     protected override void SpecialAction(GameObject target = null)

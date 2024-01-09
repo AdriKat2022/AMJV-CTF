@@ -6,7 +6,7 @@ using UnityEngine;
 public class UnitData : ScriptableObject
 {
     [Header("Stats")]
-    public float maxHp;
+    public float maxHP;
     public float speed;
     public float armor;
 
