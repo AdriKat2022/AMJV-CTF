@@ -2,11 +2,11 @@ using UnityEngine;
 
 public struct DamageData
 {
-    public float damage;
     public Vector3? knockback; // Can be null
+    public float damage;
     public float hitStun;
 
-    public DamageData(float damage, Vector3? knockback = null, float hitStun = 0f)
+    public DamageData(float damage,  float hitStun = 0f, Vector3? knockback = null)
     {
         this.damage = damage;
         this.knockback = knockback;

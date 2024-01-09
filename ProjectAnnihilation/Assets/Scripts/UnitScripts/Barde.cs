@@ -15,11 +15,7 @@ public class Barde : Unit
         if (target == null)
             return;
 
-        if (TryGetComponent(out IDamageable damageableTarget))
-        {
-            DamageData dd = new DamageData(5);
-            damageableTarget.Damage(dd);
-        }
+        DealDamage(target, unitData.attack + attackBonus);
     }
 
     protected override void SpecialAction(GameObject target = null)

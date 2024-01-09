@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aab4f17ef1b58b34bb6dbbc3efd6db07, type: 3}
   m_Name: ExampleUnit
   m_EditorClassIdentifier: 
-  maxHp: 10
+  maxHP: 52.33
   speed: 2
   armor: 0
   attackRange: 5

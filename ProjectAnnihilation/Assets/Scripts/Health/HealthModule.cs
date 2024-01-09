@@ -20,9 +20,10 @@ public class HealthModule : MonoBehaviour, IDamageable
     private Unit unit;
     private UnitData unitData;
 
+    [SerializeField]
     private float currentHP;
     private bool canTakeDamage;
-    private bool isAlive;
+    private bool isAlive = true;
 
 #if UNITY_EDITOR
 
@@ -38,7 +39,9 @@ public class HealthModule : MonoBehaviour, IDamageable
         canTakeDamage = true;
 
         TryGetComponent(out unit);
+
         unitData = unit.UnitData;
+        currentHP = unitData.maxHP;
 
         InitializeHPBarVisual();
     }

@@ -9,7 +9,6 @@ public class ExampleUnit : Unit
     protected override void Action(GameObject target = null)
     {
         base.Action();
-        //Debug.Log("Attack !");
         firstFrame = true;
     }
     protected override void SpecialAction(GameObject target = null)
