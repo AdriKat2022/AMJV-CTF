@@ -292,6 +292,10 @@ public class Unit : MonoBehaviour, ISelectable
         }
 
         UpdateStateMachine();
+    }
+
+    private void FixedUpdate()
+    {
         GroundUpdate();
     }
 
