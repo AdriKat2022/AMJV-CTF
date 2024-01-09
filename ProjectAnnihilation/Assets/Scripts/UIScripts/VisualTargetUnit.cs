@@ -34,6 +34,7 @@ public class VisualTargetUnit : MonoBehaviour
 
     public void ShowTarget(bool show = true)
     {
+
         spriteTargetTo.SetActive(show);
     }
     public void AttachTargetTo(Unit unit, bool activate = true)

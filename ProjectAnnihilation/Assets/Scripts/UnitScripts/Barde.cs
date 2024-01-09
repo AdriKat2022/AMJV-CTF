@@ -12,6 +12,10 @@ public class Barde : Unit
         // Or projectile launch
 
         // Or even just applying buffs to allies
+        if (target == null)
+            return;
+
+        DealDamage(target, unitData.attack + attackBonus);
     }
 
     protected override void SpecialAction(GameObject target = null)

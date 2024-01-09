@@ -6,13 +6,14 @@ using UnityEngine;
 public class UnitData : ScriptableObject
 {
     [Header("Stats")]
-    public float maxHp;
+    public float maxHP;
     public float speed;
+    public float attack;
     public float armor;
+    public float attackRange;
 
     [Header("Attacks and targets")]
 
-    public float attackRange;
     public PossibleTargets teamTarget;
     public PossibleTargets specialTeamTargets;
     public bool canSelfAttack;
