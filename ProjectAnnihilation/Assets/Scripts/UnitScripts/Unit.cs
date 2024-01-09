@@ -57,6 +57,8 @@ public class Unit : MonoBehaviour, ISelectable
     public bool IsKing => isKing;
     [SerializeField] private bool isKing;
 
+    public bool IsInWater => isInWater;
+    [SerializeField] private bool isInWater = false;
     public UnitState CurrentOrder => currentOrder;
 
     [Header("Debug")]
@@ -250,6 +252,7 @@ public class Unit : MonoBehaviour, ISelectable
         }
 
         UpdateStateMachine();
+        GroundUpdate();
     }
 
     /// <summary>
@@ -289,6 +292,25 @@ public class Unit : MonoBehaviour, ISelectable
         return timeBeforeTargetting <= 0f;
     }
 
+    private void GroundUpdate()
+    {
+        RaycastHit hit;
+        Ray ray = new Ray(gameObject.transform.position, -Vector3.up);
+        if (Physics.Raycast(ray, out hit))
+        {
+            int tileType = hit.collider.gameObject.GetComponent<Tile>().tileType;
+
+            if (tileType == 0)
+            {
+                navigation.speed = 5f;
+            }
+
+            if (tileType == 2)
+            {
+                navigation.speed = 2.5f;
+            }
+        }
+    }
     #region State Machine
 
     private void UpdateStateMachine()
