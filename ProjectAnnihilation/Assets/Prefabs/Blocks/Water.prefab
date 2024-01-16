@@ -115,7 +115,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8010505563302433715}
   - component: {fileID: 2088572112694872640}
-  - component: {fileID: 8961463681103623983}
   - component: {fileID: 4710366047785252694}
   m_Layer: 0
   m_Name: Water
@@ -153,19 +152,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileType: 0
---- !u!114 &8961463681103623983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5184730957720479800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dbaf34c99856364f94ca0661b206ff5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileType: 2
 --- !u!65 &4710366047785252694
 BoxCollider:
   m_ObjectHideFlags: 0

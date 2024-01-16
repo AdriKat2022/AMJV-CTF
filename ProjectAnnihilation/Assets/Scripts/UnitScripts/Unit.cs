@@ -63,7 +63,7 @@ public class Unit : MonoBehaviour, ISelectable
     public bool IsInWater => isInWater;
     [SerializeField]
     private bool isInWater = false;
-
+    private GameObject currentTile;
     public UnitState CurrentOrder => currentOrder;
 
     [Header("Debug")]
@@ -342,6 +342,9 @@ public class Unit : MonoBehaviour, ISelectable
         Ray ray = new Ray(gameObject.transform.position, -Vector3.up);
         if (Physics.Raycast(ray, out hit))
         {
+            if (hit.collider.gameObject == currentTile)
+                return;
+
             Tile tile;
 
             if(!hit.collider.gameObject.TryGetComponent(out tile))
@@ -375,6 +378,7 @@ public class Unit : MonoBehaviour, ISelectable
             {
                 Destroy(gameObject); // Rather call healthModule.KnockedOut() in case there in a animation
             }
+            currentTile = hit.collider.gameObject;
         }
     }
     #region State Machine
