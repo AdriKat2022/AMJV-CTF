@@ -232,8 +232,6 @@ public class Unit : MonoBehaviour, ISelectable
             return;
         }
 
-        Debug.Log("damage");
-
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
             DamageData dd = new DamageData(damage, hitstun ,knockback);
@@ -241,7 +239,44 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
 
-    
+    protected void DealKnockback(GameObject target, Vector3 knockback, float hitstun = 0)
+    {
+        if (target == null)
+        {
+            Debug.LogWarning("Attempting to deal damage to null target");
+            return;
+        }
+
+        if (target.TryGetComponent(out IDamageable damageableTarget))
+        {
+            DamageData dd = new DamageData(0, hitstun, knockback);
+            damageableTarget.Damage(dd, healthModule);
+        }
+    }
+
+    protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null)
+    {
+        Collider[] units = new Collider[15];
+
+        if(offset != null)
+            Physics.OverlapSphereNonAlloc(transform.position + (Vector3)offset, radius, units);
+        else
+            Physics.OverlapSphereNonAlloc(transform.position, radius, units);
+
+        // Do a animation or something
+
+        foreach (Collider unit in units)
+        {
+            if (unit == null)
+                continue;
+
+            float forceFactor = (radius - (unit.transform.position - transform.position).magnitude) * knockbackForce;
+
+            Vector3 knockback = (unit.transform.position - transform.position).normalized * forceFactor;
+
+            DealKnockback(unit.gameObject, knockback);
+        }
+    }
 
     #endregion
 
@@ -348,7 +383,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             Tile tile;
 
-            Debug.Log(hit.collider.gameObject);
+            //Debug.Log(hit.collider.gameObject);
 
             if(!hit.collider.gameObject.TryGetComponent(out tile))
             {

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 
 public class Barde : Unit
@@ -18,7 +15,9 @@ public class Barde : Unit
 
         Vector3 knockbackDealt = (target.transform.position - transform.position).normalized * 20;
 
-        DealDamage(target, unitData.attack + attackBonus, knockback: knockbackDealt);
+        //DealDamage(target, unitData.attack + attackBonus, knockback: knockbackDealt);
+
+        CreateRepulsiveSphere(10, 10);
     }
 
     protected override void SpecialAction(GameObject target = null)
