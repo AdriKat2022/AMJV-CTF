@@ -364,7 +364,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             int tileType = tile.tileType;
             
-            // type 0 is the default tile, there is nothing to special.
+            // type 0 is the default tile, there is nothing special.
             if (tileType == 0)
             {
                 navigation.speed = unitData.speed;
@@ -384,6 +384,27 @@ public class Unit : MonoBehaviour, ISelectable
                 Destroy(gameObject); // Rather call healthModule.KnockedOut() in case there in a animation
             }
             currentTile = hit.collider.gameObject;
+
+            // Type 4 is the starting point, where you are supposed to bring the flag back
+            if (tileType == 4 && IsKing==true)
+            {
+                Debug.Log("You win");
+            }
+
+            // Type 5 is the Flag.
+
+            if ( tileType == 5 && IsAttacker == true)
+            {
+                if(hit.collider.gameObject.TryGetComponent(out Flag flag))
+                {
+                    Debug.Log("Entered");
+                    if(flag.isFlagAvalaible == true)
+                    {
+                        BecomeKing();
+                        flag.isFlagAvalaible= false;
+                    }
+                }
+            }
         }
     }
 

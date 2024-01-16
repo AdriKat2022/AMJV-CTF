@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,11 @@ public class Tile : MonoBehaviour
 {
     #region variables
     public int tileType;
+
+    internal object TryGetComponent<T>()
+    {
+        throw new NotImplementedException();
+    }
     #endregion
     // Start is called before the first frame update
     void Start()

@@ -6,32 +6,18 @@ public class Flag : Tile
 {
     #region variables
 
-    [SerializeField] private bool isFlagAvalaible = true;
+    public bool isFlagAvalaible = true;
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
-        tileType = 0;
+        tileType = 5;
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject entity  = other.gameObject;
-
-        if (entity != null && entity.GetComponent<Unit>().IsAttacker == true)
-        {
-            if(isFlagAvalaible == true)
-            {
-                entity.GetComponent<Unit>().BecomeKing();
-                isFlagAvalaible = false;
-            }
-        }
     }
 }
