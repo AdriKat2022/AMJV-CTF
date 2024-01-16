@@ -11,7 +11,7 @@ public class StartPoint : Tile
     // Start is called before the first frame update
     void Start()
     {
-        tileType = 0;
+        tileType = 4;
     }
 
     // Update is called once per frame
