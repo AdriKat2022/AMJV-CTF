@@ -27,9 +27,17 @@ public class HealthBarModule : MonoBehaviour
     private const float maxWidthHP = 40f;
 
 
+    private Camera cameraMain;
+
     private void Awake()
     {
         TryGetComponent(out rectTransform);
+        cameraMain = Camera.main;
+    }
+
+    private void Update()
+    {
+        transform.LookAt(cameraMain.transform);
     }
 
     public void Initialize(UnitData unitData, Color bg, Color hp, bool adaptativeBar = false)

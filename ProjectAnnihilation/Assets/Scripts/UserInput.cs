@@ -34,7 +34,7 @@ public class UserInput : MonoBehaviour
         wasSelected = false;
         unit.SetStatusObject(stateVisual);
 
-        visualTargetManager.DetachTarget(false);
+        visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);
     }
 
@@ -77,7 +77,7 @@ public class UserInput : MonoBehaviour
                 unit.SetFollowedTarget(otherUnit.transform);
                 unit.SetCurrentOrderState(UnitState.MOVENATTACK);
 
-                visualTargetManager.AttachTargetTo(otherUnit);
+                visualTargetManager.LockTarget(otherUnit);
                 visualTargetManager.SetColor(visualTargetManager.attackUnitColor);
             }
             // ...est-ce sur une position ?
@@ -91,7 +91,7 @@ public class UserInput : MonoBehaviour
                 else // ... ou attaquer au passage ?
                     unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
 
-                visualTargetManager.DetachTarget();
+                visualTargetManager.UnlockTarget();
                 visualTargetManager.PlaceTargetAt((Vector3)location);
                 visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
             }
@@ -105,9 +105,9 @@ public class UserInput : MonoBehaviour
             {
                 unit.SetFollowedTarget(unit.transform);
                 unit.SetCurrentOrderState(UnitState.FOLLOWING);
+                unit.ResetTimeBeforeTargetting();
             }
 
-            unit.ResetTimeBeforeTargetting();
 
             // FOLLOW IS DEPRECATED FOR THE MOMENT
         }
