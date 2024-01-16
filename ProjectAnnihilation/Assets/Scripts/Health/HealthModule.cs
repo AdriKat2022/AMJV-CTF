@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,7 +17,6 @@ public class HealthModule : MonoBehaviour, IDamageable
 
 
 
-
     private Unit unit;
     private UnitData unitData;
 
@@ -24,6 +24,10 @@ public class HealthModule : MonoBehaviour, IDamageable
     private float currentHP;
     private bool canTakeDamage;
     private bool isAlive = true;
+
+
+    private Func<Vector3, Rigidbody, IEnumerator> knockback_CR;
+    private Rigidbody rb_unit;
 
 #if UNITY_EDITOR
 
@@ -100,8 +104,30 @@ public class HealthModule : MonoBehaviour, IDamageable
     }
     #endregion
 
-    public void ApplyKnockback(Vector3 knockback)
+
+    #region Knockback
+    public void SetKnockbackCoroutine(Func<Vector3, Rigidbody, IEnumerator> knockbackCoroutine, Rigidbody rb)
     {
-        // Use coroutine of unit
+        knockback_CR = knockbackCoroutine;
+        rb_unit = rb;
     }
+    private void ApplyKnockback(Vector3 knockback)
+    {
+        if(knockback_CR == null)
+        {
+            Debug.LogWarning("No knockback defined, but a health module needs to use one.");
+            return;
+        }
+
+        try
+        {
+            StartCoroutine(knockback_CR(knockback, rb_unit));
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e);
+            Debug.LogError("Knockback coroutine generator function was baddly written and couldn't be executed.\nAre you missing arguments ?");
+        }
+    }
+    #endregion
 }

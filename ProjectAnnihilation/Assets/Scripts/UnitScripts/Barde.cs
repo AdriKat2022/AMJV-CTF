@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class Barde : Unit
@@ -15,7 +16,9 @@ public class Barde : Unit
         if (target == null)
             return;
 
-        DealDamage(target, unitData.attack + attackBonus);
+        Vector3 knockbackDealt = (target.transform.position - transform.position).normalized * 20;
+
+        DealDamage(target, unitData.attack + attackBonus, knockback: knockbackDealt);
     }
 
     protected override void SpecialAction(GameObject target = null)

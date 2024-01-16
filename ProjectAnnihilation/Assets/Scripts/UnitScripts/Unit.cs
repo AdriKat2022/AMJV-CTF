@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -34,6 +33,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
+    private Rigidbody rb;
 
 
 
@@ -240,14 +240,8 @@ public class Unit : MonoBehaviour, ISelectable
             damageableTarget.Damage(dd, healthModule);
         }
     }
-    /*protected void BoostUnitAttack(GameObject target, float attackBoost)
-    {
-        //attackBonus += boost;
-    }
-    protected void UnboostUnitAttack(GameObject target, float boost)
-    {
 
-    }*/
+    
 
     #endregion
 
@@ -257,12 +251,16 @@ public class Unit : MonoBehaviour, ISelectable
     {
         gameManager = GameManager.Instance;
         navigation = GetComponent<NavMeshAgent>();
+        healthModule = GetComponent<HealthModule>();
+        rb = GetComponent<Rigidbody>();
 
         isSelected = false;
         isKing = false;
         canAttack = true;
 
         navigation.speed = unitData.speed;
+
+        PassKnockbackFunctionToHealthModule();
 
         UpdateStateVisual();
 
@@ -714,12 +712,28 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion State Machine
 
+    #region Knockback - HealthModule
+    private IEnumerator GetKnockback(Vector3 knockback, Rigidbody rb)
+    {
+        rb.AddForce(knockback, ForceMode.Impulse);
 
-    #region Health Related
+        //while(knockback.magnitude > .1f)
+        //{
+        //    rb.AddForce(knockback);
+        //    knockback = Vector3.Lerp(knockback, Vector3.zero, Time.deltaTime);
 
-    // Went to HealthModule.cs !
+        //    yield return null;
+        //}
 
-    #endregion Health Related
+        yield return null;
+    }
+
+    // 
+    private void PassKnockbackFunctionToHealthModule()
+    {
+        healthModule.SetKnockbackCoroutine(GetKnockback, rb);
+    }
+    #endregion
 
     public void BecomeKing() { isKing = true; }
 
