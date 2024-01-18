@@ -17,7 +17,7 @@ public class Barde : Unit
 
         //DealDamage(target, unitData.attack + attackBonus, knockback: knockbackDealt);
 
-        CreateRepulsiveSphere(10, 10);
+        CreateRepulsiveSphere(4, 10);
     }
 
     protected override void SpecialAction(GameObject target = null)
