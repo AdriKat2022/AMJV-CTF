@@ -418,7 +418,7 @@ public class Unit : MonoBehaviour, ISelectable
             // Type 3 is the void type, every unit on this tile must die.
             if (tileType == 3)
             {
-                Destroy(gameObject); // Rather call healthModule.KnockedOut() in case there in a animation
+                healthModule.KnockedDown();
             }
             currentTile = hit.collider.gameObject;
 

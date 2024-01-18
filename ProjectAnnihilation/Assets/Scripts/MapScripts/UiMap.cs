@@ -19,6 +19,7 @@ public class UiMap : MonoBehaviour
     {
         GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
         enemyNumber = entities.Length;
+        GameManager.Instance.onEnemyDeath.AddListener(OnEnemyDeath);
     }
 
     // Update is called once per frame
@@ -36,18 +37,18 @@ public class UiMap : MonoBehaviour
         minute = Mathf.FloorToInt(elapsedTime / 60f);
         second = Mathf.FloorToInt(elapsedTime % 60f);
 
-        //Update MeshText in the specified format
+        //update meshText in the specified format
         timer.text = string.Format("{0}m {1}s", minute, second);
     }
 
     void UpdateEnemys()
     {
         enemys.text = string.Format("{0} Enemys left", enemyNumber);
-        GameManager.Instance.onEnemyDeath.AddListener(OnEnemyDeath);
     }
 
     void OnEnemyDeath()
     {
+
         enemyNumber--;
     }
 }

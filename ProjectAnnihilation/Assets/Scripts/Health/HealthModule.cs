@@ -83,12 +83,15 @@ public class HealthModule : MonoBehaviour, IDamageable
     }
     #endregion
 
-    private void KnockedDown()
+    public void KnockedDown()
     {
         isAlive = false;
+        GameManager.Instance.TriggerDeath();
         Destroy(gameObject);
         // Or launch a fancy coroutine to show it died idk
     }
+
+
 
     #region HPBar Visual
     private void InitializeHPBarVisual()
