@@ -13,6 +13,7 @@ public class UiMap : MonoBehaviour
     private bool isGameOver = false;
     private bool flag = false;
     private int enemyNumber;
+    private int allyNumber;
     private float elapsedTime = 0f;
     private int minute;
     private int second;
@@ -22,9 +23,12 @@ public class UiMap : MonoBehaviour
     void Start()
     {
         GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
         enemyNumber = entities.Length;
+        allyNumber = allies.Length;
         GameManager.Instance.onEnemyDeath.AddListener(OnEnemyDeath);
         GameManager.Instance.onFinalMoove.AddListener(setFlag);
+        GameManager.Instance.onAllyDeath.AddListener(OnAllyDeath);
     }
 
     // Update is called once per frame
@@ -70,7 +74,14 @@ public class UiMap : MonoBehaviour
             setGameOver();
         }
     }
-
+    private void OnAllyDeath()
+    {
+        allyNumber--;
+        if(allyNumber == 0)
+        {
+            setGameOver();
+        }
+    }
     public void setGameOver()
     {
         isGameOver = true;

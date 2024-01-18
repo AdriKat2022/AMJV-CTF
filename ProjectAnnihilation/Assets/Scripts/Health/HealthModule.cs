@@ -86,7 +86,14 @@ public class HealthModule : MonoBehaviour, IDamageable
     public void KnockedDown()
     {
         isAlive = false;
-        GameManager.Instance.TriggerDeath();
+        if (gameObject.CompareTag("Enemy"))
+        {
+            GameManager.Instance.TriggerEnemyDeath();
+        }
+        if (gameObject.CompareTag("Ally"))
+        {
+            GameManager.Instance.TriggerAllyDeath();
+        }
         Destroy(gameObject);
         // Or launch a fancy coroutine to show it died idk
     }
