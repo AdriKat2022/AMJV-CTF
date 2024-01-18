@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
@@ -85,44 +86,23 @@ public class CameraManager : MonoBehaviour
 
         Vector2 mousePos = Input.mousePosition;
 
-        //float factor = 0;
-        //int marginX = (int)(screenWidth * borderXRotation / 100f);
-        //int marginY = (int)(screenHeight * borderYRotation / 100f);
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-        //if (mousePos.x <= marginX)
-        //{
-        //    factor = Mathf.Lerp(maxSpeedRotation, minSpeedRotation, mousePos.x / marginX);
-        //}
-        //else if (mousePos.x >= screenWidth - marginX)
-        //{
-        //    factor = Mathf.Lerp(minSpeedRotation, maxSpeedRotation, (mousePos.x - screenWidth + marginX) / marginX);
-        //}
+        if(Physics.Raycast(ray, out RaycastHit hit))
+            destinationRotation = Quaternion.LookRotation(hit.point - transform.position);
+        
 
-        //if (mousePos.y <= marginY)
-        //{
-        //    factor = Mathf.Lerp(maxSpeedRotation, minSpeedRotation, mousePos.y / marginY);
-        //}
-        //else if (mousePos.y >= screenHeight - marginY)
-        //{
-        //    factor = Mathf.Lerp(minSpeedRotation, maxSpeedRotation, (mousePos.y - screenHeight + marginY) / marginY);
-        //}
-
-        ////transform.Rotate(transform.right * factor);
-        ///
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        Physics.Raycast(ray, out RaycastHit hit);
-
-        destinationRotation = Quaternion.LookRotation(hit.point - transform.position);
-        Debug.Log(hit.point);
-        Debug.DrawLine(hit.point, transform.position);
+        //Debug.Log(hit.point);
+        //Debug.DrawLine(hit.point, transform.position);
 
     }
 
     private void ScrollCamera()
     {
-        destination += Input.mouseScrollDelta.y * transform.forward;
+        if (destination.y + (Input.mouseScrollDelta.y * scrollSpeed * transform.forward).y <= 1f)
+            return;
+
+        destination += Input.mouseScrollDelta.y * scrollSpeed * transform.forward;
     }
 
     private void MoveToDestination()
@@ -134,6 +114,7 @@ public class CameraManager : MonoBehaviour
     private void GetDestination()
     {
         // Update the destination var according to the keys, then to the mouse (keys are prioritized)
+        //UpdateParentRotation();
 
         Vector2 mousePos = Input.mousePosition;
 
@@ -142,24 +123,26 @@ public class CameraManager : MonoBehaviour
 
         bool inputKeyboard = false;
 
+        var (forwardAxeInPlane, rightAxeInPlane) = GetForwardAndRightAxeInPlane();
+
         if (Input.GetKey(KeyCode.D))
         {
-            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.right;
+            destination += keyMultiplier * maxSpeed * Time.deltaTime * rightAxeInPlane;
             inputKeyboard = true;
         }
         if (Input.GetKey(KeyCode.Q))
         {
-            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.left;
+            destination -= keyMultiplier * maxSpeed * Time.deltaTime * rightAxeInPlane;
             inputKeyboard = true;
         }
         if (Input.GetKey(KeyCode.Z))
         {
-            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.forward;
+            destination += keyMultiplier * maxSpeed * Time.deltaTime * forwardAxeInPlane;
             inputKeyboard = true;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            destination += keyMultiplier * maxSpeed * Time.deltaTime * Vector3.back;
+            destination -= keyMultiplier * maxSpeed * Time.deltaTime * forwardAxeInPlane;
             inputKeyboard = true;
         }
 
@@ -191,5 +174,15 @@ public class CameraManager : MonoBehaviour
                 destination += speed * Time.deltaTime * Vector3.forward;
             }
         }
+    }
+
+    private (Vector3, Vector3) GetForwardAndRightAxeInPlane()
+    {
+        Vector3 forward = transform.forward;
+        forward.y = 0;
+
+        Vector3 right = Vector3.Cross(Vector3.up, forward);
+
+        return (forward.normalized, right.normalized);
     }
 }

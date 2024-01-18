@@ -37,7 +37,8 @@ public class HealthBarModule : MonoBehaviour
 
     private void Update()
     {
-        transform.LookAt(cameraMain.transform);
+        //transform.LookAt(cameraMain.transform);
+        transform.rotation = cameraMain.transform.rotation;
     }
 
     public void Initialize(UnitData unitData, Color bg, Color hp, bool adaptativeBar = false)
