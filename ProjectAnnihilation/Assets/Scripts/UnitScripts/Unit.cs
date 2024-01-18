@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -34,6 +33,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
+    private Rigidbody rb;
 
 
 
@@ -232,22 +232,51 @@ public class Unit : MonoBehaviour, ISelectable
             return;
         }
 
-        Debug.Log("damage");
-
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
             DamageData dd = new DamageData(damage, hitstun ,knockback);
             damageableTarget.Damage(dd, healthModule);
         }
     }
-    /*protected void BoostUnitAttack(GameObject target, float attackBoost)
-    {
-        //attackBonus += boost;
-    }
-    protected void UnboostUnitAttack(GameObject target, float boost)
-    {
 
-    }*/
+    protected void DealKnockback(GameObject target, Vector3 knockback, float hitstun = 0)
+    {
+        if (target == null)
+        {
+            Debug.LogWarning("Attempting to deal damage to null target");
+            return;
+        }
+
+        if (target.TryGetComponent(out IDamageable damageableTarget))
+        {
+            DamageData dd = new DamageData(0, hitstun, knockback);
+            damageableTarget.Damage(dd, healthModule);
+        }
+    }
+
+    protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null)
+    {
+        Collider[] units = new Collider[15];
+
+        if(offset != null)
+            Physics.OverlapSphereNonAlloc(transform.position + (Vector3)offset, radius, units);
+        else
+            Physics.OverlapSphereNonAlloc(transform.position, radius, units);
+
+        // Do a animation or something
+
+        foreach (Collider unit in units)
+        {
+            if (unit == null)
+                continue;
+
+            float forceFactor = (radius - (unit.transform.position - transform.position).magnitude) * knockbackForce;
+
+            Vector3 knockback = (unit.transform.position - transform.position).normalized * forceFactor;
+
+            DealKnockback(unit.gameObject, knockback);
+        }
+    }
 
     #endregion
 
@@ -261,12 +290,16 @@ public class Unit : MonoBehaviour, ISelectable
     private void Start()
     {
         navigation = GetComponent<NavMeshAgent>();
+        healthModule = GetComponent<HealthModule>();
+        rb = GetComponent<Rigidbody>();
 
         isSelected = false;
         isKing = false;
         canAttack = true;
 
         navigation.speed = unitData.speed;
+
+        PassKnockbackFunctionToHealthModule();
 
         UpdateStateVisual();
 
@@ -354,7 +387,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             Tile tile;
 
-            Debug.Log(hit.collider.gameObject);
+            //Debug.Log(hit.collider.gameObject);
 
             if(!hit.collider.gameObject.TryGetComponent(out tile))
             {
@@ -718,12 +751,28 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion State Machine
 
+    #region Knockback - HealthModule
+    private IEnumerator GetKnockback(Vector3 knockback, Rigidbody rb)
+    {
+        rb.AddForce(knockback, ForceMode.Impulse);
 
-    #region Health Related
+        //while(knockback.magnitude > .1f)
+        //{
+        //    rb.AddForce(knockback);
+        //    knockback = Vector3.Lerp(knockback, Vector3.zero, Time.deltaTime);
 
-    // Went to HealthModule.cs !
+        //    yield return null;
+        //}
 
-    #endregion Health Related
+        yield return null;
+    }
+
+    // 
+    private void PassKnockbackFunctionToHealthModule()
+    {
+        healthModule.SetKnockbackCoroutine(GetKnockback, rb);
+    }
+    #endregion
 
     public void BecomeKing() { isKing = true; }
 

@@ -12,17 +12,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExampleUnit
       objectReference: {fileID: 0}
+    - target: {fileID: 5096830322836885788, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1.1403999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5096830322836885788, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0000004172325
+      objectReference: {fileID: 0}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -3.19
       objectReference: {fileID: 0}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -54.300003
       objectReference: {fileID: 0}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -79,6 +87,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 0c2918fc7840572479b3843dd1f12051, type: 2}
   isAttacker: 0
+  isKing: 0
+  isInWater: 0
   unitState: 0
   currentOrder: 0
   canAttack: 0

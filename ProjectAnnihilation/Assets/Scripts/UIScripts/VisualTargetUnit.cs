@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class VisualTargetUnit : MonoBehaviour
 {
     [SerializeField]
@@ -10,8 +11,13 @@ public class VisualTargetUnit : MonoBehaviour
     public Color simpleMoveColor;
     public Color attackUnitColor;
 
+    private Transform attachedGo = null;
+
+    private const float HEIGHT = .1f;
 
     private SpriteRenderer spriteRenderer;
+
+
 
     /// The targetTo will be moved towards the unit's destination 
     /// It will be red if it's attached to another unit
@@ -19,10 +25,18 @@ public class VisualTargetUnit : MonoBehaviour
 
     private void Start()
     {
-        spriteTargetTo.SetActive(false);
-        spriteTargetTo.transform.localPosition = 0.1f * Vector3.up;
+        spriteTargetTo.transform.SetParent(null);
 
+        ShowTarget(false);
         spriteRenderer = spriteTargetTo.GetComponent<SpriteRenderer>();
+    }
+
+    private void Update()
+    {
+        if (!spriteTargetTo.activeInHierarchy || attachedGo == null)
+            return;
+
+        PlaceTargetAt(attachedGo);
     }
 
     public void SetColor(Color color)
@@ -32,31 +46,33 @@ public class VisualTargetUnit : MonoBehaviour
 
     #region Manage functions
 
-    public void ShowTarget(bool show = true)
+    public void ShowTarget(bool show)
     {
-
         spriteTargetTo.SetActive(show);
     }
-    public void AttachTargetTo(Unit unit, bool activate = true)
+    public void LockTarget(Unit unit)
     {
-        spriteTargetTo.transform.SetParent(unit.transform, false);
-        spriteTargetTo.transform.localPosition = 0.1f * Vector3.up;
-        spriteTargetTo.SetActive(activate);
+        attachedGo = unit.transform;
+    }
+    public void UnlockTarget()
+    {
+        attachedGo = null;
+    }
+    public void PlaceTargetAt(Transform target)
+    {
+        Vector3 position = target.position;
+
+        position.y = HEIGHT;
+
+        spriteTargetTo.transform.position = position;
+    }
+    public void PlaceTargetAt(Vector3 position)
+    {
+        position.y = HEIGHT;
+
+        spriteTargetTo.transform.position = position;
     }
 
-    public void PlaceTargetAt(Vector3 targetPosition, bool activate = true)
-    {
-        spriteTargetTo.SetActive(activate);
-
-        targetPosition.y = spriteTargetTo.transform.position.y;
-        spriteTargetTo.transform.position = targetPosition;
-    }
-
-    public void DetachTarget(bool activate = false)
-    {
-        spriteTargetTo.SetActive(activate);
-        spriteTargetTo.transform.SetParent(null, false);
-    }
     #endregion
 
 }
