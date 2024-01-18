@@ -29,7 +29,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected UnitData unitData;
     public UnitData UnitData => unitData;
 
-
+    [SerializeField] private UiMap uiMap;
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
@@ -425,7 +425,7 @@ public class Unit : MonoBehaviour, ISelectable
             // Type 4 is the starting point, where you are supposed to bring the flag back
             if (tileType == 4 && IsKing==true)
             {
-                Debug.Log("You win");
+                GameManager.Instance.TriggerFinalMoove();
             }
 
             // Type 5 is the Flag.

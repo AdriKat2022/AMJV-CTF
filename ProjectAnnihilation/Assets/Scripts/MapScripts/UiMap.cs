@@ -8,6 +8,10 @@ public class UiMap : MonoBehaviour
     #region variables
     [SerializeField] private TMPro.TextMeshProUGUI timer;
     [SerializeField] private TMPro.TextMeshProUGUI enemys;
+    [SerializeField] private GameObject victory;
+    [SerializeField] private GameObject defeat;
+    private bool isGameOver = false;
+    private bool flag = false;
     private int enemyNumber;
     private float elapsedTime = 0f;
     private int minute;
@@ -20,15 +24,26 @@ public class UiMap : MonoBehaviour
         GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
         enemyNumber = entities.Length;
         GameManager.Instance.onEnemyDeath.AddListener(OnEnemyDeath);
+        GameManager.Instance.onFinalMoove.AddListener(setFlag);
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateTime();
-        UpdateEnemys();
+        if (isGameOver == false)
+        {
+            UpdateTime();
+            UpdateEnemys();
+        }
+        else
+        {
+            ManageGameOver();
+            timer.rectTransform.anchoredPosition = new Vector3(-398, -133, 0);
+            enemys.rectTransform.anchoredPosition = new Vector3(398, -253, 0);
+        }
     }
-    void UpdateTime()
+
+    private void UpdateTime()
     {
         elapsedTime += Time.deltaTime;
 
@@ -41,14 +56,47 @@ public class UiMap : MonoBehaviour
         timer.text = string.Format("{0}m {1}s", minute, second);
     }
 
-    void UpdateEnemys()
+    private void UpdateEnemys()
     {
         enemys.text = string.Format("{0} Enemys left", enemyNumber);
     }
 
-    void OnEnemyDeath()
+    private void OnEnemyDeath()
     {
-
         enemyNumber--;
+        if(enemyNumber == 0)
+        {
+            UpdateEnemys();
+            setGameOver();
+        }
+    }
+
+    public void setGameOver()
+    {
+        isGameOver = true;
+    }
+    public void setFlag()
+    {
+        flag = true;
+        setGameOver();
+    }
+    private void ManageGameOver()
+    {
+        if(enemyNumber == 0 || flag == true)
+        {
+            Victory();
+        }
+        else
+        {
+            Defeat();
+        }
+    }
+    private void Victory()
+    {
+        victory.SetActive(true);
+    }
+    private void Defeat()
+    {
+        defeat.SetActive(true);
     }
 }

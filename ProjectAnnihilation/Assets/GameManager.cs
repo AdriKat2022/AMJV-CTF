@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public bool PlayerIsAttacker => playerIsAttacker;
     private bool playerIsAttacker;
     public UnityEvent onEnemyDeath;
+    public UnityEvent onFinalMoove;
     static public GameManager Instance {
         get {
             return instance;
@@ -37,5 +38,10 @@ public class GameManager : MonoBehaviour
     public void TriggerDeath()
     {
         onEnemyDeath.Invoke();
+    }
+
+    public void TriggerFinalMoove()
+    {
+        onFinalMoove.Invoke();
     }
 }
