@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
     public bool PlayerIsAttacker => playerIsAttacker;
     private bool playerIsAttacker;
-
+    public UnityEvent onEnemyDeath;
     static public GameManager Instance {
         get {
             return instance;
@@ -31,5 +32,10 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Cannot have multiple instances of GameManager !");
             Destroy(gameObject);
         }
+    }
+
+    public void TriggerDeath()
+    {
+        onEnemyDeath.Invoke();
     }
 }

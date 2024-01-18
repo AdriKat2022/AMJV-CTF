@@ -253,9 +253,13 @@ public class Unit : MonoBehaviour, ISelectable
 
     // TODO : create attack visual
 
+    private void Awake()
+    {
+        gameObject.tag = isAttacker ? "Ally" : "Enemy";
+        gameManager = GameManager.Instance;
+    }
     private void Start()
     {
-        gameManager = GameManager.Instance;
         navigation = GetComponent<NavMeshAgent>();
 
         isSelected = false;
