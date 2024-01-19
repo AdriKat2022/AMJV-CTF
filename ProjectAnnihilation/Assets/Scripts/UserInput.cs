@@ -95,7 +95,8 @@ public class UserInput : MonoBehaviour
                 visualTargetManager.PlaceTargetAt((Vector3)location);
                 visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
             }
-            unit.ResetTimeBeforeTargetting();
+            Debug.Log(unit, gameObject);
+            //unit.ResetTimeBeforeTargetting(); // Ensures the unit doesn't target right away
         }
         else if (Input.GetAxis("Follow") == 1)
         {
@@ -105,7 +106,6 @@ public class UserInput : MonoBehaviour
             {
                 unit.SetFollowedTarget(unit.transform);
                 unit.SetCurrentOrderState(UnitState.FOLLOWING);
-                unit.ResetTimeBeforeTargetting();
             }
 
 

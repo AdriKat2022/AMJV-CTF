@@ -83,10 +83,6 @@ public class Unit : MonoBehaviour, ISelectable
     [Header("Memory usage")]
     private static readonly int enemyDetectionBuffer = 10;
 
-    //private List<Unit> attackBoostedUnits;
-    //private List<Unit> speedBoostedUnits;
-    //private List<Unit> defenseBoostedUnits;
-
     private bool inEndLag;
     private float endLagTimer;
 
@@ -101,7 +97,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #region Status visuals
 
-    private GameObject statusObject;
+    private GameObject statusObject; // Defined by UserInput
 
     public void SetStatusObject(GameObject obj) => statusObject = obj;
     private void CheckCurrentOrderChange()
@@ -114,11 +110,8 @@ public class Unit : MonoBehaviour, ISelectable
     }
     private void UpdateStateVisual()
     {
-
         if (statusObject == null || !statusObject.TryGetComponent(out Renderer rend))
             return;
-
-        //Debug.Log("Update color");
 
         switch (currentOrder)
         {
@@ -155,12 +148,14 @@ public class Unit : MonoBehaviour, ISelectable
     private IEnumerator BlinkIfSelected()
     {
         statusObject.TryGetComponent(out Renderer rend);
+        statusObject.transform.localScale = Vector3.one * 2;
 
         float blinkTimer = unitData.blinkSpeed;
-        bool state = true;
+        bool state = false;
 
         while (isSelected)
         {
+
             if(state && blinkTimer >= unitData.blinkSpeed)
             {
                 blinkTimer = 0;
@@ -185,6 +180,8 @@ public class Unit : MonoBehaviour, ISelectable
 
             yield return null;
         }
+        statusObject.transform.localScale = Vector3.one;
+
         statusObject.SetActive(true);
 
         UpdateStateVisual();
@@ -366,14 +363,6 @@ public class Unit : MonoBehaviour, ISelectable
     {
         followedTarget = target;
     }
-    public void ResetTimeBeforeTargetting()
-    {
-        timeBeforeTargetting = gameManager.timeBeforeTargettingUnit;
-    }
-    public bool CheckTimeBeforeTargetting()
-    {
-        return timeBeforeTargetting <= 0f;
-    }
     #endregion
 
     private void GroundUpdate()
@@ -535,7 +524,7 @@ public class Unit : MonoBehaviour, ISelectable
         {
             unitState = currentOrder;
         }
-        else if(CanAttack() && CheckTimeBeforeTargetting())
+        else if(CanAttack())
         {
             Action(targetableUnit);
         }
@@ -602,7 +591,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         ResumeNavigation();
 
-        if (CanAttack() && currentOrder == UnitState.FOLLOWING && CheckTimeBeforeTargetting())
+        if (CanAttack() && currentOrder == UnitState.FOLLOWING)
         {
             Action(targetableUnit);
         }
