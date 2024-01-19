@@ -220,7 +220,6 @@ public class Unit : MonoBehaviour, ISelectable
 
 
     #region Classic actions
-
     protected void DealDamage(GameObject target, float damage, float hitstun = 0, Vector3? knockback = null) // Just deal simple damage to target
     {
         if(target == null)
@@ -448,19 +447,19 @@ public class Unit : MonoBehaviour, ISelectable
 
             case UnitState.IDLE:
 
-                IdlingState();
+                HoldPosition();
 
                 break;
 
             case UnitState.MOVING:
 
-                MovingState();
+                MovingAlertState();
 
                 break;
 
             case UnitState.MOVING_FOCUS:
 
-                MovingFocusState();
+                MovingState();
 
                 break;
 
@@ -497,9 +496,9 @@ public class Unit : MonoBehaviour, ISelectable
         unitState = currentOrder;
     }
     /// <summary>
-    /// Does nothing, but launches attacks any unit in range
+    /// Does nothing, but launches attacks to unit in range
     /// </summary>
-    protected virtual void IdlingState()
+    protected virtual void HoldPosition()
     {
         PauseNavigation();
 
@@ -516,7 +515,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// Moves towards a position (not a unit)<br />
     /// The unit will attack anyone in sight.
     /// </summary>
-    protected virtual void MovingState()
+    protected virtual void MovingAlertState()
     {
         ResumeNavigation();
 
@@ -536,7 +535,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// Moves towards a position (not a unit)<br />
     /// The unit doesn't care about attacking other units, until it has reached the end of his path.
     /// </summary>
-    protected virtual void MovingFocusState()
+    protected virtual void MovingState()
     {
         ResumeNavigation();
 
@@ -763,7 +762,7 @@ public class Unit : MonoBehaviour, ISelectable
     }
     #endregion
 
-    public void BecomeKing() { isKing = true; }
+    public void BecomeKing() => isKing = true;
 
     #region Unit selection (interface)
 
