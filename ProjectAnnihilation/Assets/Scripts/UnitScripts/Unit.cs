@@ -37,8 +37,6 @@ public class Unit : MonoBehaviour, ISelectable
 
 
 
-    protected float speedBonus;
-    protected float attackBonus;
 
 
     private GameObject targetableUnit;
@@ -779,5 +777,147 @@ public class Unit : MonoBehaviour, ISelectable
         isSelected = false;
     }
 
+    #endregion
+
+    #region PowerUps
+
+    protected float speedBonus;
+    protected float attackBonus;
+    protected float defenseBonus;
+
+    private int attackBoostPowerUpsActive = 0;
+    private int speedBoostPowerUpsActive = 0;
+    private int defenseBoostPowerUpsActive = 0;
+
+    public void ApplyBonuses(PowerUp[] powerUps)
+    {
+        foreach (PowerUp powerUp in powerUps)
+        {
+            StartCoroutine(ApplyPowerUp(powerUp));
+        }
+    }
+
+    private IEnumerator ApplyPowerUp(PowerUp powerUp)
+    {
+        switch (powerUp.powerUpType)
+        {
+            case PowerUpType.SpeedBoost:
+
+                speedBoostPowerUpsActive++;
+                speedBonus += powerUp.value;
+
+                //speedBoostVisualModule.enabled = true;
+
+                if (powerUp.hasExitCondition)
+                    yield return new WaitUntil(powerUp.endCondition);
+                else
+                    yield return new WaitForSeconds(powerUp.duration);
+
+
+                //if (speedPowerUpsActive == 0)
+                //    speedBoostVisualModule.enabled = false;
+
+                speedBoostPowerUpsActive--;
+                speedBonus -= powerUp.value;
+
+                break;
+
+            case PowerUpType.AttackBoost:
+
+                attackBoostPowerUpsActive++;
+                attackBonus += powerUp.value;
+
+                //jumpBoostVisualModule.enabled = true;
+
+
+                if (powerUp.hasExitCondition)
+                    yield return new WaitUntil(powerUp.endCondition);
+                else
+                    yield return new WaitForSeconds(powerUp.duration);
+
+
+                attackBoostPowerUpsActive--;
+                attackBonus -= powerUp.value;
+
+                //if (attackBoostPowerUpsActive == 0)
+                //    jumpBoostVisualModule.enabled = false;
+
+
+                break;
+
+            case PowerUpType.DefenseBoost:
+
+                defenseBoostPowerUpsActive++;
+                defenseBonus += powerUp.value;
+
+                //jumpBoostVisualModule.enabled = true;
+
+
+                if (powerUp.hasExitCondition)
+                    yield return new WaitUntil(powerUp.endCondition);
+                else
+                    yield return new WaitForSeconds(powerUp.duration);
+
+
+                defenseBoostPowerUpsActive--;
+                defenseBonus -= powerUp.value;
+
+                //if (attackBoostPowerUpsActive == 0)
+                //    jumpBoostVisualModule.enabled = false;
+
+
+                break;
+
+
+            case PowerUpType.Invincibility:
+
+
+
+                break;
+
+                /*invincibleTimer = 0;
+
+                if (isInvincible)
+                    yield break;
+
+
+                OnPlayerInvincibility?.Invoke();
+
+                heartParticlesEmissionModule.enabled = true;
+
+                AudioClip lastMusic = SoundManager.Instance.GetCurrentMusic();
+
+                SoundManager.Instance.PlayMusic(SoundManager.Instance.invincibility);
+
+                rainbow.Activate();
+
+                float previousMass = rb.mass;
+                rb.mass = 9999;
+
+                while (invincibleTimer < powerUp.duration)
+                {
+                    isInvincible = true;
+
+                    invincibleTimer += Time.deltaTime;
+                    yield return null;
+                }
+
+                OnPlayerInvincibilityEnd?.Invoke();
+
+                isInvincible = false;
+
+                rainbow.Deactivate();
+
+                heartParticlesEmissionModule.enabled = false;
+
+
+                rb.mass = previousMass;
+
+                SoundManager.Instance.PlayMusic(lastMusic);
+
+                break;*/
+
+        }
+    }
     #endregion
 }
