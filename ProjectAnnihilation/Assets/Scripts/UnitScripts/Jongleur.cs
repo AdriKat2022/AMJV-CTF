@@ -1,7 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.WSA;
 
-public class Barde : Unit
+public class Jongleur : Unit
 {
+    #region variables
+    [SerializeField] private Projectile script;
+
+    #endregion
     protected override void Action(GameObject target = null)
     {
         base.Action();
@@ -12,12 +19,7 @@ public class Barde : Unit
         // Or even just applying buffs to allies
         if (target == null)
             return;
-
-        Vector3 knockbackDealt = (target.transform.position - transform.position).normalized * 20;
-
-        DealDamage(target, unitData.attack + attackBonus, knockback: knockbackDealt);
-
-        //CreateRepulsiveSphere(4, 10);
+        script.Launch(target.transform.position);
     }
 
     protected override void SpecialAction(GameObject target = null)

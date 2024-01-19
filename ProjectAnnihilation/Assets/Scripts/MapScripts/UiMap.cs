@@ -37,7 +37,7 @@ public class UiMap : MonoBehaviour
         if (isGameOver == false)
         {
             UpdateTime();
-            UpdateEnemys();
+            UpdateEnemies();
         }
         else
         {
@@ -60,9 +60,9 @@ public class UiMap : MonoBehaviour
         timer.text = string.Format("{0}m {1}s", minute, second);
     }
 
-    private void UpdateEnemys()
+    private void UpdateEnemies()
     {
-        enemys.text = string.Format("{0} Enemys left", enemyNumber);
+        enemys.text = string.Format("{0} Enemies left", enemyNumber);
     }
 
     private void OnEnemyDeath()
@@ -70,7 +70,7 @@ public class UiMap : MonoBehaviour
         enemyNumber--;
         if(enemyNumber == 0)
         {
-            UpdateEnemys();
+            UpdateEnemies();
             setGameOver();
         }
     }
