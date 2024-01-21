@@ -9,6 +9,7 @@ public enum PossibleTargets
     All,
     EnemiesOnly,
     AlliesOnly,
+    SelfOnly,
     None
 }
 

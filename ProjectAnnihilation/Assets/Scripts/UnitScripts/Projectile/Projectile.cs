@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
 
     }
 
-    public void Launch(Vector3 hitpoint, int damageDone = 0)
+    public void Launch(Vector3 hitpoint, float damageDone = 0)
     {
         Vector3 projectilePos = gameObject.transform.position + new Vector3(0, 0, 0);
         float distance = Vector3.Distance(projectilePos, hitpoint);

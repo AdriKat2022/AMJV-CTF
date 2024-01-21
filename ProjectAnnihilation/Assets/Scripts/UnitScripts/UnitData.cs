@@ -12,15 +12,17 @@ public class UnitData : ScriptableObject
     public float armor;
     public float attackRange;
 
-    [Header("Attacks and targets")]
-
+    [Header("Standard attack")]
     public PossibleTargets teamTarget;
-    public PossibleTargets specialTeamTargets;
     public bool canSelfAttack;
-
-    [Header("End lag")]
     public float attackEndLag;
+
+    [Header("Special attack")]
+    public PossibleTargets specialTeamTargets;
+    public bool isSpecialAttackPassive;
     public float specialAttackEndLag;
+    public float rechargeTime;
+
 
     [Header("Colors")]
     public Color selectedColor = Color.red;
@@ -36,4 +38,7 @@ public class UnitData : ScriptableObject
 
     [Header("Others")]
     public LayerMask unitLayer;
+
+    [Header("Meta State")]
+    public UnitData otherStateUnitData;
 }
