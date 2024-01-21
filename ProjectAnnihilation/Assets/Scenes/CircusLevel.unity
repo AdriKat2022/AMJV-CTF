@@ -12831,6 +12831,10 @@ PrefabInstance:
       propertyPath: unitData
       value: 
       objectReference: {fileID: 11400000, guid: 0c2918fc7840572479b3843dd1f12051, type: 2}
+    - target: {fileID: 3009227703496613195, guid: 30beb5b2e0db6ab489c6c827deee6242, type: 3}
+      propertyPath: isAttacker
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8311500480762144402, guid: 30beb5b2e0db6ab489c6c827deee6242, type: 3}
       propertyPath: m_LocalPosition.x
       value: 72.7604

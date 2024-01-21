@@ -19,7 +19,7 @@ public class Jongleur : Unit
         // Or even just applying buffs to allies
         if (target == null)
             return;
-        script.Launch(target.transform.position);
+        script.Launch(target.transform.position, 30);
     }
 
     protected override void SpecialAction(GameObject target = null)
