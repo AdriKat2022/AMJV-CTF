@@ -12,6 +12,7 @@ public class UiMap : MonoBehaviour
     [SerializeField] private GameObject defeat;
     private bool isGameOver = false;
     private bool flag = false;
+    private bool isKingDead = false;
     private int enemyNumber;
     private int allyNumber;
     private float elapsedTime = 0f;
@@ -29,6 +30,7 @@ public class UiMap : MonoBehaviour
         GameManager.Instance.onEnemyDeath.AddListener(OnEnemyDeath);
         GameManager.Instance.onFinalMoove.AddListener(setFlag);
         GameManager.Instance.onAllyDeath.AddListener(OnAllyDeath);
+        GameManager.Instance.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
     }
 
     // Update is called once per frame
@@ -82,6 +84,13 @@ public class UiMap : MonoBehaviour
             setGameOver();
         }
     }
+
+    private void OnDeathOfTheKing()
+    {
+        isKingDead = true;
+        setGameOver();
+    }
+
     public void setGameOver()
     {
         isGameOver = true;

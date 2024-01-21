@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent onEnemyDeath;
     public UnityEvent onAllyDeath;
     public UnityEvent onFinalMoove;
+    public UnityEvent onDeathOfTheKing;
     static public GameManager Instance {
         get {
             return instance;
@@ -48,5 +49,10 @@ public class GameManager : MonoBehaviour
     public void TriggerFinalMoove()
     {
         onFinalMoove.Invoke();
+    }
+
+    public void TriggerDeathOfTheKing()
+    {
+        onDeathOfTheKing.Invoke();
     }
 }

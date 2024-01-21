@@ -86,6 +86,9 @@ public class HealthModule : MonoBehaviour, IDamageable
     public void KnockedDown()
     {
         isAlive = false;
+        if(gameObject.GetComponent<Unit>().IsKing == true) {
+            GameManager.Instance.TriggerDeathOfTheKing();
+        }
         if (gameObject.CompareTag("Enemy"))
         {
             GameManager.Instance.TriggerEnemyDeath();
