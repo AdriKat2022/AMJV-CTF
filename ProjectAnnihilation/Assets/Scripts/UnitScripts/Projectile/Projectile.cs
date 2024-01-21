@@ -9,11 +9,15 @@ public class Projectile : MonoBehaviour
     public bool isAttacker;
     [SerializeField] private GameObject projectile;
     [SerializeField] private float g = 9.8f;
+    public float alpha = 45f;
+    private float distance;
+    public float timeBeforeCrash;
     #endregion
     // Start is called before the first frame update
     void Start()
     {
         isAttacker = gameObject.GetComponent<Unit>().IsAttacker;
+        alpha = alpha * 2 * Mathf.PI / 360;
     }
 
     // Update is called once per frame
@@ -25,13 +29,13 @@ public class Projectile : MonoBehaviour
     public void Launch(Vector3 hitpoint, int damageDone = 0)
     {
         Vector3 projectilePos = gameObject.transform.position + new Vector3(0, 0, 0);
-        float distance = Vector3.Distance(projectilePos, hitpoint);
+        distance = Vector3.Distance(projectilePos, hitpoint);
         //Projectile will be shot at 45°
+        float initialSpeed = Mathf.Sqrt((distance * g) / Mathf.Sin(2 * alpha));
+        timeBeforeCrash = distance / (initialSpeed*Mathf.Cos(alpha));
 
-        float alpha = 45f*2*Mathf.PI/360;
-
-        float initialXSpeed = Mathf.Sqrt((distance * g) / Mathf.Sin(2 * alpha))*Mathf.Cos(alpha);
-        float initialYSpeed = Mathf.Sqrt((distance*g)/ Mathf.Sin(2 * alpha))*Mathf.Sin(alpha);
+        float initialXSpeed = initialSpeed*Mathf.Cos(alpha);
+        float initialYSpeed = initialSpeed*Mathf.Sin(alpha);
 
 
         // Appliquer la vitesse initiale à l'objet
@@ -40,6 +44,7 @@ public class Projectile : MonoBehaviour
         pM.damageDone = damageDone;
         pM.isAttacker = isAttacker;
         Rigidbody rb = clone.GetComponent<Rigidbody>();
+        rb.transform.Rotate(transform.forward * initialXSpeed + transform.up * initialYSpeed);
         rb.velocity = transform.forward * initialXSpeed + transform.up * initialYSpeed;
     }
 
