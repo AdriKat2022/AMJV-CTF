@@ -144,14 +144,4 @@ public class HealthModule : MonoBehaviour, IDamageable
     }
     #endregion
 
-
-    public void takeDamage(int damageDone)
-    {
-        currentHP -= damageDone;
-        healthBarModule.SetCurrentHP(currentHP);
-        if (currentHP <= 0)
-        {
-            KnockedDown();
-        }
-    }
 }
