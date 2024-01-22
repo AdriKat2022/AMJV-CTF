@@ -37,13 +37,12 @@ public class PowerUp
     /// <summary>
     /// Deprecated, use the constructor without the condition
     /// </summary>
-    public PowerUp(PowerUpType powerUpType, float value, float duration, Func<bool> condition)
+    public PowerUp(PowerUpType powerUpType, float value, float duration, Func<bool> endCondition)
     {
         this.powerUpType = powerUpType;
         this.value = value;
         this.duration = duration;
-        this.endCondition = condition;
+        this.endCondition = endCondition;
         hasExitCondition = true;
     }
-
 }

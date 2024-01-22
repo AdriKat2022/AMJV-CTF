@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 
 
-public enum PossibleTargets
+public enum TargetType
 {
     All,
     EnemiesOnly,
@@ -227,7 +227,16 @@ public class Unit : MonoBehaviour, ISelectable
 
 
     #region Classic actions
-    protected void DealDamage(GameObject target, float damage, float hitstun = 0, Vector3? knockback = null) // Just deal simple damage to target
+    /// <summary>
+    /// Deal simple damage to the target
+    /// </summary>
+    /// <param name="target">The target that will take damage</param>
+    /// <param name="damage">How much damage</param>
+    /// <param name="hitstun">Is there hitstun ? (acts as endlag)</param>
+    /// <param name="knockback">Is there knockback ?</param>
+    /// <param name="excludeAttackBonus">Do you want to ignore attack bonuses ?</param>
+    /// <param name="ignoreDefense">Do you want to ignore the target's defense ?</param>
+    protected void DealDamage(GameObject target, float damage, float hitstun = 0, Vector3? knockback = null, bool excludeAttackBonus = false, bool ignoreDefense = false) // Just deal simple damage to target
     {
         if(target == null)
         {
@@ -237,11 +246,16 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new(damage, hitstun ,knockback);
+            DamageData dd = new(damage + (excludeAttackBonus ? 0 : attackBonus), hitstun, knockback, ignoreDefense);
             damageableTarget.Damage(dd, healthModule);
         }
     }
-
+    /// <summary>
+    /// Deals simple knockback to a target
+    /// </summary>
+    /// <param name="target">The target to push</param>
+    /// <param name="knockback">The vector knockback</param>
+    /// <param name="hitstun">Is there a hitstun ? (acts as endlag for the target)</param>
     protected void DealKnockback(GameObject target, Vector3 knockback, float hitstun = 0)
     {
         if (target == null)
@@ -256,7 +270,12 @@ public class Unit : MonoBehaviour, ISelectable
             damageableTarget.Damage(dd, healthModule);
         }
     }
-
+    /// <summary>
+    /// Creates a one-frame Repulsive Sphere that pushes every unit in its radius
+    /// </summary>
+    /// <param name="radius">The sphere radius</param>
+    /// <param name="knockbackForce">The max knockbackforce</param>
+    /// <param name="offset">Let it null for the sphere center to be at the unit's position</param>
     protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null)
     {
         Collider[] units = new Collider[15];
@@ -280,7 +299,60 @@ public class Unit : MonoBehaviour, ISelectable
             DealKnockback(unit.gameObject, knockback);
         }
     }
+    /// <summary>
+    /// Creates a sphere where any unit will be granted the selected powerUp
+    /// </summary>
+    /// <param name="power">Power of the power up granted to units in the sphere</param>
+    /// <param name="radius">Radius of the sphere</param>
+    /// <param name="duration">Duration of the sphere</param>
+    /// <param name="powerUpType">The type of powerup granted to units in the sphere</param>
+    /// <param name="targets">Units that will interact with the sphere</param>
+    /// <param name="powerUpDeltaTime">Minimum time interval of the power up given to a unit.</br
+    /// The little, the better, but the more costly in performances.</br>
+    /// I don't think a value very close to zero will work.</param>
+    /// <returns></returns>
+    protected IEnumerator PowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, TargetType targets = TargetType.All, float powerUpDeltaTime = .5f)
+    {
+        float _startTime = Time.time;
 
+        PowerUp powerUp = new(powerUpType, power, powerUpDeltaTime);
+
+
+        while (Time.time - _startTime < duration)
+        {
+            Collider[] cols = new Collider[15];
+            Physics.OverlapSphereNonAlloc(transform.position, radius, cols);
+
+            foreach (Collider col in cols)
+            {
+                if (col == null) continue;
+
+                if (col.gameObject.TryGetComponent(out Unit unit))
+                {
+                    switch (targets)
+                    {
+                        case TargetType.All:
+                            unit.ApplyBonus(powerUp);
+                            break;
+
+                        case TargetType.AlliesOnly:
+                            if(unit.IsAttacker == this.IsAttacker)
+                                unit.ApplyBonus(powerUp);
+                            break;
+
+                        case TargetType.EnemiesOnly:
+                            if (unit.IsAttacker != this.IsAttacker)
+                                unit.ApplyBonus(powerUp);
+                            break;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(powerUpDeltaTime / 1.2f);
+        }
+
+        yield return new WaitForSeconds(unitData.SpecialAttackRechargeTime);
+    }
+    
     #endregion
 
     // TODO : create attack visual
@@ -720,9 +792,9 @@ public class Unit : MonoBehaviour, ISelectable
     {
         if(target.TryGetComponent(out Unit unit))
         {
-            return PossibleTargets.All == unitData.TeamTarget ||
-                (unit.IsAttacker == IsAttacker && unitData.TeamTarget == PossibleTargets.AlliesOnly) ||
-                (unit.IsAttacker != IsAttacker && unitData.TeamTarget == PossibleTargets.EnemiesOnly);
+            return TargetType.All == unitData.TeamTarget ||
+                (unit.IsAttacker == IsAttacker && unitData.TeamTarget == TargetType.AlliesOnly) ||
+                (unit.IsAttacker != IsAttacker && unitData.TeamTarget == TargetType.EnemiesOnly);
         }
 
         return false;
