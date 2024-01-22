@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TreeEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -28,9 +29,10 @@ public class Projectile : MonoBehaviour
 
     public void Launch(Vector3 hitpoint, float damageDone = 0)
     {
-        Vector3 projectilePos = gameObject.transform.position + new Vector3(0, 0, 0);
+        //Permet de prévoir un éventuel décalage pour les visuels
+        Vector3 projectilePos = gameObject.transform.position + new Vector3(0f, 0f, 0f);
         distance = Vector3.Distance(projectilePos, hitpoint);
-        //Projectile will be shot at 45°
+        Vector3 direction = Vector3.Normalize(hitpoint - projectilePos);
         float initialSpeed = Mathf.Sqrt((distance * g) / Mathf.Sin(2 * alpha));
         timeBeforeCrash = distance / (initialSpeed*Mathf.Cos(alpha));
 
@@ -44,7 +46,8 @@ public class Projectile : MonoBehaviour
         pM.damageDone = damageDone;
         pM.isAttacker = isAttacker;
         Rigidbody rb = clone.GetComponent<Rigidbody>();
-        rb.velocity = transform.forward * initialXSpeed + transform.up * initialYSpeed;
+        rb.transform.rotation = Quaternion.LookRotation(direction);
+        rb.velocity = rb.transform.forward * initialXSpeed + rb.transform.up * initialYSpeed;
     }
 
 

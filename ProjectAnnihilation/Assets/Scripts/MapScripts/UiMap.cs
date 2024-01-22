@@ -7,7 +7,7 @@ public class UiMap : MonoBehaviour
 {
     #region variables
     [SerializeField] private TMPro.TextMeshProUGUI timer;
-    [SerializeField] private TMPro.TextMeshProUGUI enemys;
+    [SerializeField] private TMPro.TextMeshProUGUI enemies;
     [SerializeField] private GameObject victory;
     [SerializeField] private GameObject defeat;
     private bool isGameOver = false;
@@ -44,8 +44,17 @@ public class UiMap : MonoBehaviour
         else
         {
             ManageGameOver();
-            timer.rectTransform.anchoredPosition = new Vector3(-398, -133, 0);
-            enemys.rectTransform.anchoredPosition = new Vector3(398, -253, 0);
+            RectTransform timerRec = timer.GetComponent<RectTransform>();
+            RectTransform enemiesRec = enemies.GetComponent<RectTransform>();
+            //Change pivots
+            timerRec.anchorMin = new Vector2(0.5f, 0.5f);
+            timerRec.anchorMax = new Vector2(0.5f, 0.5f);
+            timerRec.pivot = new Vector2(0.5f, 0.5f);
+            enemiesRec.anchorMin = new Vector2(0.5f, 0.5f);
+            enemiesRec.anchorMax = new Vector2(0.5f, 0.5f);
+            enemiesRec.pivot = new Vector2(0.5f, 0.5f);
+            timer.rectTransform.anchoredPosition = new Vector3(0f, 100f, 0);
+            enemies.rectTransform.anchoredPosition = new Vector3(0f, -100f, 0);
         }
     }
 
@@ -64,7 +73,7 @@ public class UiMap : MonoBehaviour
 
     private void UpdateEnemies()
     {
-        enemys.text = string.Format("{0} Enemies left", enemyNumber);
+        enemies.text = string.Format("{0} Enemies left", enemyNumber);
     }
 
     private void OnEnemyDeath()

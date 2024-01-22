@@ -20727,7 +20727,7 @@ MonoBehaviour:
   isAttacker: 0
   projectile: {fileID: 7556374145519697305, guid: 93a8fe12e91103f4184ea5f6ca5cf261, type: 3}
   g: 9.8
-  alpha: 80
+  alpha: 65
   timeBeforeCrash: 0
 --- !u!4 &825464620 stripped
 Transform:
@@ -51870,6 +51870,10 @@ PrefabInstance:
       objectReference: {fileID: 1066007622}
     - target: {fileID: 7203471007761378771, guid: 81d2b84e91534e048888dab4eeec1e03, type: 3}
       propertyPath: enemys
+      value: 
+      objectReference: {fileID: 976523263}
+    - target: {fileID: 7203471007761378771, guid: 81d2b84e91534e048888dab4eeec1e03, type: 3}
+      propertyPath: enemies
       value: 
       objectReference: {fileID: 976523263}
     - target: {fileID: 7203471007761378771, guid: 81d2b84e91534e048888dab4eeec1e03, type: 3}
