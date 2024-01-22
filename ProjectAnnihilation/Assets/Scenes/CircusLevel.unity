@@ -51110,10 +51110,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIMapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5414792933651241347, guid: 77e5fdf262a66224a848af8dcd317672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6265281798055216133, guid: 77e5fdf262a66224a848af8dcd317672, type: 3}
       propertyPath: backToMenu
       value: 
       objectReference: {fileID: 2002127821}
+    - target: {fileID: 8776459756999005287, guid: 77e5fdf262a66224a848af8dcd317672, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
