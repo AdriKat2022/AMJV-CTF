@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileManager : MonoBehaviour
 {
     //Useful variables 
-    public int damageDone;
+    public float damageDone;
     public bool isAttacker;
     // Start is called before the first frame update
     void Start()
@@ -29,7 +27,7 @@ public class ProjectileManager : MonoBehaviour
         {
             if (isAttacker != other.gameObject.GetComponent<Unit>().IsAttacker)
             {
-                DamageData dmgData = new DamageData(damageDone);
+                DamageData dmgData = new(damageDone);
                 damage.Damage(dmgData);
             }
         }

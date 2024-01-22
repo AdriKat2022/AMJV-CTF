@@ -15,7 +15,7 @@ public class Barde : Unit
 
         Vector3 knockbackDealt = (target.transform.position - transform.position).normalized * 20;
 
-        DealDamage(target, unitData.attack + attackBonus, knockback: knockbackDealt);
+        DealDamage(target, unitData.Attack + attackBonus, knockback: knockbackDealt);
 
         //CreateRepulsiveSphere(4, 10);
     }

@@ -45,7 +45,7 @@ public class HealthModule : MonoBehaviour, IDamageable
         TryGetComponent(out unit);
 
         unitData = unit.UnitData;
-        currentHP = unitData.maxHP;
+        currentHP = unitData.MaxHP;
 
         InitializeHPBarVisual();
     }
@@ -79,7 +79,7 @@ public class HealthModule : MonoBehaviour, IDamageable
             return;
 
         currentHP += heal;
-        currentHP = Mathf.Clamp(currentHP, 0, unitData.maxHP);
+        currentHP = Mathf.Clamp(currentHP, 0, unitData.MaxHP);
     }
     #endregion
 
