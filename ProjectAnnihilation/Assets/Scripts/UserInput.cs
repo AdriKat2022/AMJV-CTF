@@ -67,32 +67,18 @@ public class UserInput : MonoBehaviour
             // Si le joueur clique quelque part...
             Vector3? location = GetMousePositionOnTerrain(out Unit otherUnit);
 
-            // ...est-ce sur une unité à pourchaser ?
-            if (otherUnit != null)
-            {
-                unit.SetFollowedTarget(otherUnit.transform);
-                unit.SetCurrentOrderState(UnitState.MOVENATTACK);
+            if (location == null)
+                return;
 
-                visualTargetManager.LockTarget(otherUnit);
-                visualTargetManager.SetColor(visualTargetManager.attackUnitColor);
+
+            // ...est-ce sur une unité à pourchaser ?
+            if (otherUnit != null && unit.CanTarget(otherUnit))
+            {
+                OrderUnitToAttack(otherUnit);
             }
             // ...est-ce sur une position ?
             else
-            {
-                unit.SetDestination(location);
-                
-                // ... doit-on se concentrer sur la position ?
-                if (Input.GetAxis("Focus") == 1)
-                    unit.SetCurrentOrderState(UnitState.MOVING);
-                else // ... ou attaquer au passage ?
-                    unit.SetCurrentOrderState(UnitState.MOVING_FOCUS);
-
-                visualTargetManager.UnlockTarget();
-                visualTargetManager.PlaceTargetAt((Vector3)location);
-                visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
-            }
-            Debug.Log(unit, gameObject);
-            //unit.ResetTimeBeforeTargetting(); // Ensures the unit doesn't target right away
+                OrderUnitMoveTo((Vector3)location);
         }
         else if (Input.GetAxis("Follow") == 1)
         {
@@ -103,14 +89,11 @@ public class UserInput : MonoBehaviour
                 unit.SetFollowedTarget(unit.transform);
                 unit.SetCurrentOrderState(UnitState.FOLLOWING);
             }
-
-
             // FOLLOW IS DEPRECATED FOR THE MOMENT
         }
     }
     public Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
     {
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -129,4 +112,37 @@ public class UserInput : MonoBehaviour
         return null;
     }
 
+    public void OrderUnitMoveTo(Vector3 location, bool showTargetVisual = true)
+    {
+        unit.SetDestination(location);
+
+        // ... doit-on se concentrer sur la position ?
+        if (Input.GetAxis("Focus") == 1)
+            unit.SetCurrentOrderState(UnitState.MOVING);
+        else // ... ou attaquer au passage ?
+            unit.SetCurrentOrderState(UnitState.MOVING_ALERT);
+
+        if (!showTargetVisual){
+            visualTargetManager.SetColor(Color.clear);
+            return;
+        }
+        
+        visualTargetManager.UnlockTarget();
+        visualTargetManager.PlaceTargetAt(location);
+        visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
+    }
+
+    public void OrderUnitToAttack(Unit unitToAttack, bool showTargetVisual = true)
+    {
+        unit.SetFollowedTarget(unitToAttack.transform);
+        unit.SetCurrentOrderState(UnitState.MOVENATTACK);
+
+        if (!showTargetVisual)
+        {
+            visualTargetManager.SetColor(Color.clear);
+            return;
+        }
+        visualTargetManager.LockTarget(unitToAttack);
+        visualTargetManager.SetColor(visualTargetManager.attackUnitColor);
+    }
 }
