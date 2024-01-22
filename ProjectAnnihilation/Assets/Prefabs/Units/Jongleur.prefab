@@ -61,7 +61,7 @@ PrefabInstance:
       addedObject: {fileID: 4709018029242428183}
     - targetCorrespondingSourceObject: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       insertIndex: 2
-      addedObject: {fileID: 7194284557290847138}
+      addedObject: {fileID: 5226914156621369831}
   m_SourcePrefab: {fileID: 100100000, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
 --- !u!1 &1626082027918499893 stripped
 GameObject:
@@ -82,8 +82,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 88d60cc541cb8214a8f44d5ef1256b8f, type: 2}
   isAttacker: 0
-  projectileScript: {fileID: 7194284557290847138}
---- !u!114 &7194284557290847138
+  projectileScript: {fileID: 5226914156621369831}
+--- !u!114 &5226914156621369831
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,10 +92,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1626082027918499893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d52f28c30ce7dd3439833451ee2f4e11, type: 3}
+  m_Script: {fileID: 11500000, guid: 172cc6bfc89c63d4d8a587cd4ef93151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectile: {fileID: 7556374145519697305, guid: 93a8fe12e91103f4184ea5f6ca5cf261, type: 3}
+  projectile: {fileID: 6487667384869958684, guid: 93a8fe12e91103f4184ea5f6ca5cf261, type: 3}
   gravityConstant: 9.8
-  alpha: 70
+  alpha: 45
   timeBeforeCrash: 0
