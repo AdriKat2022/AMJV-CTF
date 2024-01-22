@@ -15,10 +15,10 @@ public enum TargetType
 
 public enum UnitState
 {
-    NOTHING, // Forces nothing (pointless to be honest)
+    NOTHING, // Forces nothing
     IDLE,
     MOVING,
-    MOVING_FOCUS,
+    MOVING_ALERT,
     MOVENATTACK,
     FOLLOWING,
     PATROLLING
@@ -45,15 +45,6 @@ public class Unit : MonoBehaviour, ISelectable
     protected Rigidbody rb;
 
 
-    // State Variables
-    private bool isInvisible = false; // If other units can see them
-    private bool isInvincible = false; // Cannot take damage
-    private bool isInvulnerable = false; // Cannot die (hp cannot fall below 1)
-    private bool isSelected;
-    private bool isKing;
-    private bool isInWater = false; // Serializing this is useless (except for debugging) so i removed it
-
-
     // Shared variables
     public UnitState CurrentOrder => currentOrder;
     public bool IsAttacker => isAttacker;
@@ -64,6 +55,15 @@ public class Unit : MonoBehaviour, ISelectable
     public bool IsKing => isKing;
     public bool IsInWater => isInWater; // Is this useful ?
     public UnitData UnitData => unitData;
+
+
+    // State Variables
+    private bool isInvisible = false; // If other units can see them
+    private bool isInvincible = false; // Cannot take damage
+    private bool isInvulnerable = false; // Cannot die (hp cannot fall below 1)
+    private bool isSelected = false;
+    private bool isKing = false;
+    private bool isInWater = false; // Serializing this is useless (except for debugging) so i removed it
 
 
     // Private script variables (add serializeField to see it in the inspector (for debug)
@@ -122,7 +122,7 @@ public class Unit : MonoBehaviour, ISelectable
                 rend.material.color = unitData.MovingColor;
                 break;
 
-            case UnitState.MOVING_FOCUS:
+            case UnitState.MOVING_ALERT:
                 rend.material.color = unitData.MovingFocusedColor;
                 break;
 
@@ -449,6 +449,30 @@ public class Unit : MonoBehaviour, ISelectable
     {
         followedTarget = target;
     }
+
+    #endregion
+
+    #region Helper function
+    /// <summary>
+    /// Can the unit attack the target according to the AttackTargets property of the unit ?
+    /// </summary>
+    /// <param name="target">The target to test</param>
+    /// <returns>If the unit can target the target</returns>
+    public bool CanTarget(Unit target)
+    {
+        bool selfAttackRuleRespected = this != target || unitData.CanSelfAttack;
+
+        return target.UnitData.AttackTargets switch
+        {
+            TargetType.All => selfAttackRuleRespected,
+            TargetType.EnemiesOnly => isAttacker != target.IsAttacker && selfAttackRuleRespected,
+            TargetType.AlliesOnly => isAttacker != target.IsAttacker || !selfAttackRuleRespected,
+            TargetType.SelfOnly => isAttacker == target,// self attack rule is ignored with this target type
+            TargetType.None => false,
+            _ => false,
+        };
+    }
+    
     #endregion
 
     private void GroundUpdate()
@@ -542,7 +566,7 @@ public class Unit : MonoBehaviour, ISelectable
 
                 break;
 
-            case UnitState.MOVING_FOCUS:
+            case UnitState.MOVING_ALERT:
 
                 MovingState();
 
@@ -624,7 +648,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         ResumeNavigation();
 
-        if (currentOrder != UnitState.MOVING_FOCUS)
+        if (currentOrder != UnitState.MOVING_ALERT)
         {
             unitState = currentOrder;
         }
@@ -792,9 +816,9 @@ public class Unit : MonoBehaviour, ISelectable
     {
         if(target.TryGetComponent(out Unit unit))
         {
-            return TargetType.All == unitData.TeamTarget ||
-                (unit.IsAttacker == IsAttacker && unitData.TeamTarget == TargetType.AlliesOnly) ||
-                (unit.IsAttacker != IsAttacker && unitData.TeamTarget == TargetType.EnemiesOnly);
+            return TargetType.All == unitData.AttackTargets ||
+                (unit.IsAttacker == IsAttacker && unitData.AttackTargets == TargetType.AlliesOnly) ||
+                (unit.IsAttacker != IsAttacker && unitData.AttackTargets == TargetType.EnemiesOnly);
         }
 
         return false;
