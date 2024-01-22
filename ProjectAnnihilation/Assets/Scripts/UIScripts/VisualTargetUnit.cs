@@ -10,10 +10,11 @@ public class VisualTargetUnit : MonoBehaviour
     public Color attackUnitColor;
 
     private Transform attachedGo = null;
-
-    private const float HEIGHT = .1f;
-
     private SpriteRenderer spriteRenderer;
+
+    private float baseYPos;
+    
+    private const float HEIGHT = .1f;
 
 
     private void OnDisable()
@@ -27,6 +28,8 @@ public class VisualTargetUnit : MonoBehaviour
 
     private void Start()
     {
+        baseYPos = spriteTargetTo.transform.position.y;
+
         spriteTargetTo.transform.SetParent(null);
 
         ShowTarget(false);
@@ -64,13 +67,15 @@ public class VisualTargetUnit : MonoBehaviour
     {
         Vector3 position = target.position;
 
-        position.y = HEIGHT;
+        //position.y = HEIGHT;
+        position.y = baseYPos + HEIGHT;
 
         spriteTargetTo.transform.position = position;
     }
     public void PlaceTargetAt(Vector3 position)
     {
-        position.y = HEIGHT;
+        //position.y = HEIGHT;
+        position.y = baseYPos + HEIGHT;
 
         spriteTargetTo.transform.position = position;
     }

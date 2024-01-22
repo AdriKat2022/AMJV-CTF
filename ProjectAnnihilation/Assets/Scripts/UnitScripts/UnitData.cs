@@ -21,9 +21,10 @@ public class UnitData : ScriptableObject
     [field: Header("Special attack")]
     [field: SerializeField] public string SpecialAttackName { get; private set; }
     [field: SerializeField] public TargetType SpecialAttackTargets { get; private set; }
-    [field: SerializeField] public bool IsSpecialAttackPassive { get; private set; }
+    [field: SerializeField] public bool CanSelfSpecialAttack { get; private set; }
     [field: SerializeField] public float SpecialAttackEndLag { get; private set; }
     [field: SerializeField] public float SpecialAttackRechargeTime { get; private set; }
+    [field: SerializeField] public bool IsSpecialAttackPassive { get; private set; }
 
 
     [field: Header("Colors")]

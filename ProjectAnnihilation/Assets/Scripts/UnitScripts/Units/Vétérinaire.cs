@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class Vétérinaire : Unit
@@ -12,16 +11,35 @@ public class Vétérinaire : Unit
     private float radius;
 
 
+    #region Debug Gizmoz
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, radius);
+    }
+
+#endif
+
+    #endregion
+
     protected override bool Action(GameObject target = null)
     {
         if (!base.Action())
             return false;
 
+
         if (target == null)
             return false;
 
+        
         if(target.TryGetComponent(out IDamageable targetHealthModule))
+        {
+            Debug.Log(targetHealthModule);
+            Debug.Log(unitData.Attack);
             targetHealthModule.Heal(unitData.Attack);
+        }
 
         return true;
     }

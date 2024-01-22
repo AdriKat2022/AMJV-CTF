@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Analytics;
 
 
 
@@ -452,22 +453,23 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region Helper function
+    #region Helper functions
     /// <summary>
     /// Can the unit attack the target according to the AttackTargets property of the unit ?
     /// </summary>
     /// <param name="target">The target to test</param>
+    /// <param name="specialAttack">Set true to look for the SpecialAttackTargets property instead</param>
     /// <returns>If the unit can target the target</returns>
-    public bool CanTarget(Unit target)
+    public bool CanTarget(Unit target, bool specialAttack = false)
     {
-        bool selfAttackRuleRespected = this != target || unitData.CanSelfAttack;
+        bool selfAttackRuleRespected = this != target || (specialAttack ? unitData.CanSelfSpecialAttack : unitData.CanSelfAttack);
 
-        return target.UnitData.AttackTargets switch
+        return (specialAttack ? unitData.SpecialAttackTargets : unitData.AttackTargets) switch
         {
             TargetType.All => selfAttackRuleRespected,
             TargetType.EnemiesOnly => isAttacker != target.IsAttacker && selfAttackRuleRespected,
-            TargetType.AlliesOnly => isAttacker != target.IsAttacker || !selfAttackRuleRespected,
-            TargetType.SelfOnly => isAttacker == target,// self attack rule is ignored with this target type
+            TargetType.AlliesOnly => isAttacker == target.IsAttacker && selfAttackRuleRespected,
+            TargetType.SelfOnly => isAttacker == target, // self attack rule is ignored with this target type
             TargetType.None => false,
             _ => false,
         };
@@ -758,6 +760,9 @@ public class Unit : MonoBehaviour, ISelectable
                 Collider collider = colliders[i];
 
                 if (collider == null || gameObject.layer != collider.gameObject.layer || gameObject == collider.gameObject)
+                    continue;
+
+                if (!collider.TryGetComponent(out Unit unit) || !CanTarget(unit))
                     continue;
 
                 float currentDistance = (transform.position - collider.gameObject.transform.position).magnitude;

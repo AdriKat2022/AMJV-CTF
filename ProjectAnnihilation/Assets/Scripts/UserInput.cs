@@ -5,13 +5,12 @@ public class UserInput : MonoBehaviour
     public Unit Unit => unit;
 
     [SerializeField]
-    private Unit unit;
-    [SerializeField]
     private LayerMask terrainLayer;
     [SerializeField]
     private GameObject stateVisual;
 
 
+    private Unit unit;
     private VisualTargetUnit visualTargetManager;
 
 
@@ -19,13 +18,13 @@ public class UserInput : MonoBehaviour
 
     private void Start()
     {
-        unit = GetComponent<Unit>();
-        visualTargetManager = GetComponent<VisualTargetUnit>();
+        TryGetComponent(out unit);
+        TryGetComponent(out visualTargetManager);
 
         if (unit == null)
-        {
             Debug.LogWarning("Warning: UserInput requires a unit to work.");
-        }
+        if (visualTargetManager == null)
+            Debug.LogWarning("Visual target manager not detected", gameObject);
 
         wasSelected = false;
         unit.SetStatusObject(stateVisual);

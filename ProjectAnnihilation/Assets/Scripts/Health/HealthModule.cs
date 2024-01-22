@@ -13,8 +13,8 @@ public class HealthModule : MonoBehaviour, IDamageable
     private Color hpBgColor;
     [SerializeField, Tooltip("If true, scales the health bar according to the max hp value of the unit.")]
     private bool adaptativeHealthBar;
-
-
+    [SerializeField]
+    private ParticleSystem healParticles;
 
     private Unit unit;
     private UnitData unitData;
@@ -73,6 +73,8 @@ public class HealthModule : MonoBehaviour, IDamageable
             return;
 
         currentHP = Mathf.Clamp(currentHP + heal, 0, unitData.MaxHP);
+        UpdateHPBarVisual();
+        healParticles.Play();
     }
     #endregion
 
