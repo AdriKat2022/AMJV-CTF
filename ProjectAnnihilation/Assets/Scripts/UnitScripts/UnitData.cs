@@ -13,14 +13,14 @@ public class UnitData : ScriptableObject
     [field: SerializeField] public float AttackRange { get; private set; }
 
     [field : Header("Standard attack")]
-    [field: SerializeField] public PossibleTargets TeamTarget { get; private set; }
+    [field: SerializeField] public TargetType TeamTarget { get; private set; }
     [field: SerializeField] public bool CanSelfAttack { get; private set; }
     [field: SerializeField] public float AttackEndLag { get; private set; }
     [field: SerializeField] public float AttackRechargeTime { get; private set; }
 
     [field: Header("Special attack")]
     [field: SerializeField] public string SpecialAttackName { get; private set; }
-    [field: SerializeField] public PossibleTargets SpecialTeamTargets { get; private set; }
+    [field: SerializeField] public TargetType SpecialTeamTargets { get; private set; }
     [field: SerializeField] public bool IsSpecialAttackPassive { get; private set; }
     [field: SerializeField] public float SpecialAttackEndLag { get; private set; }
     [field: SerializeField] public float SpecialAttackRechargeTime { get; private set; }

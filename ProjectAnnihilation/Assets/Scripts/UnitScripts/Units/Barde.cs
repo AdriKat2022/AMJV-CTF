@@ -10,9 +10,7 @@ public class Barde : Unit
         if (target == null)
             return false;
 
-        Vector3 knockbackDealt = (target.transform.position - transform.position).normalized * 20;
-
-        DealDamage(target, unitData.Attack + attackBonus, knockback: knockbackDealt);
+        DealDamage(target, unitData.Attack);
 
         return true;
     }
