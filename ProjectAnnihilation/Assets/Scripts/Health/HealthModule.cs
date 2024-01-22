@@ -22,12 +22,11 @@ public class HealthModule : MonoBehaviour, IDamageable
 
     [SerializeField]
     private float currentHP;
-    private bool canTakeDamage;
     private bool isAlive = true;
-
 
     private Func<Vector3, Rigidbody, IEnumerator> knockback_CR;
     private Rigidbody rb_unit;
+
 
 #if UNITY_EDITOR
 
@@ -40,8 +39,6 @@ public class HealthModule : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        canTakeDamage = true;
-
         TryGetComponent(out unit);
 
         unitData = unit.UnitData;
@@ -51,19 +48,18 @@ public class HealthModule : MonoBehaviour, IDamageable
     }
 
     #region IDamageable
-    public void Damage(DamageData damageData, IDamageable from = null)
+    public void Damage(DamageData dmgData, IDamageable from = null)
     {
-        if (canTakeDamage)
+        if (CanTakeDamage())
         {
-            currentHP -= damageData.damage;
+            currentHP -= ComputeDamage(dmgData);
 
-            if(damageData.knockback != null)
-                ApplyKnockback((Vector3)damageData.knockback);
+            if(dmgData.knockback != null)
+                ApplyKnockback((Vector3)dmgData.knockback);
         }
         else
-        {
             // Some shield animation ? on the hp bar itself for example ?
-        }
+        
 
         UpdateHPBarVisual();
 
@@ -78,10 +74,25 @@ public class HealthModule : MonoBehaviour, IDamageable
         if (!isAlive)
             return;
 
-        currentHP += heal;
-        currentHP = Mathf.Clamp(currentHP, 0, unitData.MaxHP);
+        currentHP = Mathf.Clamp(currentHP + heal, 0, unitData.MaxHP);
     }
     #endregion
+
+    private bool CanTakeDamage()
+    {
+        if (unit.IsInvincible)
+            return false;
+        
+        return true;
+    }
+
+    private float ComputeDamage(DamageData dmgData)
+    {
+        if (unit.IsInvulnerable)
+            return Mathf.Clamp(dmgData.damage, 0, currentHP - 1);
+
+        return dmgData.damage;
+    }
 
     public void KnockedDown()
     {

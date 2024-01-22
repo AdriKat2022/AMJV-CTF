@@ -26,73 +26,67 @@ public enum UnitState
 
 public class Unit : MonoBehaviour, ISelectable
 {
+    #region Variables
+    private static readonly int enemyDetectionBuffer = 10;
+
+
+    [Header("Unit options")]
     [SerializeField]
     protected UnitData unitData;
-    public UnitData UnitData => unitData;
+    [SerializeField]
+    protected bool isAttacker; // Defines the team of the unit
+    // UIMap variable moved below in Private Script Variables
+    
 
-    [SerializeField] private UiMap uiMap;
+    // References
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
-    private Rigidbody rb;
+    protected Rigidbody rb;
 
 
-
-
-
-    private GameObject targetableUnit;
-
-
-    [SerializeField]
-    private bool isAttacker; // Defines the team of the unit
-    public bool IsAttacker => isAttacker;
-
-    public bool IsInvisible => isInvisible;
+    // State Variables
     private bool isInvisible = false; // If other units can see them
     private bool isInvincible = false; // Cannot take damage
     private bool isInvulnerable = false; // Cannot die (hp cannot fall below 1)
-
-    public bool IsSelected => isSelected;
     private bool isSelected;
-
-    public bool IsKing => isKing;
-    [SerializeField]
     private bool isKing;
+    private bool isInWater = false; // Serializing this is useless (except for debugging) so i removed it
 
-    public bool IsInWater => isInWater;
-    [SerializeField]
-    private bool isInWater = false;
-    private GameObject currentTile;
+
+    // Shared variables
     public UnitState CurrentOrder => currentOrder;
+    public bool IsAttacker => isAttacker;
+    public bool IsInvisible => isInvisible;
+    public bool IsInvincible => isInvincible;
+    public bool IsInvulnerable => isInvulnerable;
+    public bool IsSelected => isSelected;
+    public bool IsKing => isKing;
+    public bool IsInWater => isInWater; // Is this useful ?
+    public UnitData UnitData => unitData;
 
+
+    // Private script variables (add serializeField to see it in the inspector (for debug)
     [Header("Debug")]
-    [SerializeField]
-    private UnitState unitState;
-    [SerializeField]
-    private UnitState currentOrder;
-    [SerializeField]
-    private bool canAttack;
-    [SerializeField]
-    private bool showAttackRange;
-
-
+    private GameObject targetableUnit;
+    private GameObject currentTile;
+    private UiMap uiMap; // Removed it from this editor for now since it isn't used yet
     private UnitState lastCurrentOrder;
-
-
-    [Header("Memory usage")]
-    private static readonly int enemyDetectionBuffer = 10;
-
+    private UnitState unitState;
+    private UnitState currentOrder;
+    private bool canAttack;
+    private bool showAttackRange;
     private bool inEndLag;
+    private bool usingTiles = true;
     private float endLagTimer;
-
     private float timeBeforeTargetting;
-
     private Transform followedTarget; // Following
-
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
-    private bool usingTiles = true;
+    #endregion
+
+
 
     #region Status visuals
 
