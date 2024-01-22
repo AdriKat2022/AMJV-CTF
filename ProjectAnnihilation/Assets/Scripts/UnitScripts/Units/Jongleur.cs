@@ -4,7 +4,7 @@ public class Jongleur : Unit
 {
     #region Variables
     [Header("Jongleur")]
-    [SerializeField] private Projectile projectileScript;
+    [SerializeField] private ProjectileLauncher projectileScript;
 
     private bool specialState;
     #endregion
@@ -27,7 +27,7 @@ public class Jongleur : Unit
         transform.LookAt(target.transform.position);
         if (!specialState)
         {
-            projectileScript.Launch(target.transform.position, unitData.Attack);
+            projectileScript.LaunchArc(target.transform.position, unitData.Attack);
         }
         else
         {
