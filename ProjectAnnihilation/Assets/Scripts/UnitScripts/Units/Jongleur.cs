@@ -17,14 +17,20 @@ public class Jongleur : Unit
 
         // Or even just applying buffs to allies
         if (target == null)
+        {
             return;
-
-        if(!specialState)
+        }
+        transform.LookAt(target.transform.position);
+        if (!specialState)
+        {
             script.Launch(target.transform.position, unitData.Attack);
+        }
         else
+        {
             DealDamage(target, unitData.Attack); // Melee attack if specialState is activated
+        }
     }
-
+    
     protected override void SpecialAction(GameObject target = null)
     {
         base.SpecialAction();

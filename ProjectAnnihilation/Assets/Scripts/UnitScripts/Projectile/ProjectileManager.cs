@@ -17,8 +17,7 @@ public class ProjectileManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        gameObject.transform.LookAt(GetComponent<Rigidbody>().velocity);
-        gameObject.transform.Rotate(Vector3.forward);
+        transform.rotation = Quaternion.LookRotation(gameObject.GetComponent<Rigidbody>().velocity);
     }
 
     private void OnTriggerEnter(Collider other)
