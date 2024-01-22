@@ -7,12 +7,9 @@ public class ProjectileManager : MonoBehaviour
     //Useful variables 
     public int damageDone;
     public bool isAttacker;
-    private float angularVelocity;
     // Start is called before the first frame update
     void Start()
     {
-        angularVelocity = gameObject.GetComponent<Projectile>().alpha / gameObject.GetComponent<Projectile>().timeBeforeCrash;
-
     }
 
     // Update is called once per frame
@@ -20,10 +17,10 @@ public class ProjectileManager : MonoBehaviour
     {
         if (transform.position.y <= 0)
         {
-
             Destroy(gameObject);
         }
-        gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, angularVelocity, 0f);
+        gameObject.transform.LookAt(GetComponent<Rigidbody>().velocity);
+        gameObject.transform.Rotate(Vector3.forward);
     }
 
     private void OnTriggerEnter(Collider other)

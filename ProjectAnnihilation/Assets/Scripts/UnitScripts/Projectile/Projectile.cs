@@ -39,12 +39,11 @@ public class Projectile : MonoBehaviour
 
 
         // Appliquer la vitesse initiale à l'objet
-        GameObject clone = Instantiate(projectile,projectilePos, Quaternion.identity);
+        GameObject clone = Instantiate(projectile,projectilePos, Quaternion.Euler(transform.forward * initialXSpeed + transform.up * initialYSpeed));
         ProjectileManager pM = clone.GetComponent<ProjectileManager>();
         pM.damageDone = damageDone;
         pM.isAttacker = isAttacker;
         Rigidbody rb = clone.GetComponent<Rigidbody>();
-        rb.transform.Rotate(transform.forward * initialXSpeed + transform.up * initialYSpeed);
         rb.velocity = transform.forward * initialXSpeed + transform.up * initialYSpeed;
     }
 
