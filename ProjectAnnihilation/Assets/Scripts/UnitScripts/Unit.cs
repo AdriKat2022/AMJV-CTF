@@ -115,23 +115,23 @@ public class Unit : MonoBehaviour, ISelectable
         switch (currentOrder)
         {
             case UnitState.NOTHING:
-                rend.material.color = unitData.nothingColor;
+                rend.material.color = unitData.NothingColor;
                 break;
 
             case UnitState.IDLE:
-                rend.material.color = unitData.idleColor;
+                rend.material.color = unitData.IdleColor;
                 break;
 
             case UnitState.MOVING:
-                rend.material.color = unitData.movingColor;
+                rend.material.color = unitData.MovingColor;
                 break;
 
             case UnitState.MOVING_FOCUS:
-                rend.material.color = unitData.movingFocusedColor;
+                rend.material.color = unitData.MovingFocusedColor;
                 break;
 
             case UnitState.MOVENATTACK:
-                rend.material.color = unitData.chaseColor;
+                rend.material.color = unitData.ChaseColor;
                 break;
 
             case UnitState.FOLLOWING:
@@ -149,27 +149,27 @@ public class Unit : MonoBehaviour, ISelectable
         statusObject.TryGetComponent(out Renderer rend);
         statusObject.transform.localScale = Vector3.one * 2;
 
-        float blinkTimer = unitData.blinkSpeed;
+        float blinkTimer = unitData.BlinkSpeed;
         bool state = false;
 
         while (isSelected)
         {
 
-            if(state && blinkTimer >= unitData.blinkSpeed)
+            if(state && blinkTimer >= unitData.BlinkSpeed)
             {
                 blinkTimer = 0;
                 state = !state;
-                rend.material.color = unitData.selectedColor;
+                rend.material.color = unitData.SelectedColor;
 
-                if(unitData.useFullBlink)
+                if(unitData.UseFullBlink)
                     statusObject.SetActive(false);
             }
-            else if(!state && blinkTimer >= unitData.blinkSpeed)
+            else if(!state && blinkTimer >= unitData.BlinkSpeed)
             {
                 blinkTimer = 0;
                 state = !state;
 
-                if (unitData.useFullBlink)
+                if (unitData.UseFullBlink)
                     statusObject.SetActive(true);
 
                 UpdateStateVisual();
@@ -194,7 +194,7 @@ public class Unit : MonoBehaviour, ISelectable
         if (showAttackRange)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, unitData.attackRange);
+            Gizmos.DrawWireSphere(transform.position, unitData.AttackRange);
         }
 
         Gizmos.color = Color.red;
@@ -207,12 +207,12 @@ public class Unit : MonoBehaviour, ISelectable
     protected virtual void Action(GameObject target = null) {
         PauseNavigation();
         inEndLag = true;
-        endLagTimer = unitData.attackEndLag;
+        endLagTimer = unitData.AttackEndLag;
     }
     protected virtual void SpecialAction(GameObject target = null) {
         PauseNavigation();
         inEndLag = true;
-        endLagTimer = unitData.specialAttackEndLag;
+        endLagTimer = unitData.SpecialAttackEndLag;
     }
 
     #endregion
@@ -229,7 +229,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new DamageData(damage, hitstun ,knockback);
+            DamageData dd = new(damage, hitstun ,knockback);
             damageableTarget.Damage(dd, healthModule);
         }
     }
@@ -244,7 +244,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new DamageData(0, hitstun, knockback);
+            DamageData dd = new(0, hitstun, knockback);
             damageableTarget.Damage(dd, healthModule);
         }
     }
@@ -292,7 +292,7 @@ public class Unit : MonoBehaviour, ISelectable
         isKing = false;
         canAttack = true;
 
-        navigation.speed = unitData.speed;
+        navigation.speed = unitData.Speed;
 
         PassKnockbackFunctionToHealthModule();
 
@@ -365,18 +365,16 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void GroundUpdate()
     {
-        RaycastHit hit;
-        Ray ray = new Ray(gameObject.transform.position, Vector3.down);
-        if (Physics.Raycast(ray, out hit))
+        Ray ray = new(gameObject.transform.position, Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
             if (hit.collider.gameObject == currentTile)
                 return;
 
-            Tile tile;
 
             //Debug.Log(hit.collider.gameObject);
 
-            if(!hit.collider.gameObject.TryGetComponent(out tile))
+            if (!hit.collider.gameObject.TryGetComponent(out Tile tile))
             {
                 if (usingTiles)
                 {
@@ -391,7 +389,7 @@ public class Unit : MonoBehaviour, ISelectable
             // type 0 is the default tile, there is nothing special.
             if (tileType == 0)
             {
-                navigation.speed = unitData.speed;
+                navigation.speed = unitData.Speed;
             }
 
             // type 1 is the wall type, you should not be up there.
@@ -399,7 +397,7 @@ public class Unit : MonoBehaviour, ISelectable
             // Type 2 is the slow type, it slows down the unit by half her speed (might change).
             if (tileType == 2)
             {
-                navigation.speed = unitData.speed/2;
+                navigation.speed = unitData.Speed/2;
             }
             
             // Type 3 is the void type, every unit on this tile must die.
@@ -637,11 +635,11 @@ public class Unit : MonoBehaviour, ISelectable
         if (target == null)
         {
             GameObject closestGameObject = null;
-            float distance = unitData.attackRange;
+            float distance = unitData.AttackRange;
 
             Collider[] colliders = new Collider[enemyDetectionBuffer];
 
-            int nColliders = Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders, unitData.unitLayer);
+            int nColliders = Physics.OverlapSphereNonAlloc(transform.position, unitData.AttackRange, colliders, unitData.UnitLayer);
 
             for(int i = 0; i<nColliders; i++)
             {
@@ -669,13 +667,13 @@ public class Unit : MonoBehaviour, ISelectable
         }
         else if (target == gameObject)
         {
-            return unitData.canSelfAttack;
+            return unitData.CanSelfAttack;
         }
         else
         {
             Collider[] colliders = new Collider[30];
 
-            int nColliders = Physics.OverlapSphereNonAlloc(transform.position, unitData.attackRange, colliders, unitData.unitLayer);
+            int nColliders = Physics.OverlapSphereNonAlloc(transform.position, unitData.AttackRange, colliders, unitData.UnitLayer);
 
             for (int i = 0; i < nColliders; i++)
             {
@@ -706,9 +704,9 @@ public class Unit : MonoBehaviour, ISelectable
     {
         if(target.TryGetComponent(out Unit unit))
         {
-            return PossibleTargets.All == unitData.teamTarget ||
-                (unit.IsAttacker == IsAttacker && unitData.teamTarget == PossibleTargets.AlliesOnly) ||
-                (unit.IsAttacker != IsAttacker && unitData.teamTarget == PossibleTargets.EnemiesOnly);
+            return PossibleTargets.All == unitData.TeamTarget ||
+                (unit.IsAttacker == IsAttacker && unitData.TeamTarget == PossibleTargets.AlliesOnly) ||
+                (unit.IsAttacker != IsAttacker && unitData.TeamTarget == PossibleTargets.EnemiesOnly);
         }
 
         return false;
@@ -769,7 +767,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         isSelected = true;
 
-        if(unitData.blinkOnSelected)
+        if(unitData.BlinkOnSelected)
             StartCoroutine(BlinkIfSelected());
     }
 
@@ -789,6 +787,8 @@ public class Unit : MonoBehaviour, ISelectable
     private int attackBoostPowerUpsActive = 0;
     private int speedBoostPowerUpsActive = 0;
     private int defenseBoostPowerUpsActive = 0;
+    private int invincibilityPowerUpsActive = 0;
+    private int invulnerablePowerUpsActive = 0;
 
     public void ApplyBonuses(PowerUp[] powerUps)
     {
@@ -796,6 +796,10 @@ public class Unit : MonoBehaviour, ISelectable
         {
             StartCoroutine(ApplyPowerUp(powerUp));
         }
+    }
+    public void ApplyBonus(PowerUp powerUp)
+    {
+        StartCoroutine(ApplyPowerUp(powerUp));
     }
 
     private IEnumerator ApplyPowerUp(PowerUp powerUp)
@@ -872,7 +876,39 @@ public class Unit : MonoBehaviour, ISelectable
 
             case PowerUpType.Invincibility:
 
+                invincibilityPowerUpsActive++;
+                isInvincible = true;
 
+
+                if (powerUp.hasExitCondition)
+                    yield return new WaitUntil(powerUp.endCondition);
+                else
+                    yield return new WaitForSeconds(powerUp.duration);
+
+
+                invincibilityPowerUpsActive--;
+
+                if(invincibilityPowerUpsActive <= 0)
+                    isInvincible = false;
+
+                break;
+
+            case PowerUpType.Invulnerability:
+
+                invincibilityPowerUpsActive++;
+                isInvulnerable = true;
+
+
+                if (powerUp.hasExitCondition)
+                    yield return new WaitUntil(powerUp.endCondition);
+                else
+                    yield return new WaitForSeconds(powerUp.duration);
+
+
+                invincibilityPowerUpsActive--;
+
+                if (invincibilityPowerUpsActive <= 0)
+                    isInvulnerable = false;
 
                 break;
 

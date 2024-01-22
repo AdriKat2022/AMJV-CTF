@@ -20,7 +20,7 @@ public class PowerUp
     public float duration;
 
     public bool hasExitCondition;
-    public Func<bool> endCondition;
+    public Func<bool> endCondition; // EndCondition is too complicated to put it into a delegate (so it's deprecated)
 
     public PowerUp(PowerUpType powerUpType, float value, float duration)
     {

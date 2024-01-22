@@ -20,9 +20,9 @@ public class Jongleur : Unit
             return;
 
         if(!specialState)
-            script.Launch(target.transform.position, unitData.attack);
+            script.Launch(target.transform.position, unitData.Attack);
         else
-            DealDamage(target, unitData.attack); // Melee attack if specialState is activated
+            DealDamage(target, unitData.Attack); // Melee attack if specialState is activated
     }
 
     protected override void SpecialAction(GameObject target = null)
@@ -34,7 +34,7 @@ public class Jongleur : Unit
 
         specialState = !specialState;
 
-        unitData = unitData.otherStateUnitData; // Allows to switch stats
+        unitData = unitData.OtherStateUnitData; // Allows to switch stats
 
         // Throw a special attack (or special action
     }

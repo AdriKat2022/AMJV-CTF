@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aab4f17ef1b58b34bb6dbbc3efd6db07, type: 3}
-  m_Name: Barde
+  m_Name: Gardien de Zoo
   m_EditorClassIdentifier: 
-  <UnitName>k__BackingField: Barde
-  <MaxHP>k__BackingField: 30
-  <Speed>k__BackingField: 4
-  <Attack>k__BackingField: 5
-  <Armor>k__BackingField: 0
-  <AttackRange>k__BackingField: 1
+  <UnitName>k__BackingField: Gardien de Zoo
+  <MaxHP>k__BackingField: 40
+  <Speed>k__BackingField: 3
+  <Attack>k__BackingField: 15
+  <Armor>k__BackingField: 1
+  <AttackRange>k__BackingField: 5
   <TeamTarget>k__BackingField: 1
   <CanSelfAttack>k__BackingField: 0
-  <AttackEndLag>k__BackingField: 0.6
+  <AttackEndLag>k__BackingField: 3
   <AttackRechargeTime>k__BackingField: 0
-  <SpecialAttackName>k__BackingField: Musique Royale
-  <SpecialTeamTargets>k__BackingField: 0
+  <SpecialAttackName>k__BackingField: Trappe
+  <SpecialTeamTargets>k__BackingField: 4
   <IsSpecialAttackPassive>k__BackingField: 0
-  <SpecialAttackEndLag>k__BackingField: 1
-  <SpecialAttackRechargeTime>k__BackingField: 30
+  <SpecialAttackEndLag>k__BackingField: 0.5
+  <SpecialAttackRechargeTime>k__BackingField: 20
   <SelectedColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <BlinkOnSelected>k__BackingField: 1
   <UseFullBlink>k__BackingField: 1

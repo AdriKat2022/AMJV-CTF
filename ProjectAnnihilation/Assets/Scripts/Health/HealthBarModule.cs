@@ -44,14 +44,14 @@ public class HealthBarModule : MonoBehaviour
     public void Initialize(UnitData unitData, Color bg, Color hp, bool adaptativeBar = false)
     {
         this.unitData = unitData;
-        currentHP = unitData.maxHP;
+        currentHP = unitData.MaxHP;
 
         hpImage.color = hp;
         hpBgImage.color = bg;
 
         if(adaptativeBar && rectTransform != null)
         {
-            float multiplier = Mathf.Lerp(minWidth, maxWidth, unitData.maxHP/maxWidthHP);
+            float multiplier = Mathf.Lerp(minWidth, maxWidth, unitData.MaxHP/maxWidthHP);
             rectTransform.sizeDelta = new Vector2(multiplier, rectTransform.sizeDelta.y);
         }
     }
@@ -69,7 +69,7 @@ public class HealthBarModule : MonoBehaviour
 
     private void UpdateHPBar()
     {
-        if(unitData.maxHP != 0)
-            hpImage.fillAmount = currentHP/unitData.maxHP;
+        if(unitData.MaxHP != 0)
+            hpImage.fillAmount = currentHP/unitData.MaxHP;
     }
 }

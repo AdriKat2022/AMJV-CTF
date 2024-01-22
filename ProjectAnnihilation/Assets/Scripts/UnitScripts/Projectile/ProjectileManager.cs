@@ -30,7 +30,7 @@ public class ProjectileManager : MonoBehaviour
         {
             if (isAttacker != other.gameObject.GetComponent<Unit>().IsAttacker)
             {
-                DamageData dmgData = new DamageData(damageDone);
+                DamageData dmgData = new(damageDone);
                 damage.Damage(dmgData);
             }
         }
