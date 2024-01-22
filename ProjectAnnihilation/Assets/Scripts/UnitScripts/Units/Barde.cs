@@ -2,27 +2,26 @@ using UnityEngine;
 
 public class Barde : Unit
 {
-    protected override void Action(GameObject target = null)
+    protected override bool Action(GameObject target = null)
     {
-        base.Action();
-        // Box detection for melee attacks
+        if(!base.Action())
+            return false;
 
-        // Or projectile launch
-
-        // Or even just applying buffs to allies
         if (target == null)
-            return;
+            return false;
 
         Vector3 knockbackDealt = (target.transform.position - transform.position).normalized * 20;
 
         DealDamage(target, unitData.Attack + attackBonus, knockback: knockbackDealt);
 
-        //CreateRepulsiveSphere(4, 10);
+        return true;
     }
 
-    protected override void SpecialAction(GameObject target = null)
+    protected override bool SpecialAction(GameObject target = null)
     {
-        base.SpecialAction();
-        // Throw a special attack (or special action
+        if (!base.SpecialAction())
+            return false;
+
+        return true;
     }
 }

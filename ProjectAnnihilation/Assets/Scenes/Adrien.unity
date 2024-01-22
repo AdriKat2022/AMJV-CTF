@@ -135,10 +135,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Jongleur
       objectReference: {fileID: 0}
-    - target: {fileID: 4709018029242428183, guid: 8446a78a1cb8a40469de2f4d13dec7d1, type: 3}
-      propertyPath: showAttackRange
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5330766542810778935, guid: 8446a78a1cb8a40469de2f4d13dec7d1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.22
@@ -455,14 +451,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 499097462137986374, guid: fff23e432a4d6a345a4bb7db1bbebcb3, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 1.1403999
-      objectReference: {fileID: 0}
-    - target: {fileID: 499097462137986374, guid: fff23e432a4d6a345a4bb7db1bbebcb3, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.0000004172325
-      objectReference: {fileID: 0}
     - target: {fileID: 3839880450725952713, guid: fff23e432a4d6a345a4bb7db1bbebcb3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.33
@@ -502,10 +490,6 @@ PrefabInstance:
     - target: {fileID: 3839880450725952713, guid: fff23e432a4d6a345a4bb7db1bbebcb3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6213912055079522449, guid: fff23e432a4d6a345a4bb7db1bbebcb3, type: 3}
-      propertyPath: showAttackRange
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7647765262149620171, guid: fff23e432a4d6a345a4bb7db1bbebcb3, type: 3}
       propertyPath: m_Name

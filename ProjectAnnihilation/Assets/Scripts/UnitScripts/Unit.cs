@@ -84,6 +84,8 @@ public class Unit : MonoBehaviour, ISelectable
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
+    protected float actionCooldown;
+    protected float specialActionCooldown;
     #endregion
 
 
@@ -198,15 +200,27 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
     #region UNIT ACTIONS (TO OVERRIDE BY UNIT)
-    protected virtual void Action(GameObject target = null) {
+    protected virtual bool Action(GameObject target = null) {
+        if (actionCooldown > 0)
+            return false;
+
         PauseNavigation();
         inEndLag = true;
         endLagTimer = unitData.AttackEndLag;
+        actionCooldown = unitData.AttackRechargeTime;
+
+        return true;
     }
-    protected virtual void SpecialAction(GameObject target = null) {
+    protected virtual bool SpecialAction(GameObject target = null) {
+        if (specialActionCooldown > 0)
+            return false;
+
         PauseNavigation();
         inEndLag = true;
         endLagTimer = unitData.SpecialAttackEndLag;
+        specialActionCooldown = unitData.SpecialAttackRechargeTime;
+
+        return true;
     }
 
     #endregion
@@ -309,6 +323,8 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
+        DecreaseCooldowns();
+
         CheckCurrentOrderChange(); // For the visual of the unit
 
         if (inEndLag)
@@ -323,6 +339,12 @@ public class Unit : MonoBehaviour, ISelectable
     private void FixedUpdate()
     {
         GroundUpdate();
+    }
+
+    private void DecreaseCooldowns()
+    {
+        actionCooldown = Mathf.Max(actionCooldown - Time.deltaTime, 0);
+        specialActionCooldown = Mathf.Max(specialActionCooldown - Time.deltaTime, 0);
     }
 
     /// <summary>

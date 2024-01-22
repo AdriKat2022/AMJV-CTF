@@ -1,19 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExampleUnit : Unit
 {
     private bool firstFrame = true;
 
-    protected override void Action(GameObject target = null)
+    protected override bool Action(GameObject target = null)
     {
-        base.Action();
+        if(!base.Action())
+            return false;
+
         firstFrame = true;
+
+        return true;
     }
-    protected override void SpecialAction(GameObject target = null)
+    protected override bool SpecialAction(GameObject target = null)
     {
-        base.SpecialAction();
+        if(!base.SpecialAction())
+            return false;
+
+        return true;
     }
 
     protected override void OnActionEndLag()

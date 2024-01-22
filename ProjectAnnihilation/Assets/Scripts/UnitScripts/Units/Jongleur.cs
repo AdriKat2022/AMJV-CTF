@@ -16,18 +16,14 @@ public class Jongleur : Unit
         specialState = false;
     }
 
-    protected override void Action(GameObject target = null)
+    protected override bool Action(GameObject target = null)
     {
-        base.Action();
-        // Box detection for melee attacks
+        if (!base.Action())
+            return false;
 
-        // Or projectile launch
-
-        // Or even just applying buffs to allies
         if (target == null)
-        {
-            return;
-        }
+            return false;
+        
         transform.LookAt(target.transform.position);
         if (!specialState)
         {
@@ -37,11 +33,14 @@ public class Jongleur : Unit
         {
             DealDamage(target, unitData.Attack); // Melee attack if specialState is activated
         }
+
+        return true;
     }
     
-    protected override void SpecialAction(GameObject target = null)
+    protected override bool SpecialAction(GameObject target = null)
     {
-        base.SpecialAction();
+        if (!base.SpecialAction())
+            return false;
 
         // Begins with false (specialState)
         // Switches when using special Action
@@ -51,5 +50,7 @@ public class Jongleur : Unit
         unitData = unitData.OtherStateUnitData; // Allows to switch stats
 
         // Throw a special attack (or special action
+
+        return true;
     }
 }

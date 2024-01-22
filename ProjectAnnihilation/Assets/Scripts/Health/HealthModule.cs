@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class HealthModule : MonoBehaviour, IDamageable
@@ -57,7 +56,6 @@ public class HealthModule : MonoBehaviour, IDamageable
             if(dmgData.knockback != null)
                 ApplyKnockback((Vector3)dmgData.knockback);
         }
-        else
             // Some shield animation ? on the hp bar itself for example ?
         
 

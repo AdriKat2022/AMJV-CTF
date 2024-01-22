@@ -1,6 +1,4 @@
 using System;
-
-
 public enum PowerUpType
 {
     SpeedBoost,

@@ -15,25 +15,32 @@ public class Vétérinaire : Unit
 
     private bool specialAttackActivable = false;
 
-    protected override void Action(GameObject target = null)
+    protected override bool Action(GameObject target = null)
     {
-        base.Action();
+        if (!base.Action())
+            return false;
+
         if (target == null)
-            return;
+            return false;
 
         if(target.TryGetComponent(out IDamageable targetHealthModule))
             targetHealthModule.Heal(unitData.Attack);
+
+        return true;
     }
 
-    protected override void SpecialAction(GameObject target = null)
+    protected override bool SpecialAction(GameObject target = null)
     {
-        base.SpecialAction();
+        if (!base.SpecialAction())
+            return false;
 
         if (specialAttackActivable)
         {
             specialAttackActivable = false;
             StartCoroutine(DivineSphere());
         }
+
+        return true;
     }
 
     private IEnumerator DivineSphere()
@@ -41,8 +48,6 @@ public class Vétérinaire : Unit
         // DivineSphere gives invulnerability (hp not going below 1) bonuses to units located in sphere
         // It achieves this by scanning every INVULNERABILITY_DELTA_TIME seconds the close by units to give the a bonus that lasts INVULNERABILITY_DELTA_TIME
         // This is to avoid calling Physics Overlap and TryGetComponent() at every frame
-
-
 
         float _startTime = Time.time;
 

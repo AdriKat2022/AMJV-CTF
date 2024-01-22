@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -18,6 +16,10 @@ public class VisualTargetUnit : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
 
+    private void OnDisable()
+    {
+        Destroy(spriteTargetTo);
+    }
 
     /// The targetTo will be moved towards the unit's destination 
     /// It will be red if it's attached to another unit
