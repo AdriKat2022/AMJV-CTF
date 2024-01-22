@@ -1,30 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    #region variables
-    public bool isAttacker;
+    #region Variables
     [SerializeField] private GameObject projectile;
-    [SerializeField] private float g = 9.8f;
-    public float alpha = 45f;
+    [SerializeField] private float gravityConstant = 9.8f;
+
+    // Didn't do it but free tip : you can reference a component instead of "GameObject" so upon instantiating, you save up one GetComponent call. Neat uh ?
+    //
+    // [SerializeField] private ProjectileManager projectile;
+    // ...
+    // ProjectileManager clone = Instantiate(projectile, ...);
+
+    [SerializeField] private float alpha = 45f;
+    [SerializeField] private float timeBeforeCrash; // Best practice: put everything in private, and switch to public only if necessary ;)
+
     private float distance;
-    public float timeBeforeCrash;
+    private bool isAttacker; // (Better to keep it private and not show it in the editor)
     #endregion
-    // Start is called before the first frame update
+
+
     void Start()
     {
         isAttacker = gameObject.GetComponent<Unit>().IsAttacker;
         alpha = alpha * 2 * Mathf.PI / 360;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void Launch(Vector3 hitpoint, float damageDone = 0)
@@ -33,7 +32,7 @@ public class Projectile : MonoBehaviour
         Vector3 projectilePos = gameObject.transform.position + new Vector3(0f, 0f, 0f);
         distance = Vector3.Distance(projectilePos, hitpoint);
         Vector3 direction = Vector3.Normalize(hitpoint - projectilePos);
-        float initialSpeed = Mathf.Sqrt((distance * g) / Mathf.Sin(2 * alpha));
+        float initialSpeed = Mathf.Sqrt((distance * gravityConstant) / Mathf.Sin(2 * alpha));
         timeBeforeCrash = distance / (initialSpeed*Mathf.Cos(alpha));
 
         float initialXSpeed = initialSpeed*Mathf.Cos(alpha);
@@ -49,6 +48,4 @@ public class Projectile : MonoBehaviour
         rb.transform.rotation = Quaternion.LookRotation(direction);
         rb.velocity = rb.transform.forward * initialXSpeed + rb.transform.up * initialYSpeed;
     }
-
-
 }

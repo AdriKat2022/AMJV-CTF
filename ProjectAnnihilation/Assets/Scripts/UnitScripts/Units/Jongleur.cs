@@ -2,11 +2,19 @@ using UnityEngine;
 
 public class Jongleur : Unit
 {
-    #region variables
-    [SerializeField] private Projectile script;
+    #region Variables
+    [Header("Jongleur")]
+    [SerializeField] private Projectile projectileScript;
 
-    private bool specialState = false;
+    private bool specialState;
     #endregion
+
+    protected override void Initialize() // A bit like the Start() function to initialize the unit
+    {
+        base.Initialize();
+
+        specialState = false;
+    }
 
     protected override void Action(GameObject target = null)
     {
@@ -23,7 +31,7 @@ public class Jongleur : Unit
         transform.LookAt(target.transform.position);
         if (!specialState)
         {
-            script.Launch(target.transform.position, unitData.Attack);
+            projectileScript.Launch(target.transform.position, unitData.Attack);
         }
         else
         {
