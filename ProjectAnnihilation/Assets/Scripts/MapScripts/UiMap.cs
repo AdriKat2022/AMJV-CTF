@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UiMap : MonoBehaviour
 {
     #region variables
+    [SerializeField] private Button backToMenu;
     [SerializeField] private TMPro.TextMeshProUGUI timer;
     [SerializeField] private TMPro.TextMeshProUGUI enemies;
     [SerializeField] private TMPro.TextMeshProUGUI finalTimer;
@@ -35,6 +38,7 @@ public class UiMap : MonoBehaviour
         GameManager.Instance.onFinalMoove.AddListener(setFlag);
         GameManager.Instance.onAllyDeath.AddListener(OnAllyDeath);
         GameManager.Instance.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
+        backToMenu.onClick.AddListener(OnClick);
     }
 
     // Update is called once per frame
@@ -99,6 +103,11 @@ public class UiMap : MonoBehaviour
     {
         isKingDead = true;
         setGameOver();
+    }
+
+    public void OnClick()
+    {
+        SceneManager.LoadSceneAsync(0);
     }
 
     public void setGameOver()
