@@ -27,12 +27,11 @@ public class CameraManager : MonoBehaviour
     private int borderYRotation = 15;
 
 
-
+    [Header("Scroll")]
     [SerializeField]
     private float scrollSpeed = 5;
 
-    [Space]
-
+    [Header("Settings")]
     [SerializeField]
     private bool disableMouse;
     [SerializeField]
@@ -41,17 +40,15 @@ public class CameraManager : MonoBehaviour
     [Range(0f, 1f)]
     private float keyMultiplier = 0.75f;
 
-    [Space]
 
-
-    [Space]
-
+    [Header("Camera speed")]
     [SerializeField]
     [Range(0, 100)]
     private int easeFactor = 75;
     [SerializeField]
     [Range(0, 100)]
     private int easeFactorRotation = 75;
+
 
     private int screenWidth;
     private int screenHeight;

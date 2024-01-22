@@ -5,13 +5,8 @@ public class ProjectileManager : MonoBehaviour
     //Useful variables 
     public float damageDone;
     public bool isAttacker;
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (transform.position.y <= 0)
         {
@@ -22,7 +17,7 @@ public class ProjectileManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {   
-        if (other.TryGetComponent<IDamageable>( out IDamageable damage))
+        if (other.TryGetComponent(out IDamageable damage))
         {
             if (isAttacker != other.gameObject.GetComponent<Unit>().IsAttacker)
             {

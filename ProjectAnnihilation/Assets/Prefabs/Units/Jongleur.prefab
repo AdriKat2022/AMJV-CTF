@@ -81,14 +81,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 88d60cc541cb8214a8f44d5ef1256b8f, type: 2}
-  uiMap: {fileID: 0}
   isAttacker: 0
-  isKing: 0
-  isInWater: 0
-  unitState: 0
-  currentOrder: 0
-  canAttack: 0
-  showAttackRange: 0
   projectileScript: {fileID: 7194284557290847138}
 --- !u!114 &7194284557290847138
 MonoBehaviour:
@@ -103,6 +96,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectile: {fileID: 7556374145519697305, guid: 93a8fe12e91103f4184ea5f6ca5cf261, type: 3}
-  g: 9.8
-  alpha: 45
+  gravityConstant: 9.8
+  alpha: 70
   timeBeforeCrash: 0

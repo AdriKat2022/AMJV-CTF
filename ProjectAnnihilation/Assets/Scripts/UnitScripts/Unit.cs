@@ -78,12 +78,12 @@ public class Unit : MonoBehaviour, ISelectable
     private bool showAttackRange;
     private bool inEndLag;
     private bool usingTiles = true;
-    private float endLagTimer;
     private float timeBeforeTargetting;
     private Transform followedTarget; // Following
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
+    protected float endLagTimer;
     protected float actionCooldown;
     protected float specialActionCooldown;
     #endregion

@@ -12,7 +12,7 @@ public class Projectile : MonoBehaviour
     // ...
     // ProjectileManager clone = Instantiate(projectile, ...);
 
-    [SerializeField] private float alpha = 45f;
+    [SerializeField] private float alpha = 45f; // I put 70 in the prefab (it looks better)
     [SerializeField] private float timeBeforeCrash; // Best practice: put everything in private, and switch to public only if necessary ;)
 
     private float distance;
@@ -44,7 +44,7 @@ public class Projectile : MonoBehaviour
         ProjectileManager pM = clone.GetComponent<ProjectileManager>();
         pM.damageDone = damageDone;
         pM.isAttacker = isAttacker;
-        Rigidbody rb = clone.GetComponent<Rigidbody>();
+        Rigidbody rb = clone.GetComponent<Rigidbody>(); // Instead of accessing the rigidbody here, maybe make a function in ProjectileManager ? (reduces getcomponents call to 0 here)
         rb.transform.rotation = Quaternion.LookRotation(direction);
         rb.velocity = rb.transform.forward * initialXSpeed + rb.transform.up * initialYSpeed;
     }
