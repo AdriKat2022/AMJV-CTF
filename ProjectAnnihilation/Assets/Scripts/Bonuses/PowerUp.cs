@@ -8,7 +8,8 @@ public enum PowerUpType
     DefenseBoost,
 
     Invincibility,
-    Invulnerability
+    Invulnerability,
+    Invisibility
 }
 
 

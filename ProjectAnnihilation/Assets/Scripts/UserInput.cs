@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class UserInput : MonoBehaviour
@@ -28,6 +29,8 @@ public class UserInput : MonoBehaviour
     private ParticleSystem flamethrowerParticles;
     [SerializeField]
     private ParticleSystem selfDestructParticles;
+    [SerializeField]
+    private Image hiddenIcon;
 
 
     private Unit unit;
@@ -51,6 +54,7 @@ public class UserInput : MonoBehaviour
         unit.SetUnitText(unitText);
         unit.SetFlameThrowerParticles(flamethrowerParticles);
         unit.SetSelfDestructParticles(selfDestructParticles);
+        unit.SetHiddenIcon(hiddenIcon);
 
         visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);
@@ -58,7 +62,7 @@ public class UserInput : MonoBehaviour
         unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
         unitText.text = unit.UnitData.UnitName;
 
-        //inputType = unit.IsAttacker ? InputType.PlayerInput : InputType.Auto;
+        inputType = unit.IsAttacker ? InputType.PlayerInput : InputType.Auto;
     }
 
     private void Update()

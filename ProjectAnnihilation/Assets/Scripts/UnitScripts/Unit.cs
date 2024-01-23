@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 
 public enum TargetType
@@ -46,6 +47,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected Rigidbody rb;
     private ParticleSystem flamethrowerParticles;
     private ParticleSystem selfDestructParticles;
+    private Image hiddenIcon;
 
 
     // Shared variables
@@ -102,6 +104,10 @@ public class Unit : MonoBehaviour, ISelectable
     public void SetUnitText(TMP_Text unitText) => this.unitText = unitText;
     public void SetFlameThrowerParticles(ParticleSystem flamethrowerParticles) => this.flamethrowerParticles = flamethrowerParticles;
     public void SetSelfDestructParticles(ParticleSystem selfDestructParticles) => this.selfDestructParticles = selfDestructParticles;
+    public void SetHiddenIcon(Image hiddenIcon) {
+        this.hiddenIcon = hiddenIcon;
+        hiddenIcon.color = Color.clear;
+    }
     private void CheckCurrentOrderChange()
     {
         if(currentOrder != lastCurrentOrder)
@@ -191,7 +197,6 @@ public class Unit : MonoBehaviour, ISelectable
 
         UpdateStateVisual();
     }
-
     #endregion
 
     #region DEBUG (Gizmos)
@@ -656,6 +661,9 @@ public class Unit : MonoBehaviour, ISelectable
     /// <returns>If the unit can target the target</returns>
     public bool CanTarget(Unit target, bool specialAttack = false)
     {
+        if (target.IsInvisible)
+            return false;
+
         bool selfAttackRuleRespected = this != target || (specialAttack ? unitData.CanSelfSpecialAttack : unitData.CanSelfAttack);
 
         return (specialAttack ? unitData.SpecialAttackTargets : unitData.AttackTargets) switch
@@ -1104,6 +1112,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private int invincibilityPowerUpsActive = 0;
     private int invulnerablePowerUpsActive = 0;
+    private int invisibilityPowerUpsActive = 0;
 
     private Dictionary<Unit, int> bonusSpeedMaintainers;
     private Dictionary<Unit, int> bonusAttackMaintainers;
@@ -1222,6 +1231,33 @@ public class Unit : MonoBehaviour, ISelectable
 
                 break;
 
+            case PowerUpType.Invisibility:
+
+                if(invisibilityPowerUpsActive == 0)
+                {
+                    hiddenIcon.color = Color.white;
+                }
+
+                invisibilityPowerUpsActive++;
+                isInvisible = true;
+
+               
+
+                if (powerUp.hasExitCondition)
+                    yield return new WaitUntil(powerUp.endCondition);
+                else
+                    yield return new WaitForSeconds(powerUp.duration);
+
+
+                invisibilityPowerUpsActive--;
+
+                if (invisibilityPowerUpsActive <= 0)
+                {
+                    isInvisible = false;
+                    hiddenIcon.color = Color.clear;
+                }
+
+                break;
                 /*invincibleTimer = 0;
 
                 if (isInvincible)

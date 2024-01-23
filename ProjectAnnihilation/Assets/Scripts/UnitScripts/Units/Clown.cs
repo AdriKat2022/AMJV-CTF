@@ -1,0 +1,58 @@
+using System.Collections;
+using UnityEngine;
+
+public class Clown : Unit
+{
+    [Header("Diversion")]
+    [SerializeField]
+    private float duration;
+
+    private bool acted = false;
+
+    protected override bool Action(GameObject target = null)
+    {
+        if(!base.Action(target))
+            return false;
+
+        if(target == null)
+            return false;
+
+        acted = true;
+
+        StartCoroutine(Hits(target, unitData.Attack, 2f, 0.4f));
+
+        return true;
+    }
+
+    protected override bool SpecialAction(GameObject target = null)
+    {
+        if(!base.SpecialAction(target))
+            return false;
+
+        acted = false;
+
+        StartCoroutine(BeInvisible());
+
+        return true;
+    }
+
+    private IEnumerator Hits(GameObject target, float totalDmg, float nHits, float totalDuration)
+    {
+        for(int i = 0; i < nHits; i++)
+        {
+            DealDamage(target, totalDmg / nHits);
+            yield return new WaitForSeconds(totalDuration/nHits);
+        }
+    }
+
+    private IEnumerator BeInvisible()
+    {
+        PowerUp<Unit> pu = new(PowerUpType.Invisibility, 0, .2f, false);
+
+        while (!acted)
+        {
+            ApplyBonus(pu);
+            yield return new WaitForSeconds(.2f);
+        }
+    }
+}
