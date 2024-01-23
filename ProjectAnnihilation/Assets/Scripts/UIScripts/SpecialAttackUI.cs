@@ -40,4 +40,9 @@ public class SpecialAttackUI : MonoBehaviour
     {
         animator.SetTrigger("blocked");
     }
+
+    public void ShowInability()
+    {
+        animator.SetTrigger("showInability");
+    }
 }

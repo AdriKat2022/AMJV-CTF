@@ -227,7 +227,7 @@ public class Unit : MonoBehaviour, ISelectable
         if (isSelected && selectModule.IsSelectionNotMultiple)
         {
             if(unitData.IsSpecialAttackPassive || unitData.SpecialAttackRechargeTime == 0)
-                specialAttackUI.UpdateAttackRecharge(0);
+                specialAttackUI.UpdateAttackRecharge(1);
             else
                 specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
             
@@ -300,6 +300,12 @@ public class Unit : MonoBehaviour, ISelectable
         return true;
     }
     protected virtual bool SpecialAction(GameObject target = null) {
+
+        if(unitData.IsSpecialAttackPassive)
+        {
+            specialAttackUI.ShowInability();
+            return false;
+        }
 
         if (specialActionCooldown > 0)
         {
