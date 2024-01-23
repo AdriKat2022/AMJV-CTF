@@ -5,7 +5,7 @@ public class Clown : Unit
 {
     [Header("Diversion")]
     [SerializeField]
-    private float duration;
+    private float maxDuration;
 
     private bool acted = false;
 
@@ -31,7 +31,7 @@ public class Clown : Unit
 
         acted = false;
 
-        StartCoroutine(BeInvisible());
+        StartCoroutine(BeInvisible(maxDuration));
 
         return true;
     }
@@ -45,11 +45,12 @@ public class Clown : Unit
         }
     }
 
-    private IEnumerator BeInvisible()
+    private IEnumerator BeInvisible(float maxTime)
     {
         PowerUp<Unit> pu = new(PowerUpType.Invisibility, 0, .2f, false);
+        float _startTime = Time.time;
 
-        while (!acted)
+        while (!acted && Time.time - _startTime < maxTime)
         {
             ApplyBonus(pu);
             yield return new WaitForSeconds(.2f);

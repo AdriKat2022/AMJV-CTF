@@ -54,7 +54,7 @@ public class Cracheurdefeu : Unit
         if(target == null)
             return false;
 
-        StartCoroutine(CreateDamageCone(target, damageOverTime, duration, angle, maxDistance, unitData.AttackTargets));
+        StartCoroutine(CreateDamageCone(target, damageOverTime, duration, angle, maxDistance));
 
         return true;
     }

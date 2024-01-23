@@ -422,8 +422,6 @@ public class Unit : MonoBehaviour, ISelectable
                 if (Mathf.Abs(Vector3.Angle(direction, col.bounds.center - transform.position)) > angle)
                     continue;
 
-                Debug.Log("one unit in flamethrower");
-                
                 if (col.gameObject.TryGetComponent(out HealthModule unit))
                 {
 
@@ -514,7 +512,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void SetUpFlameThrowerParticles(float duration, float maxDistance, float angle)
     {
-        float _SPEED = 9;
+        float _SPEED = 15;
 
         if (flamethrowerParticles == null)
         {

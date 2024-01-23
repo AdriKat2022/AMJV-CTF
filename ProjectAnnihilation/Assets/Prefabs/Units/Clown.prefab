@@ -79,4 +79,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: d9ff5bf171965984cb141c9e0acde756, type: 2}
   isAttacker: 0
-  duration: 2
+  maxDuration: 30
