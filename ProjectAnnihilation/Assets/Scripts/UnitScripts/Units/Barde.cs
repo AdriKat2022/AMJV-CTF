@@ -48,6 +48,6 @@ public class Barde : Unit
 
     private void CreateMusicalSphere()
     {
-        StartCoroutine(PowerUpSphere(attackMultiplierBonus, radius, duration, PowerUpType.AttackBoost));
+        StartCoroutine(CreatePowerUpSphere(attackMultiplierBonus, radius, duration, PowerUpType.AttackBoost));
     }
 }

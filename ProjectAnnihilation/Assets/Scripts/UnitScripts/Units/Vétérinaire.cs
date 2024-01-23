@@ -54,6 +54,6 @@ public class Vétérinaire : Unit
         // It achieves this by scanning every INVULNERABILITY_DELTA_TIME seconds the close by units to give the a bonus that lasts INVULNERABILITY_DELTA_TIME
         // This is to avoid calling Physics Overlap and TryGetComponent() at every frame
 
-        StartCoroutine(PowerUpSphere(1, radius, duration, PowerUpType.Invulnerability));
+        StartCoroutine(CreatePowerUpSphere(1, radius, duration, PowerUpType.Invulnerability));
     }
 }

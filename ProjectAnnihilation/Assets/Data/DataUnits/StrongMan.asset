@@ -28,8 +28,8 @@ MonoBehaviour:
   <SpecialAttackEndLag>k__BackingField: 0.5
   <SpecialAttackRechargeTime>k__BackingField: Infinity
   <IsSpecialAttackPassive>k__BackingField: 1
-  <AttackerColor>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
-  <DefenserColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <AttackerColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <DefenserColor>k__BackingField: {r: 1, g: 0.1745283, b: 0.1745283, a: 1}
   <SelectedColor>k__BackingField: {r: 1, g: 0.74041903, b: 0, a: 1}
   <BlinkOnSelected>k__BackingField: 1
   <UseFullBlink>k__BackingField: 1

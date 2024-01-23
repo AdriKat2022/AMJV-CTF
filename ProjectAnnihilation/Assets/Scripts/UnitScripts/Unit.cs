@@ -44,6 +44,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected HealthModule healthModule;
     protected GameManager gameManager;
     protected Rigidbody rb;
+    private ParticleSystem flamethrowerParticles;
 
 
     // Shared variables
@@ -91,13 +92,14 @@ public class Unit : MonoBehaviour, ISelectable
 
 
 
-    #region Status visuals
+    #region Visuals & animation
 
     private GameObject statusObject; // Defined by UserInput
     private TMP_Text unitText; // Defined by UserInput
 
     public void SetStatusObject(GameObject statusObject) => this.statusObject = statusObject;
     public void SetUnitText(TMP_Text unitText) => this.unitText = unitText;
+    public void SetFlameThrowerParticles(ParticleSystem flamethrowerParticles) => this.flamethrowerParticles = flamethrowerParticles;
     private void CheckCurrentOrderChange()
     {
         if(currentOrder != lastCurrentOrder)
@@ -231,7 +233,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-
     #region Unit actions
     /// <summary>
     /// Deal simple damage to the target
@@ -291,7 +292,7 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
     /// <summary>
-    /// Creates a one-frame Repulsive Sphere that pushes every unit in its radius
+    /// Creates an one-frame Repulsive Sphere that pushes every unit in its radius
     /// </summary>
     /// <param name="radius">The sphere radius</param>
     /// <param name="knockbackForce">The max knockbackforce</param>
@@ -331,7 +332,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// The little, the better, but the more costly in performances.</br>
     /// I don't think a value very close to zero will work.</param>
     /// <returns></returns>
-    protected IEnumerator PowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, bool isMultiplier = true, TargetType targets = TargetType.All, float powerUpDeltaTime = .5f)
+    protected IEnumerator CreatePowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, bool isMultiplier = true, TargetType targets = TargetType.All, float powerUpDeltaTime = .5f)
     {
         float _startTime = Time.time;
 
@@ -369,13 +370,98 @@ public class Unit : MonoBehaviour, ISelectable
             }
             yield return new WaitForSeconds(powerUpDeltaTime / 1.2f);
         }
-
-        yield return new WaitForSeconds(unitData.SpecialAttackRechargeTime);
     }
-    
+    /// <summary>
+    /// Creates a damage cone in where specified units take damage overtime.
+    /// </summary>
+    /// <param name="target">The target targetted. He might not be the only one to take damage.</param>
+    /// <param name="damageOverTime">Damage done to every unit inside the cone per tick.</param>
+    /// <param name="duration">How much time it lasts.</param>
+    /// <param name="angle">Angle from the vector between the unit and the target, and the unit that will be touched by the flame thrower.</param>
+    /// <param name="maxDistance">Max distance from the unit the flame thrower will go.</param>
+    /// <param name="targets">What kind of targets can be damaged ?</param>
+    /// <param name="excludeAttackBonus">Does this flame thrower ignores bonuses granted to the casting unit ?</param>
+    /// <param name="ignoreDefense">Ignore the units defenses ?</param>
+    /// <param name="damageDeltaTime">How much time a tick takes.</param>
+    /// <returns></returns>
+    protected IEnumerator CreateDamageCone(GameObject target, float damageOverTime, float duration, float angle, float maxDistance, TargetType targets = TargetType.All, bool excludeAttackBonus = false, bool ignoreDefense = false, float damageDeltaTime = .2f)
+    {
+        float _startTime = Time.time;
+
+        DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier);
+
+        Vector3 direction = (target.transform.position - transform.position).normalized;
+        //Vector3 perpendicularDirection = Vector3.Cross(Vector3.up, direction);
+
+        SetUpFlameThrowerParticles(duration, maxDistance, angle);
+
+        Vector3 perpendicularDirection = Vector3.Cross(Vector3.up, direction).normalized;
+
+        while (Time.time - _startTime < duration)
+        {
+            Collider[] cols = new Collider[15];
+
+            //Physics.OverlapBoxNonAlloc(transform.position + direction * maxDistance / 2, direction * maxDistance / 2 + Mathf.Sin(angle * Mathf.PI * 180) * maxDistance * perpendicularDirection, cols);
+            Physics.OverlapBoxNonAlloc(transform.position + direction * maxDistance / 2, Mathf.Sin(angle * Mathf.PI / 180) * maxDistance * Vector3.right + maxDistance * Vector3.forward + Vector3.up, cols, transform.rotation);
+
+            foreach (Collider col in cols)
+            {
+                if (col == null)
+                    continue;
+
+                //Debug.Log(Vector3.Angle(direction, col.bounds.center - transform.position));
+                Debug.Log(col.gameObject.name);
+
+                if (Mathf.Abs(Vector3.Angle(direction, col.bounds.center - transform.position)) > angle)
+                    continue;
+
+                Debug.Log("one unit in flamethrower");
+                
+                if (col.gameObject.TryGetComponent(out HealthModule unit))
+                {
+
+                    switch (targets)
+                    {
+                        case TargetType.All:
+                            unit.Damage(dd);
+                            break;
+
+                        case TargetType.AlliesOnly:
+                            if (unit.IsAttacker == this.IsAttacker)
+                                unit.Damage(dd);
+                            break;
+
+                        case TargetType.EnemiesOnly:
+                            if (unit.IsAttacker != this.IsAttacker)
+                                unit.Damage(dd);
+                            break;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(damageDeltaTime);
+        }
+    }
     #endregion
 
-    // TODO : create attack visual
+
+    private void SetUpFlameThrowerParticles(float duration, float maxDistance, float angle)
+    {
+        float _SPEED = 9;
+
+        if (flamethrowerParticles == null)
+        {
+            Debug.LogError("No flamethrower particles");
+            return;
+        }
+        ParticleSystem.MainModule main = flamethrowerParticles.main;
+        ParticleSystem.ShapeModule shape = flamethrowerParticles.shape;
+        main.duration = duration;
+        shape.angle = angle;
+        main.startLifetime = maxDistance/_SPEED;
+        main.startSpeed = _SPEED;
+
+        flamethrowerParticles.Play();
+    }
 
     private void Awake()
     {

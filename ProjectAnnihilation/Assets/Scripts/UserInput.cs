@@ -24,6 +24,8 @@ public class UserInput : MonoBehaviour
     private GameObject stateVisual;
     [SerializeField]
     private TMP_Text unitText;
+    [SerializeField]
+    private ParticleSystem flamethrowerParticles;
 
 
     private Unit unit;
@@ -45,6 +47,7 @@ public class UserInput : MonoBehaviour
         wasSelected = false;
         unit.SetStatusObject(stateVisual);
         unit.SetUnitText(unitText);
+        unit.SetFlameThrowerParticles(flamethrowerParticles);
 
         visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);

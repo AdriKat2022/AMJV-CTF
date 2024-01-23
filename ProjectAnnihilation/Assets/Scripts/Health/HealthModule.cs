@@ -26,6 +26,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     private Func<Vector3, Rigidbody, IEnumerator> knockback_CR;
     private Rigidbody rb_unit;
 
+    public bool IsAttacker => unit.IsAttacker;
 
 #if UNITY_EDITOR
 

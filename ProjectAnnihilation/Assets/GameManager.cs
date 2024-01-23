@@ -19,8 +19,7 @@ public class GameManager : MonoBehaviour
     }
     static private GameManager instance;
 
-    [Header("Game settings")]
-    public float timeBeforeTargettingUnit;
+    //[Header("Game settings")]
 
 
     private void Awake()
@@ -39,20 +38,20 @@ public class GameManager : MonoBehaviour
 
     public void TriggerEnemyDeath()
     {
-        onEnemyDeath.Invoke();
+        onEnemyDeath?.Invoke();
     }
     public void TriggerAllyDeath()
     {
-        onAllyDeath.Invoke();
+        onAllyDeath?.Invoke();
     }
 
     public void TriggerFinalMoove()
     {
-        onFinalMoove.Invoke();
+        onFinalMoove?.Invoke();
     }
 
     public void TriggerDeathOfTheKing()
     {
-        onDeathOfTheKing.Invoke();
+        onDeathOfTheKing?.Invoke();
     }
 }
