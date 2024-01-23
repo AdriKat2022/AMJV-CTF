@@ -9966,8 +9966,6 @@ MonoBehaviour:
   flamethrowerParticles: {fileID: 6289321036848835780}
   selfDestructParticles: {fileID: 6898517598102355612}
   hiddenIcon: {fileID: 528744829052050025}
-  unitCanvas: {fileID: 8073025752801040290}
-  specialAttackIcon: {fileID: 0}
 --- !u!114 &3814868992091234696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9997,6 +9995,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 8073025752801040290}
   specialAttackIcon: {fileID: 1436936785428491953}
+  animator: {fileID: 7123774383182513}
 --- !u!54 &2807951573426850550
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10819,14 +10818,13 @@ GameObject:
   - component: {fileID: 8873563071551473176}
   - component: {fileID: 9181862849172848489}
   - component: {fileID: 5759751718652352776}
-  - component: {fileID: 2284617805858517144}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8615235216814116093
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10910,20 +10908,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &2284617805858517144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8073025752801040290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f5ffa7d4514eda4e9a7398d4b3bf178, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  specialAttackIcon: {fileID: 0}
 --- !u!1 &9142470761966667672
 GameObject:
   m_ObjectHideFlags: 0

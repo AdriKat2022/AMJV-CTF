@@ -16,6 +16,8 @@ public class SelectModule : MonoBehaviour
     public static SelectModule Instance => instance;
     private static SelectModule instance;
 
+    public bool IsSelectionNotMultiple => selectedUnits.Count < 2;
+
     private void Awake()
     {
         if (instance == null)
@@ -38,6 +40,7 @@ public class SelectModule : MonoBehaviour
     {
         CheckSelection();
         CheckDeselection();
+
     }
 
     private void CheckDeselection()

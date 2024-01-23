@@ -37,10 +37,11 @@ public class Unit : MonoBehaviour, ISelectable
     protected UnitData unitData;
     [SerializeField]
     protected bool isAttacker; // Defines the team of the unit
-    // UIMap variable moved below in Private Script Variables
-    
+                               // UIMap variable moved below in Private Script Variables
+
 
     // References
+    protected SelectModule selectModule;
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
@@ -48,6 +49,7 @@ public class Unit : MonoBehaviour, ISelectable
     private ParticleSystem flamethrowerParticles;
     private ParticleSystem selfDestructParticles;
     private Image hiddenIcon;
+    private SpecialAttackUI specialAttackUI;
 
 
     // Shared variables
@@ -197,6 +199,50 @@ public class Unit : MonoBehaviour, ISelectable
 
         UpdateStateVisual();
     }
+    private void SetUpFlameThrowerParticles(float duration, float maxDistance, float angle)
+    {
+        float _SPEED = 15;
+
+        if (flamethrowerParticles == null)
+        {
+            Debug.LogError("No flamethrower particles");
+            return;
+        }
+        ParticleSystem.MainModule main = flamethrowerParticles.main;
+        ParticleSystem.ShapeModule shape = flamethrowerParticles.shape;
+        main.duration = duration;
+        shape.angle = angle;
+        main.startLifetime = maxDistance / _SPEED;
+        main.startSpeed = _SPEED;
+
+        flamethrowerParticles.Play();
+    }
+    private void SetUpSelfDestructParticles(float duration, float radius)
+    {
+        float _SPEED = 15;
+
+        if (selfDestructParticles == null)
+        {
+            Debug.LogError("No flamethrower particles");
+            return;
+        }
+        ParticleSystem.MainModule main = selfDestructParticles.main;
+        main.duration = duration;
+        main.startLifetime = radius / _SPEED;
+        main.startSpeed = _SPEED;
+
+        selfDestructParticles.Play();
+    }
+    private void ManageAnimations()
+    {
+        if (isSelected && selectModule.IsSelectionNotMultiple)
+        {
+            specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
+            specialAttackUI.Show();
+        }
+        else 
+            specialAttackUI.Hide();
+    }
     #endregion
 
     #region DEBUG (Gizmos)
@@ -234,6 +280,7 @@ public class Unit : MonoBehaviour, ISelectable
         inEndLag = true;
         endLagTimer = unitData.SpecialAttackEndLag;
         specialActionCooldown = unitData.SpecialAttackRechargeTime;
+        specialAttackUI.Press();
 
         return true;
     }
@@ -510,40 +557,6 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
 
-    private void SetUpFlameThrowerParticles(float duration, float maxDistance, float angle)
-    {
-        float _SPEED = 15;
-
-        if (flamethrowerParticles == null)
-        {
-            Debug.LogError("No flamethrower particles");
-            return;
-        }
-        ParticleSystem.MainModule main = flamethrowerParticles.main;
-        ParticleSystem.ShapeModule shape = flamethrowerParticles.shape;
-        main.duration = duration;
-        shape.angle = angle;
-        main.startLifetime = maxDistance / _SPEED;
-        main.startSpeed = _SPEED;
-
-        flamethrowerParticles.Play();
-    }
-    private void SetUpSelfDestructParticles(float duration, float radius)
-    {
-        float _SPEED = 15;
-
-        if (selfDestructParticles == null)
-        {
-            Debug.LogError("No flamethrower particles");
-            return;
-        }
-        ParticleSystem.MainModule main = selfDestructParticles.main;
-        main.duration = duration;
-        main.startLifetime = radius / _SPEED;
-        main.startSpeed = _SPEED;
-
-        selfDestructParticles.Play();
-    }
 
     private void Awake()
     {
@@ -552,9 +565,12 @@ public class Unit : MonoBehaviour, ISelectable
     }
     private void Start()
     {
+        selectModule = SelectModule.Instance;
+
         navigation = GetComponent<NavMeshAgent>();
         healthModule = GetComponent<HealthModule>();
         rb = GetComponent<Rigidbody>();
+        specialAttackUI = GetComponent<SpecialAttackUI>();
 
         bonusSpeedMaintainers = new();
         bonusAttackMaintainers = new();
@@ -591,6 +607,8 @@ public class Unit : MonoBehaviour, ISelectable
     private void Update()
     {
         DecreaseCooldowns();
+
+        ManageAnimations();
 
         CheckCurrentOrderChange(); // For the visual of the unit
 
