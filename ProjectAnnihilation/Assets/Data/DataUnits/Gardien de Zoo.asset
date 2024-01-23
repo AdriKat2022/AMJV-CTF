@@ -18,12 +18,12 @@ MonoBehaviour:
   <Attack>k__BackingField: 15
   <Armor>k__BackingField: 1
   <AttackRange>k__BackingField: 5
-  <AttackTargets>k__BackingField: 0
+  <AttackTargets>k__BackingField: 1
   <CanSelfAttack>k__BackingField: 0
   <AttackEndLag>k__BackingField: 3
   <AttackRechargeTime>k__BackingField: 0
   <SpecialAttackName>k__BackingField: Trappe
-  <SpecialAttackTargets>k__BackingField: 0
+  <SpecialAttackTargets>k__BackingField: 1
   <CanSelfSpecialAttack>k__BackingField: 0
   <SpecialAttackEndLag>k__BackingField: 0.5
   <SpecialAttackRechargeTime>k__BackingField: 20
