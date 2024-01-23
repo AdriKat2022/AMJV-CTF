@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,7 +58,7 @@ public class SelectModule : MonoBehaviour
             if (!Input.GetKey(keepSelectionKey))
                 DeselectAllUnits();
 
-            if (hit.collider.gameObject.TryGetComponent(out UserInput other))
+            if (hit.collider.gameObject.TryGetComponent(out UserInput other) && other.CanBeSelected)
                 SelectUnit(other.Unit);
         }
     }

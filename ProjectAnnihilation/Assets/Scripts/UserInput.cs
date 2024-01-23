@@ -2,14 +2,24 @@ using TMPro;
 using UnityEngine;
 
 
-
-
 public class UserInput : MonoBehaviour
 {
+    private enum InputType
+    {
+        PlayerInput,
+        Auto
+    }
+
+
     public Unit Unit => unit;
 
+    [Header("Options")]
+    [SerializeField]
+    private InputType inputType;
     [SerializeField]
     private LayerMask terrainLayer;
+
+    [Header("Visual references")]
     [SerializeField]
     private GameObject stateVisual;
     [SerializeField]
@@ -41,15 +51,21 @@ public class UserInput : MonoBehaviour
 
         unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
         unitText.text = unit.UnitData.UnitName;
+
+        //inputType = unit.IsAttacker ? InputType.PlayerInput : InputType.Auto;
     }
 
     private void Update()
     {
         visualTargetManager.ShowTarget(unit.IsSelected && unit.CurrentOrder != UnitState.NOTHING && unit.CurrentOrder != UnitState.IDLE);
-        ManageInput();
+
+        if(inputType == InputType.PlayerInput)
+            ManagePlayerInput();
+        else
+            ManageAutoInput();
     }
 
-    private void ManageInput()
+    private void ManagePlayerInput()
     {
         wasSelected &= unit.IsSelected;
 
@@ -107,6 +123,17 @@ public class UserInput : MonoBehaviour
             unit.ActivateSpecialAbility();
         }
     }
+
+    #region AutoInput
+
+    public bool CanBeSelected => inputType == InputType.PlayerInput;
+
+    private void ManageAutoInput()
+    {
+        // All units will act automatically
+    }
+
+    #endregion
 
     public Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
     {
