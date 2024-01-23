@@ -26,6 +26,8 @@ public class UserInput : MonoBehaviour
     private TMP_Text unitText;
     [SerializeField]
     private ParticleSystem flamethrowerParticles;
+    [SerializeField]
+    private ParticleSystem selfDestructParticles;
 
 
     private Unit unit;
@@ -48,6 +50,7 @@ public class UserInput : MonoBehaviour
         unit.SetStatusObject(stateVisual);
         unit.SetUnitText(unitText);
         unit.SetFlameThrowerParticles(flamethrowerParticles);
+        unit.SetSelfDestructParticles(selfDestructParticles);
 
         visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);

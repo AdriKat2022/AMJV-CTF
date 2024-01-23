@@ -45,6 +45,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected GameManager gameManager;
     protected Rigidbody rb;
     private ParticleSystem flamethrowerParticles;
+    private ParticleSystem selfDestructParticles;
 
 
     // Shared variables
@@ -60,12 +61,12 @@ public class Unit : MonoBehaviour, ISelectable
 
 
     // State Variables
-    private bool isInvisible = false; // If other units can see them
-    private bool isInvincible = false; // Cannot take damage
-    private bool isInvulnerable = false; // Cannot die (hp cannot fall below 1)
-    private bool isSelected = false;
-    private bool isKing = false;
-    private bool isInWater = false; // Serializing this is useless (except for debugging) so i removed it
+    protected bool isInvisible = false; // If other units can see them
+    protected bool isInvincible = false; // Cannot take damage
+    protected bool isInvulnerable = false; // Cannot die (hp cannot fall below 1)
+    protected bool isSelected = false;
+    protected bool isKing = false;
+    protected bool isInWater = false; // Serializing this is useless (except for debugging) so i removed it
 
 
     // Private script variables (add serializeField to see it in the inspector (for debug)
@@ -100,6 +101,7 @@ public class Unit : MonoBehaviour, ISelectable
     public void SetStatusObject(GameObject statusObject) => this.statusObject = statusObject;
     public void SetUnitText(TMP_Text unitText) => this.unitText = unitText;
     public void SetFlameThrowerParticles(ParticleSystem flamethrowerParticles) => this.flamethrowerParticles = flamethrowerParticles;
+    public void SetSelfDestructParticles(ParticleSystem selfDestructParticles) => this.selfDestructParticles = selfDestructParticles;
     private void CheckCurrentOrderChange()
     {
         if(currentOrder != lastCurrentOrder)
@@ -441,6 +443,67 @@ public class Unit : MonoBehaviour, ISelectable
             yield return new WaitForSeconds(damageDeltaTime);
         }
     }
+    /// <summary>
+    /// Create a damage sphere dealing damage over time
+    /// </summary>
+    /// <param name="target">Center of the damage sphere. Put null for no offset.</param>
+    /// <param name="damageOverTime">Damage per tick</param>
+    /// <param name="duration">Duration of the sphere</param>
+    /// <param name="radius">Radius of the sphere</param>
+    /// <param name="targets">Kind of targets tangible by the sphere</param>
+    /// <param name="excludeAttackBonus">Use attack bonus ?</param>
+    /// <param name="ignoreDefense">Damage ignores the defense of other units ?</param>
+    /// <param name="damageDeltaTime">Time per tick</param>
+    /// <returns></returns>
+    protected IEnumerator CreateDamageSphere(GameObject target, float damageOverTime, float duration, float radius, TargetType targets = TargetType.All, bool excludeAttackBonus = false, bool ignoreDefense = false, float damageDeltaTime = .2f)
+    {
+        Vector3 offset = Vector3.zero;
+
+        if(target != null)
+            offset = target.transform.position;
+
+        float _startTime = Time.time;
+
+        DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier);
+
+        SetUpSelfDestructParticles(duration, radius);
+
+        while (Time.time - _startTime < duration)
+        {
+            Collider[] cols = new Collider[15];
+
+            Physics.OverlapSphereNonAlloc(transform.position + offset, radius, cols);
+
+            foreach (Collider col in cols)
+            {
+                if (col == null)
+                    continue;
+                
+                if (col.gameObject.TryGetComponent(out HealthModule unit))
+                {
+
+                    switch (targets)
+                    {
+                        case TargetType.All:
+                            unit.Damage(dd);
+                            break;
+
+                        case TargetType.AlliesOnly:
+                            if (unit.IsAttacker == this.IsAttacker)
+                                unit.Damage(dd);
+                            break;
+
+                        case TargetType.EnemiesOnly:
+                            if (unit.IsAttacker != this.IsAttacker)
+                                unit.Damage(dd);
+                            break;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(damageDeltaTime);
+        }
+    }
+
     #endregion
 
 
@@ -457,10 +520,26 @@ public class Unit : MonoBehaviour, ISelectable
         ParticleSystem.ShapeModule shape = flamethrowerParticles.shape;
         main.duration = duration;
         shape.angle = angle;
-        main.startLifetime = maxDistance/_SPEED;
+        main.startLifetime = maxDistance / _SPEED;
         main.startSpeed = _SPEED;
 
         flamethrowerParticles.Play();
+    }
+    private void SetUpSelfDestructParticles(float duration, float radius)
+    {
+        float _SPEED = 15;
+
+        if (selfDestructParticles == null)
+        {
+            Debug.LogError("No flamethrower particles");
+            return;
+        }
+        ParticleSystem.MainModule main = selfDestructParticles.main;
+        main.duration = duration;
+        main.startLifetime = radius / _SPEED;
+        main.startSpeed = _SPEED;
+
+        selfDestructParticles.Play();
     }
 
     private void Awake()

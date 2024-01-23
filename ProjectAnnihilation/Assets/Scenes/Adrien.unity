@@ -733,28 +733,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4949473198724429706, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
-      propertyPath: angle
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 4949473198724429706, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
       propertyPath: isAttacker
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4949473198724429706, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
-      propertyPath: direction.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4949473198724429706, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
-      propertyPath: direction.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4949473198724429706, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
-      propertyPath: direction.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4949473198724429706, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
-      propertyPath: maxDistance
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5978220599670171473, guid: 865872cef4688424eaa9f1bcbca1f7a7, type: 3}
       propertyPath: m_Name

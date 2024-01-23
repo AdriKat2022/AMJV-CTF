@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Cracheurdefeu : Unit
@@ -11,6 +12,14 @@ public class Cracheurdefeu : Unit
     private float angle;
     [SerializeField]
     private float maxDistance;
+
+    [Header("Last Resort")]
+    [SerializeField]
+    private float s_damageOverTime;
+    [SerializeField]
+    private float s_duration;
+    [SerializeField]
+    private float s_radius;
 
     [Header("Debug")]
     [SerializeField]
@@ -54,6 +63,10 @@ public class Cracheurdefeu : Unit
     {
         if (!base.SpecialAction(target))
             return false;
+
+        isInvulnerable = true;
+        StartCoroutine(CreateDamageSphere(null, s_damageOverTime, s_duration, s_radius));
+        Destroy(gameObject, s_duration);
 
         return true;
     }
