@@ -46,10 +46,13 @@ public class Unit : MonoBehaviour, ISelectable
     protected HealthModule healthModule;
     protected GameManager gameManager;
     protected Rigidbody rb;
-    private ParticleSystem flamethrowerParticles;
-    private ParticleSystem selfDestructParticles;
     private Image hiddenIcon;
     private SpecialAttackUI specialAttackUI;
+    private ParticleSystem flamethrowerParticles;
+    private ParticleSystem selfDestructParticles;
+    private ParticleSystem powerUpParticles;
+    private ParticleSystem speedUpParticles;
+    private ParticleSystem defenseUpParticles;
 
 
     // Shared variables
@@ -111,6 +114,21 @@ public class Unit : MonoBehaviour, ISelectable
     public void SetUnitText(TMP_Text unitText) => this.unitText = unitText;
     public void SetFlameThrowerParticles(ParticleSystem flamethrowerParticles) => this.flamethrowerParticles = flamethrowerParticles;
     public void SetSelfDestructParticles(ParticleSystem selfDestructParticles) => this.selfDestructParticles = selfDestructParticles;
+    public void SetPowerUpParticles(ParticleSystem powerUpParticles) {
+        this.powerUpParticles = powerUpParticles;
+        ParticleSystem.EmissionModule emission = powerUpParticles.emission;
+        emission.enabled = false;
+    }
+    public void SetSpeedUpParticles(ParticleSystem speedUpParticles) {
+        this.speedUpParticles = speedUpParticles;
+        ParticleSystem.EmissionModule emission = speedUpParticles.emission;
+        emission.enabled = false;
+    }
+    public void SetDefenseUpParticles(ParticleSystem defenseUpParticles) {
+        this.defenseUpParticles = defenseUpParticles;
+        ParticleSystem.EmissionModule emission = defenseUpParticles.emission;
+        emission.enabled = false;
+    }
     public void SetHiddenIcon(Image hiddenIcon) {
         this.hiddenIcon = hiddenIcon;
         hiddenIcon.color = Color.clear;
@@ -204,6 +222,20 @@ public class Unit : MonoBehaviour, ISelectable
 
         UpdateStateVisual();
     }
+    private void ManageAnimations()
+    {
+        if (isSelected && selectModule.IsSelectionNotMultiple)
+        {
+            if(unitData.IsSpecialAttackPassive || unitData.SpecialAttackRechargeTime == 0)
+                specialAttackUI.UpdateAttackRecharge(0);
+            else
+                specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
+            
+            specialAttackUI.Show();
+        }
+        else 
+            specialAttackUI.Hide();
+    }
     private void SetUpFlameThrowerParticles(float duration, float maxDistance, float angle)
     {
         float _SPEED = 15;
@@ -237,20 +269,6 @@ public class Unit : MonoBehaviour, ISelectable
         main.startSpeed = _SPEED;
 
         selfDestructParticles.Play();
-    }
-    private void ManageAnimations()
-    {
-        if (isSelected && selectModule.IsSelectionNotMultiple)
-        {
-            if(unitData.IsSpecialAttackPassive || unitData.SpecialAttackRechargeTime == 0)
-                specialAttackUI.UpdateAttackRecharge(0);
-            else
-                specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
-            
-            specialAttackUI.Show();
-        }
-        else 
-            specialAttackUI.Hide();
     }
     #endregion
 
@@ -619,11 +637,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
-        if (gameObject.name == "Barde")
-        {
-            Debug.Log(isInvulnerable);
-        }
-
         DecreaseCooldowns();
 
         ManageAnimations();
@@ -1183,9 +1196,13 @@ public class Unit : MonoBehaviour, ISelectable
     }
     private IEnumerator ApplyPowerUp(PowerUp<Unit> powerUp)
     {
+        ParticleSystem.EmissionModule emission;
         switch (powerUp.type)
         {
             case PowerUpType.SpeedBoost:
+
+                emission = speedUpParticles.emission;
+                emission.enabled = true;
 
                 AddRawBonus(powerUp);
 
@@ -1195,11 +1212,17 @@ public class Unit : MonoBehaviour, ISelectable
                     yield return new WaitForSeconds(powerUp.duration);
 
                 RemoveRawBonus(powerUp);
+
+                if(speedBoostPowerUpsActive == 0)
+                    emission.enabled = false;
 
                 break;
 
             case PowerUpType.AttackBoost:
 
+                emission = powerUpParticles.emission;
+                emission.enabled = true;
+
                 AddRawBonus(powerUp);
 
                 if (powerUp.hasExitCondition)
@@ -1209,11 +1232,16 @@ public class Unit : MonoBehaviour, ISelectable
 
                 RemoveRawBonus(powerUp);
 
+                if (attackBoostPowerUpsActive == 0)
+                    emission.enabled = false;
 
                 break;
 
             case PowerUpType.DefenseBoost:
 
+                emission = defenseUpParticles.emission;
+                emission.enabled = true;
+
                 AddRawBonus(powerUp);
 
 
@@ -1224,6 +1252,8 @@ public class Unit : MonoBehaviour, ISelectable
 
                 RemoveRawBonus(powerUp);
 
+                if (defenseBoostPowerUpsActive == 0)
+                    emission.enabled = false;
 
                 break;
 

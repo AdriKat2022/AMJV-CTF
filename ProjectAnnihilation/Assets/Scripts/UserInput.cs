@@ -31,6 +31,12 @@ public class UserInput : MonoBehaviour
     private ParticleSystem selfDestructParticles;
     [SerializeField]
     private Image hiddenIcon;
+    [SerializeField]
+    private ParticleSystem powerUpParticles;
+    [SerializeField]
+    private ParticleSystem speedUpParticles;
+    [SerializeField]
+    private ParticleSystem defenseUpParticles;
 
 
     private Unit unit;
@@ -55,6 +61,9 @@ public class UserInput : MonoBehaviour
         unit.SetFlameThrowerParticles(flamethrowerParticles);
         unit.SetSelfDestructParticles(selfDestructParticles);
         unit.SetHiddenIcon(hiddenIcon);
+        unit.SetPowerUpParticles(powerUpParticles);
+        unit.SetSpeedUpParticles(speedUpParticles);
+        unit.SetDefenseUpParticles(defenseUpParticles);
 
         visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);
