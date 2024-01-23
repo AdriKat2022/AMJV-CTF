@@ -1,9 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.XR;
-using UnityEngine;
-using UnityEngine.AI;
-
 public class Water : Tile
 {
     #region variables
