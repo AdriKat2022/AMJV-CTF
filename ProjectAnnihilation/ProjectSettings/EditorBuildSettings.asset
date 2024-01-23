@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Labyrinth.unity
     guid: d4adc7f7a6df6d74cbf944d503d4510b
+  - enabled: 1
+    path: Assets/Scenes/Bastion.unity
+    guid: 5e04e1cf3cdea7a41a37b6deaf27b0ce
   m_configObjects: {}
