@@ -372,13 +372,13 @@ public class Unit : MonoBehaviour, ISelectable
     {
         if (target == null)
         {
-            Debug.LogWarning("Attempting to deal damage to null target");
+            Debug.LogWarning("Attempting to deal knockback to null target");
             return;
         }
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new(0, hitstun, knockback * (useAttackBonus ? (attackBonusAdd * attackBonusMultiplier) : 1));
+            DamageData dd = new(0, hitstun, knockback * (useAttackBonus ? ((attackBonusAdd+1) * attackBonusMultiplier) : 1));
             damageableTarget.Damage(dd, healthModule);
         }
     }
@@ -388,7 +388,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// <param name="radius">The sphere radius</param>
     /// <param name="knockbackForce">The max knockbackforce</param>
     /// <param name="offset">Let it null for the sphere center to be at the unit's position</param>
-    protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null, bool useAttackBonus = false)
+    protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null, bool useProgressive = false, bool useAttackBonus = false)
     {
         Collider[] units = new Collider[15];
 
@@ -403,12 +403,17 @@ public class Unit : MonoBehaviour, ISelectable
         {
             if (unit == null)
                 continue;
+            
+            Vector3 direction = (unit.transform.position - transform.position).normalized;
+            
+            float forceFactor = knockbackForce;
 
-            float forceFactor = (radius - (unit.transform.position - transform.position).magnitude) * knockbackForce;
+            if(useProgressive)
+                forceFactor *= (radius - (unit.transform.position - transform.position).magnitude);
 
-            Vector3 knockback = (unit.transform.position - transform.position).normalized * forceFactor;
+            DealKnockback(unit.gameObject, direction * forceFactor, useAttackBonus: useAttackBonus);
 
-            DealKnockback(unit.gameObject, knockback, useAttackBonus: useAttackBonus);
+            Debug.Log("Dealt knockback");
         }
     }
     /// <summary>
@@ -663,6 +668,10 @@ public class Unit : MonoBehaviour, ISelectable
         GroundUpdate();
     }
 
+    protected void UpdateUnitData()
+    {
+        navigation.speed = unitData.Speed;
+    }
     private void DecreaseCooldowns()
     {
         actionCooldown = Mathf.Max(actionCooldown - Time.deltaTime, 0);

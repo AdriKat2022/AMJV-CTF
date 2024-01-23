@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_Name
-      value: BaseUnit(UserInput)
+      value: Braconnier
       objectReference: {fileID: 0}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,5 +55,53 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 3340871487646955698}
+    - targetCorrespondingSourceObject: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 7365416709534532583}
   m_SourcePrefab: {fileID: 100100000, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+--- !u!1 &3776872717306885483 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+  m_PrefabInstance: {fileID: 2170389871298455802}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3340871487646955698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3776872717306885483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ac22c4cbfa3cc429d2a14353d2a725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitData: {fileID: 11400000, guid: 600e35b42f05dbf4a849aef5297b4f91, type: 2}
+  isAttacker: 0
+  projectileScript: {fileID: 7365416709534532583}
+  projectileNumber: 5
+  speed: 20
+  angleDispersionPerBullet: 5
+  bulletRange: 20
+  duration: 5
+--- !u!114 &7365416709534532583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3776872717306885483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172cc6bfc89c63d4d8a587cd4ef93151, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 0.5, z: 0}
+  projectile: {fileID: 9127299003024572419, guid: 93a769123c859e04a9fa24a3ffdde727, type: 3}
+  gravityConstant: 9.8
+  alpha: 45
+  timeBeforeCrash: 0

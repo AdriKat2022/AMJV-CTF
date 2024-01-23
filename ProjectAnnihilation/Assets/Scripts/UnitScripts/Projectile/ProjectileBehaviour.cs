@@ -4,11 +4,12 @@ public class ProjectileBehaviour : MonoBehaviour
 {
     [Header("Default values")]
     [SerializeField]
-    private float damageDone = 1f;
-    [SerializeField]
-    private bool isAttacker = false;
+    private DamageData damageData;
     [SerializeField]
     private float gravityScale = 9.8f;
+
+    private float timespan = 1f;
+    private bool isAttacker;
 
     private Rigidbody rb;
     private Vector3 upVector;
@@ -23,6 +24,8 @@ public class ProjectileBehaviour : MonoBehaviour
 
     private void Update()
     {
+        CheckTimespan();
+
         if (transform.position.y <= 0)
             Destroy(gameObject);
     }
@@ -43,13 +46,21 @@ public class ProjectileBehaviour : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(rb.velocity);
     }
 
+    private void CheckTimespan()
+    {
+        if (timespan <= 0)
+            Destroy(gameObject);
+
+        timespan -= Time.deltaTime;
+    }
 
     #region Setter functions
-    public void SetDamage(float damage) => damageDone = damage;
+    public void SetDamage(DamageData damage) => damageData = damage;
     public void SetTeam(bool isAttacker) => this.isAttacker = isAttacker;
     public void SetVelocity(Vector3 vel) => rb.velocity = vel;
     public void SetGravityScale(float gravityScale) => this.gravityScale = gravityScale;
     public void SetUpVector(Vector3 upVector) => this.upVector = upVector;
+    public void SetTimespan(float timespan) => this.timespan = timespan;
 
     #endregion
 
@@ -59,8 +70,8 @@ public class ProjectileBehaviour : MonoBehaviour
         {
             if (isAttacker != other.gameObject.GetComponent<Unit>().IsAttacker)
             {
-                DamageData dmgData = new(damageDone);
-                damage.Damage(dmgData);
+                damage.Damage(damageData);
+                Destroy(gameObject);
             }
         }
     }

@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_Name
-      value: BaseUnit(UserInput)
+      value: Le public
       objectReference: {fileID: 0}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,5 +55,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 4050544894304650465}
   m_SourcePrefab: {fileID: 100100000, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+--- !u!1 &1346172114275739087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+  m_PrefabInstance: {fileID: 4096714116693522526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4050544894304650465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346172114275739087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a91427b8032c2b47af009243b7d4c45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitData: {fileID: 11400000, guid: 21aeb5efd80144a40aefb84c4a65bb4b, type: 2}
+  isAttacker: 0
+  radius: 2.5
+  knockbackForce: 40
+  defenseBoost: 1
+  duration: 5

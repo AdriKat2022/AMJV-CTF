@@ -27,7 +27,7 @@ public class Jongleur : Unit
         transform.LookAt(target.transform.position);
         if (!specialState)
         {
-            projectileScript.LaunchArc(target.transform.position, unitData.Attack);
+            projectileScript.LaunchArc(target.transform.position, new DamageData(unitData.Attack));
         }
         else
         {
@@ -48,8 +48,7 @@ public class Jongleur : Unit
         specialState = !specialState;
 
         unitData = unitData.OtherStateUnitData; // Allows to switch stats
-
-        // Throw a special attack (or special action
+        UpdateUnitData();
 
         return true;
     }

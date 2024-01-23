@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public struct DamageData
 {
     public Vector3? knockback; // Can be null

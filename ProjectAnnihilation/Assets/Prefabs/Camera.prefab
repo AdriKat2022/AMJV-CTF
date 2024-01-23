@@ -54,7 +54,7 @@ MonoBehaviour:
   minSpeedRotation: 0
   borderXRotation: 20
   borderYRotation: 15
-  scrollSpeed: 10
+  scrollSpeed: 3.5
   disableMouse: 1
   prioritizeKeys: 1
   keyMultiplier: 0.75
