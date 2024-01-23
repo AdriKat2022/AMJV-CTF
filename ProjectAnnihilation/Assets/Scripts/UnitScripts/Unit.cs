@@ -98,10 +98,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #region Events
 
-    private void OnEnable()
-    {
-
-    }
+    // Deselect when game ending (event -> game over)
 
     #endregion
 
@@ -438,7 +435,7 @@ public class Unit : MonoBehaviour, ISelectable
                     }
                 }
             }
-            yield return new WaitForSeconds(powerUpDeltaTime / 1.2f);
+            yield return new WaitForSeconds(powerUpDeltaTime / 1.5f);
         }
     }
     /// <summary>
@@ -622,6 +619,11 @@ public class Unit : MonoBehaviour, ISelectable
 
     private void Update()
     {
+        if (gameObject.name == "Barde")
+        {
+            Debug.Log(isInvulnerable);
+        }
+
         DecreaseCooldowns();
 
         ManageAnimations();
@@ -1256,9 +1258,9 @@ public class Unit : MonoBehaviour, ISelectable
                     yield return new WaitForSeconds(powerUp.duration);
 
 
-                invincibilityPowerUpsActive--;
+                invulnerablePowerUpsActive--;
 
-                if (invincibilityPowerUpsActive <= 0)
+                if (invulnerablePowerUpsActive <= 0)
                     isInvulnerable = false;
 
                 break;

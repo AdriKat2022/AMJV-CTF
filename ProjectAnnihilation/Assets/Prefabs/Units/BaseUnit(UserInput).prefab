@@ -9890,8 +9890,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8439548610329571475}
-  - component: {fileID: -6477774855389630524}
   - component: {fileID: 615370953221497141}
+  - component: {fileID: -6477774855389630524}
   - component: {fileID: 3814868992091234696}
   - component: {fileID: 6102296146037594196}
   - component: {fileID: 2807951573426850550}
@@ -9927,24 +9927,6 @@ Transform:
   - {fileID: 8615235216814116093}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6477774855389630524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3059320389565504913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6db4f5c8e65bfbd42bb3f156be790a3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthBarModule: {fileID: 3409420881814489737}
-  hpColor: {r: 0.26853323, g: 1, b: 0, a: 1}
-  hpBgColor: {r: 1, g: 0, b: 0, a: 1}
-  adaptativeHealthBar: 1
-  healParticles: {fileID: 3214894089807077678}
-  currentHP: 0
 --- !u!114 &615370953221497141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9966,6 +9948,24 @@ MonoBehaviour:
   flamethrowerParticles: {fileID: 6289321036848835780}
   selfDestructParticles: {fileID: 6898517598102355612}
   hiddenIcon: {fileID: 528744829052050025}
+--- !u!114 &-6477774855389630524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3059320389565504913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6db4f5c8e65bfbd42bb3f156be790a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBarModule: {fileID: 3409420881814489737}
+  hpColor: {r: 0.26853323, g: 1, b: 0, a: 1}
+  hpBgColor: {r: 1, g: 0, b: 0, a: 1}
+  adaptativeHealthBar: 1
+  healParticles: {fileID: 3214894089807077678}
+  currentHP: 0
 --- !u!114 &3814868992091234696
 MonoBehaviour:
   m_ObjectHideFlags: 0
