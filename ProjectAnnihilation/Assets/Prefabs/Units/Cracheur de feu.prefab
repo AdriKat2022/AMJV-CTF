@@ -81,5 +81,9 @@ MonoBehaviour:
   isAttacker: 0
   damageOverTime: 1
   duration: 1.5
-  angle: 30
+  angle: 45
   maxDistance: 8
+  s_damageOverTime: 2
+  s_duration: 4
+  s_radius: 8
+  direction: {x: 0, y: 0, z: 0}
