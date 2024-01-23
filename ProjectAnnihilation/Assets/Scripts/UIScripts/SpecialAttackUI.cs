@@ -10,6 +10,7 @@ public class SpecialAttackUI : MonoBehaviour
     [SerializeField]
     private Animator animator;
 
+
     private void Start()
     {
         Hide();
@@ -33,5 +34,10 @@ public class SpecialAttackUI : MonoBehaviour
     public void UpdateAttackRecharge(float amount)
     {
         specialAttackIcon.fillAmount = Mathf.Clamp01(amount);
+    }
+
+    public void Impatient()
+    {
+        animator.SetTrigger("blocked");
     }
 }

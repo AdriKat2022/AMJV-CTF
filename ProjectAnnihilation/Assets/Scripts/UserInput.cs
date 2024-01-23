@@ -128,7 +128,7 @@ public class UserInput : MonoBehaviour
             // FOLLOW IS DEPRECATED FOR THE MOMENT
         }*/
 
-        if(Input.GetAxis("Special") == 1)
+        if (Input.GetKeyDown(KeyCode.A))
         {
             unit.ActivateSpecialAbility();
         }

@@ -96,6 +96,14 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
 
+    #region Events
+
+    private void OnEnable()
+    {
+
+    }
+
+    #endregion
 
     #region Visuals & animation
 
@@ -237,7 +245,11 @@ public class Unit : MonoBehaviour, ISelectable
     {
         if (isSelected && selectModule.IsSelectionNotMultiple)
         {
-            specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
+            if(unitData.IsSpecialAttackPassive || unitData.SpecialAttackRechargeTime == 0)
+                specialAttackUI.UpdateAttackRecharge(0);
+            else
+                specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
+            
             specialAttackUI.Show();
         }
         else 
@@ -273,8 +285,12 @@ public class Unit : MonoBehaviour, ISelectable
         return true;
     }
     protected virtual bool SpecialAction(GameObject target = null) {
+
         if (specialActionCooldown > 0)
+        {
+            specialAttackUI.Impatient();
             return false;
+        }
 
         PauseNavigation();
         inEndLag = true;
