@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class UiMap : MonoBehaviour
 {
@@ -107,6 +109,8 @@ public class UiMap : MonoBehaviour
 
     public void OnClick()
     {
+        Debug.Log("ButtonClicked");
+        SceneManager.MoveGameObjectToScene(GameManager.Instance.gameObject, SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(0);
     }
 
