@@ -27,6 +27,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     private Rigidbody rb_unit;
 
     public bool IsAttacker => unit.IsAttacker;
+    public float CurrentHp => currentHP;
 
 #if UNITY_EDITOR
 
@@ -90,7 +91,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     private float ComputeDamage(DamageData dmgData)
     {
         if (unit.IsInvulnerable)
-            return Mathf.Clamp(dmgData.damage, 0, currentHP - 1);
+            return Mathf.Clamp(dmgData.damage, 0, currentHP - .1f);
 
         return dmgData.damage;
     }
