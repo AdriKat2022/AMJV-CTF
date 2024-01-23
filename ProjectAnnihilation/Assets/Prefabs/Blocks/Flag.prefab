@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1554970743471824724}
   - component: {fileID: 3398307849993667258}
   - component: {fileID: 8553359042354025559}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,8 +53,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.5, z: 1}
-  m_Center: {x: 0, y: 0.25, z: 0}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8553359042354025559
 MonoBehaviour:
   m_ObjectHideFlags: 0
