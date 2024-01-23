@@ -18,16 +18,17 @@ MonoBehaviour:
   <Attack>k__BackingField: 20
   <Armor>k__BackingField: 0
   <AttackRange>k__BackingField: 3
-  <TeamTarget>k__BackingField: 1
+  <AttackTargets>k__BackingField: 0
   <CanSelfAttack>k__BackingField: 0
   <AttackEndLag>k__BackingField: 1
   <AttackRechargeTime>k__BackingField: 0
   <SpecialAttackName>k__BackingField: Distraction
-  <SpecialTeamTargets>k__BackingField: 3
-  <IsSpecialAttackPassive>k__BackingField: 0
+  <SpecialAttackTargets>k__BackingField: 0
+  <CanSelfSpecialAttack>k__BackingField: 0
   <SpecialAttackEndLag>k__BackingField: 1
   <SpecialAttackRechargeTime>k__BackingField: 60
-  <SelectedColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <IsSpecialAttackPassive>k__BackingField: 0
+  <SelectedColor>k__BackingField: {r: 1, g: 0.74041903, b: 0, a: 1}
   <BlinkOnSelected>k__BackingField: 1
   <UseFullBlink>k__BackingField: 1
   <BlinkSpeed>k__BackingField: 0.5

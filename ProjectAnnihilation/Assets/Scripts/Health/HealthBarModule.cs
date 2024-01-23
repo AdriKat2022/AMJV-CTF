@@ -22,24 +22,16 @@ public class HealthBarModule : MonoBehaviour
     private Animator animator;
     private RectTransform rectTransform;
 
-    private const float maxWidth = 3f;
+    private const float maxWidth = 4f;
     private const float minWidth = 1.2f;
-    private const float maxWidthHP = 40f;
+    private const float maxWidthHP = 50f;
 
-
-    private Camera cameraMain;
 
     private void Awake()
     {
         TryGetComponent(out rectTransform);
-        cameraMain = Camera.main;
     }
 
-    private void Update()
-    {
-        //transform.LookAt(cameraMain.transform);
-        transform.rotation = cameraMain.transform.rotation;
-    }
 
     public void Initialize(UnitData unitData, Color bg, Color hp, bool adaptativeBar = false)
     {

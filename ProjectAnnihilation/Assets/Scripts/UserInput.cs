@@ -1,4 +1,8 @@
+using TMPro;
 using UnityEngine;
+
+
+
 
 public class UserInput : MonoBehaviour
 {
@@ -8,6 +12,8 @@ public class UserInput : MonoBehaviour
     private LayerMask terrainLayer;
     [SerializeField]
     private GameObject stateVisual;
+    [SerializeField]
+    private TMP_Text unitText;
 
 
     private Unit unit;
@@ -28,9 +34,13 @@ public class UserInput : MonoBehaviour
 
         wasSelected = false;
         unit.SetStatusObject(stateVisual);
+        unit.SetUnitText(unitText);
 
         visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);
+
+        unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
+        unitText.text = unit.UnitData.UnitName;
     }
 
     private void Update()
@@ -97,6 +107,7 @@ public class UserInput : MonoBehaviour
             unit.ActivateSpecialAbility();
         }
     }
+
     public Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -127,14 +138,10 @@ public class UserInput : MonoBehaviour
         else // ... ou attaquer au passage ?
             unit.SetCurrentOrderState(UnitState.MOVING_ALERT);
 
-        if (!showTargetVisual){
-            visualTargetManager.SetColor(Color.clear);
-            return;
-        }
-        
-        visualTargetManager.UnlockTarget();
-        visualTargetManager.PlaceTargetAt(location);
-        visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
+        if (!showTargetVisual)
+            HideTarget();
+        else
+            PlaceTarget(location);
     }
 
     public void OrderUnitToAttack(Unit unitToAttack, bool showTargetVisual = true)
@@ -143,11 +150,25 @@ public class UserInput : MonoBehaviour
         unit.SetCurrentOrderState(UnitState.MOVENATTACK);
 
         if (!showTargetVisual)
-        {
-            visualTargetManager.SetColor(Color.clear);
-            return;
-        }
+            HideTarget();
+        else
+            LockTarget(unitToAttack);
+    }
+
+    #region Visuals
+    private void PlaceTarget(Vector3 location)
+    {
+        visualTargetManager.UnlockTarget();
+        visualTargetManager.PlaceTargetAt(location);
+        visualTargetManager.SetColor(visualTargetManager.simpleMoveColor);
+    }
+    private void LockTarget(Unit unitToAttack) {
         visualTargetManager.LockTarget(unitToAttack);
         visualTargetManager.SetColor(visualTargetManager.attackUnitColor);
     }
+    private void HideTarget()
+    {
+        visualTargetManager.SetColor(Color.clear);
+    }
+    #endregion
 }

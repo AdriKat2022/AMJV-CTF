@@ -28,7 +28,9 @@ public class UnitData : ScriptableObject
 
 
     [field: Header("Colors")]
-    [field: SerializeField] public Color SelectedColor { get; private set; } = Color.red;
+    [field: SerializeField] public Color AttackerColor { get; private set; } = Color.white;
+    [field: SerializeField] public Color DefenserColor { get; private set; } = Color.red;
+    [field: SerializeField] public Color SelectedColor { get; private set; } = Color.yellow;
     [field: SerializeField] public bool BlinkOnSelected { get; private set; } = true;
     [field: SerializeField] public bool UseFullBlink { get; private set; } = true;
     [field: SerializeField] public float BlinkSpeed { get; private set; } = 0.5f;

@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.WSA;
-
 
 
 public enum TargetType
@@ -95,8 +94,10 @@ public class Unit : MonoBehaviour, ISelectable
     #region Status visuals
 
     private GameObject statusObject; // Defined by UserInput
+    private TMP_Text unitText; // Defined by UserInput
 
-    public void SetStatusObject(GameObject obj) => statusObject = obj;
+    public void SetStatusObject(GameObject statusObject) => this.statusObject = statusObject;
+    public void SetUnitText(TMP_Text unitText) => this.unitText = unitText;
     private void CheckCurrentOrderChange()
     {
         if(currentOrder != lastCurrentOrder)
@@ -151,12 +152,13 @@ public class Unit : MonoBehaviour, ISelectable
 
         while (isSelected)
         {
-
             if(state && blinkTimer >= unitData.BlinkSpeed)
             {
                 blinkTimer = 0;
                 state = !state;
-                rend.material.color = unitData.SelectedColor;
+                //rend.material.color = unitData.SelectedColor;
+
+                unitText.color = IsAttacker ? unitData.AttackerColor : unitData.DefenserColor;
 
                 if(unitData.UseFullBlink)
                     statusObject.SetActive(false);
@@ -165,6 +167,9 @@ public class Unit : MonoBehaviour, ISelectable
             {
                 blinkTimer = 0;
                 state = !state;
+                //rend.material.color = unitData.color;
+
+                unitText.color = unitData.SelectedColor;
 
                 if (unitData.UseFullBlink)
                     statusObject.SetActive(true);
@@ -177,8 +182,8 @@ public class Unit : MonoBehaviour, ISelectable
             yield return null;
         }
         statusObject.transform.localScale = Vector3.one;
-
         statusObject.SetActive(true);
+        unitText.color = IsAttacker ? unitData.AttackerColor : unitData.DefenserColor;
 
         UpdateStateVisual();
     }

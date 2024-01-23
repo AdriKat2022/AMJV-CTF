@@ -91,7 +91,7 @@ InputManager:
     descriptiveName: Use the special ability of the unit
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: space
+    positiveButton: a
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
