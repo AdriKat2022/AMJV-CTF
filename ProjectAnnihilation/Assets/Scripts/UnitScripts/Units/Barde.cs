@@ -2,6 +2,27 @@ using UnityEngine;
 
 public class Barde : Unit
 {
+    [Header("Royal music")]
+    [SerializeField]
+    private float radius;
+    [SerializeField]
+    private float duration;
+    [SerializeField]
+    private float attackMultiplierBonus = 1.3f;
+
+    #region Debug Gizmoz
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, radius);
+    }
+
+#endif
+
+    #endregion
+
     protected override bool Action(GameObject target = null)
     {
         if(!base.Action())
@@ -20,6 +41,13 @@ public class Barde : Unit
         if (!base.SpecialAction())
             return false;
 
+        CreateMusicalSphere();
+
         return true;
+    }
+
+    private void CreateMusicalSphere()
+    {
+        StartCoroutine(PowerUpSphere(attackMultiplierBonus, radius, duration, PowerUpType.AttackBoost));
     }
 }

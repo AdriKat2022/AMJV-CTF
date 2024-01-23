@@ -6,9 +6,9 @@ public class Vétérinaire : Unit
 
     [Header("Divine Area")]
     [SerializeField]
-    private float duration;
-    [SerializeField]
     private float radius;
+    [SerializeField]
+    private float duration;
 
 
     #region Debug Gizmoz
@@ -33,13 +33,7 @@ public class Vétérinaire : Unit
         if (target == null)
             return false;
 
-        
-        if(target.TryGetComponent(out IDamageable targetHealthModule))
-        {
-            Debug.Log(targetHealthModule);
-            Debug.Log(unitData.Attack);
-            targetHealthModule.Heal(unitData.Attack);
-        }
+        Heal(target, unitData.Attack);
 
         return true;
     }

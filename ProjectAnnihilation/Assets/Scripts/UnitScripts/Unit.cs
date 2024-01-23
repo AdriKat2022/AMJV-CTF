@@ -1,7 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Analytics;
+using UnityEngine.WSA;
 
 
 
@@ -140,7 +141,6 @@ public class Unit : MonoBehaviour, ISelectable
                 break;
         }
     }
-
     private IEnumerator BlinkIfSelected()
     {
         statusObject.TryGetComponent(out Renderer rend);
@@ -227,7 +227,7 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
 
-    #region Classic actions
+    #region Unit actions
     /// <summary>
     /// Deal simple damage to the target
     /// </summary>
@@ -247,9 +247,23 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new(damage + (excludeAttackBonus ? 0 : attackBonus), hitstun, knockback, ignoreDefense);
+            DamageData dd = new(excludeAttackBonus ? damage : ((damage+attackBonusAdd) * attackBonusMultiplier), hitstun, knockback, ignoreDefense);
             damageableTarget.Damage(dd, healthModule);
         }
+    }
+    /// <summary>
+    /// Heal a target
+    /// </summary>
+    /// <param name="target">The target</param>
+    /// <param name="heal">Amount to heal</param>
+    protected void Heal(GameObject target, float heal, bool excludeAttackMultiplier = false)
+    {
+        if (target.TryGetComponent(out IDamageable targetHealthModule))
+        {
+            targetHealthModule.Heal(excludeAttackMultiplier ? heal : ((heal + attackBonusAdd) * attackBonusMultiplier));
+        }
+        else
+            Debug.LogWarning("Tried to heal a non healable target", gameObject);
     }
     /// <summary>
     /// Deals simple knockback to a target
@@ -257,7 +271,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// <param name="target">The target to push</param>
     /// <param name="knockback">The vector knockback</param>
     /// <param name="hitstun">Is there a hitstun ? (acts as endlag for the target)</param>
-    protected void DealKnockback(GameObject target, Vector3 knockback, float hitstun = 0)
+    protected void DealKnockback(GameObject target, Vector3 knockback, float hitstun = 0, bool useAttackBonus = false)
     {
         if (target == null)
         {
@@ -267,7 +281,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new(0, hitstun, knockback);
+            DamageData dd = new(0, hitstun, knockback * (useAttackBonus ? (attackBonusAdd * attackBonusMultiplier) : 1));
             damageableTarget.Damage(dd, healthModule);
         }
     }
@@ -277,7 +291,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// <param name="radius">The sphere radius</param>
     /// <param name="knockbackForce">The max knockbackforce</param>
     /// <param name="offset">Let it null for the sphere center to be at the unit's position</param>
-    protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null)
+    protected void CreateRepulsiveSphere(float radius, float knockbackForce, Vector3? offset = null, bool useAttackBonus = false)
     {
         Collider[] units = new Collider[15];
 
@@ -297,7 +311,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             Vector3 knockback = (unit.transform.position - transform.position).normalized * forceFactor;
 
-            DealKnockback(unit.gameObject, knockback);
+            DealKnockback(unit.gameObject, knockback, useAttackBonus: useAttackBonus);
         }
     }
     /// <summary>
@@ -312,11 +326,11 @@ public class Unit : MonoBehaviour, ISelectable
     /// The little, the better, but the more costly in performances.</br>
     /// I don't think a value very close to zero will work.</param>
     /// <returns></returns>
-    protected IEnumerator PowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, TargetType targets = TargetType.All, float powerUpDeltaTime = .5f)
+    protected IEnumerator PowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, bool isMultiplier = true, TargetType targets = TargetType.All, float powerUpDeltaTime = .5f)
     {
         float _startTime = Time.time;
 
-        PowerUp powerUp = new(powerUpType, power, powerUpDeltaTime);
+        PowerUp<Unit> powerUp = new(powerUpType, power, powerUpDeltaTime, isMultiplier, this);
 
 
         while (Time.time - _startTime < duration)
@@ -369,10 +383,13 @@ public class Unit : MonoBehaviour, ISelectable
         healthModule = GetComponent<HealthModule>();
         rb = GetComponent<Rigidbody>();
 
+        bonusSpeedMaintainers = new();
+        bonusAttackMaintainers = new();
+        bonusDefenseMaintainers = new();
+
         isSelected = false;
         isKing = false;
         canAttack = true;
-
         navigation.speed = unitData.Speed;
 
         PassKnockbackFunctionToHealthModule();
@@ -388,8 +405,12 @@ public class Unit : MonoBehaviour, ISelectable
 
         unitState = UnitState.IDLE;
 
-        speedBonus = 0;
-        attackBonus = 0;
+        speedBonusMultiplier = 1;
+        attackBonusMultiplier = 1;
+        defenseBonusMultiplier = 1;
+        speedBonusAdd = 0;
+        attackBonusAdd = 0;
+        defenseBonusAdd = 0;
 
         timeBeforeTargetting = 0;
     }
@@ -438,7 +459,10 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
 
-    // MANAGED INPUT HAS BEEN MOVED TO USERINPUT.CS
+    public void ActivateSpecialAbility()
+    {
+        SpecialAction();
+    }
 
     #region State management functions
 
@@ -897,82 +921,87 @@ public class Unit : MonoBehaviour, ISelectable
 
     #region PowerUps
 
-    protected float speedBonus;
-    protected float attackBonus;
-    protected float defenseBonus;
+    protected float speedBonusMultiplier = 1;
+    protected float attackBonusMultiplier = 1;
+    protected float defenseBonusMultiplier = 1;
+    protected float speedBonusAdd = 0;
+    protected float attackBonusAdd = 0;
+    protected float defenseBonusAdd = 0;
 
     private int attackBoostPowerUpsActive = 0;
     private int speedBoostPowerUpsActive = 0;
     private int defenseBoostPowerUpsActive = 0;
+
     private int invincibilityPowerUpsActive = 0;
     private int invulnerablePowerUpsActive = 0;
 
-    public void ApplyBonuses(PowerUp[] powerUps)
+    private Dictionary<Unit, int> bonusSpeedMaintainers;
+    private Dictionary<Unit, int> bonusAttackMaintainers;
+    private Dictionary<Unit, int> bonusDefenseMaintainers;
+
+    public void ApplyBonuses(PowerUp<Unit>[] powerUps)
     {
-        foreach (PowerUp powerUp in powerUps)
+        foreach (PowerUp<Unit> powerUp in powerUps)
         {
-            StartCoroutine(ApplyPowerUp(powerUp));
+            ApplyBonus(powerUp);
         }
     }
-    public void ApplyBonus(PowerUp powerUp)
+    public void ApplyBonus(PowerUp<Unit> powerUp)
     {
+        switch (powerUp.type)
+        {
+            case PowerUpType.SpeedBoost:
+                if (!bonusSpeedMaintainers.ContainsKey(powerUp.reference))
+                    bonusSpeedMaintainers.Add(powerUp.reference, 0);
+                break;
+
+            case PowerUpType.AttackBoost:
+                if (!bonusAttackMaintainers.ContainsKey(powerUp.reference))
+                    bonusAttackMaintainers.Add(powerUp.reference, 0);
+                break;
+
+            case PowerUpType.DefenseBoost:
+                if (!bonusDefenseMaintainers.ContainsKey(powerUp.reference))
+                    bonusDefenseMaintainers.Add(powerUp.reference, 0);
+                break;
+        }
+        
         StartCoroutine(ApplyPowerUp(powerUp));
     }
-
-    private IEnumerator ApplyPowerUp(PowerUp powerUp)
+    private IEnumerator ApplyPowerUp(PowerUp<Unit> powerUp)
     {
-        switch (powerUp.powerUpType)
+        switch (powerUp.type)
         {
             case PowerUpType.SpeedBoost:
 
-                speedBoostPowerUpsActive++;
-                speedBonus += powerUp.value;
-
-                //speedBoostVisualModule.enabled = true;
+                AddRawBonus(powerUp);
 
                 if (powerUp.hasExitCondition)
                     yield return new WaitUntil(powerUp.endCondition);
                 else
                     yield return new WaitForSeconds(powerUp.duration);
 
-
-                //if (speedPowerUpsActive == 0)
-                //    speedBoostVisualModule.enabled = false;
-
-                speedBoostPowerUpsActive--;
-                speedBonus -= powerUp.value;
+                RemoveRawBonus(powerUp);
 
                 break;
 
             case PowerUpType.AttackBoost:
 
-                attackBoostPowerUpsActive++;
-                attackBonus += powerUp.value;
-
-                //jumpBoostVisualModule.enabled = true;
-
+                AddRawBonus(powerUp);
 
                 if (powerUp.hasExitCondition)
                     yield return new WaitUntil(powerUp.endCondition);
                 else
                     yield return new WaitForSeconds(powerUp.duration);
 
-
-                attackBoostPowerUpsActive--;
-                attackBonus -= powerUp.value;
-
-                //if (attackBoostPowerUpsActive == 0)
-                //    jumpBoostVisualModule.enabled = false;
+                RemoveRawBonus(powerUp);
 
 
                 break;
 
             case PowerUpType.DefenseBoost:
 
-                defenseBoostPowerUpsActive++;
-                defenseBonus += powerUp.value;
-
-                //jumpBoostVisualModule.enabled = true;
+                AddRawBonus(powerUp);
 
 
                 if (powerUp.hasExitCondition)
@@ -980,16 +1009,10 @@ public class Unit : MonoBehaviour, ISelectable
                 else
                     yield return new WaitForSeconds(powerUp.duration);
 
-
-                defenseBoostPowerUpsActive--;
-                defenseBonus -= powerUp.value;
-
-                //if (attackBoostPowerUpsActive == 0)
-                //    jumpBoostVisualModule.enabled = false;
+                RemoveRawBonus(powerUp);
 
 
                 break;
-
 
             case PowerUpType.Invincibility:
 
@@ -1012,7 +1035,7 @@ public class Unit : MonoBehaviour, ISelectable
 
             case PowerUpType.Invulnerability:
 
-                invincibilityPowerUpsActive++;
+                invulnerablePowerUpsActive++;
                 isInvulnerable = true;
 
 
@@ -1070,8 +1093,111 @@ public class Unit : MonoBehaviour, ISelectable
                 SoundManager.Instance.PlayMusic(lastMusic);
 
                 break;*/
-
         }
     }
+
+    private void AddRawBonus(PowerUp<Unit> powerUp)
+    {
+        switch (powerUp.type)
+        {
+            case PowerUpType.SpeedBoost:
+
+                if (powerUp.reference == null || bonusSpeedMaintainers[powerUp.reference] == 0)
+                {
+                    if (powerUp.isMultiplier)
+                        speedBonusMultiplier *= powerUp.value;
+                    else
+                        speedBonusAdd += powerUp.value;
+                    speedBoostPowerUpsActive++;
+                }
+
+                bonusSpeedMaintainers[powerUp.reference] += 1;
+
+                break;
+
+            case PowerUpType.AttackBoost:
+
+                if (powerUp.reference == null || bonusAttackMaintainers[powerUp.reference] == 0)
+                {
+                    if (powerUp.isMultiplier)
+                        attackBonusMultiplier *= powerUp.value;
+                    else
+                        attackBonusAdd += powerUp.value;
+                    attackBoostPowerUpsActive++;
+                }
+
+                bonusAttackMaintainers[powerUp.reference] += 1;
+
+                break;
+
+            case PowerUpType.DefenseBoost:
+
+                if (powerUp.reference == null || bonusDefenseMaintainers[powerUp.reference] == 0)
+                {
+                    if (powerUp.isMultiplier)
+                        defenseBonusMultiplier *= powerUp.value;
+                    else
+                        defenseBonusAdd += powerUp.value;
+                    defenseBoostPowerUpsActive++;
+                }
+
+                bonusDefenseMaintainers[powerUp.reference] += 1;
+
+                break;
+        }
+    }
+
+    private void RemoveRawBonus(PowerUp<Unit> powerUp)
+    {
+        switch (powerUp.type)
+        {
+            case PowerUpType.SpeedBoost:
+
+                bonusSpeedMaintainers[powerUp.reference] -= 1;
+
+                if (powerUp.reference == null || bonusSpeedMaintainers[powerUp.reference] == 0)
+                {
+                    if (powerUp.isMultiplier)
+                        speedBonusMultiplier /= powerUp.value;
+                    else
+                        speedBonusAdd -= powerUp.value;
+                    speedBoostPowerUpsActive--;
+                }
+
+                break;
+
+            case PowerUpType.AttackBoost:
+
+                bonusAttackMaintainers[powerUp.reference] -= 1;
+
+                if (powerUp.reference == null || bonusAttackMaintainers[powerUp.reference] == 0)
+                {
+                    if (powerUp.isMultiplier)
+                        attackBonusMultiplier /= powerUp.value;
+                    else
+                        attackBonusAdd -= powerUp.value;
+                    attackBoostPowerUpsActive--;
+                }
+
+
+                break;
+
+            case PowerUpType.DefenseBoost:
+
+                bonusDefenseMaintainers[powerUp.reference] -= 1;
+
+                if (powerUp.reference == null || bonusDefenseMaintainers[powerUp.reference] == 0)
+                {
+                    if (powerUp.isMultiplier)
+                        defenseBonusMultiplier /= powerUp.value;
+                    else
+                        defenseBonusAdd -= powerUp.value;
+                    defenseBoostPowerUpsActive--;
+                }
+
+                break;
+        }
+    }
+
     #endregion
 }

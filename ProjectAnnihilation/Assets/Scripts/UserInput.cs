@@ -43,7 +43,8 @@ public class UserInput : MonoBehaviour
     {
         wasSelected &= unit.IsSelected;
 
-        if (!unit.IsSelected || Input.GetKey(SelectModule.Instance.keepSelectionKey))
+        // If selection key is held, it's to select other units, not give orders
+        if (!unit.IsSelected || Input.GetKey(SelectModule.Instance.keepSelectionKey)) 
             return;
 
         if (!wasSelected) // Prevents selection from killing the current action
@@ -79,7 +80,7 @@ public class UserInput : MonoBehaviour
             else
                 OrderUnitMoveTo((Vector3)location);
         }
-        else if (Input.GetAxis("Follow") == 1)
+        /*else if (Input.GetAxis("Follow") == 1)
         {
             GetMousePositionOnTerrain(out Unit unit);
 
@@ -89,6 +90,11 @@ public class UserInput : MonoBehaviour
                 unit.SetCurrentOrderState(UnitState.FOLLOWING);
             }
             // FOLLOW IS DEPRECATED FOR THE MOMENT
+        }*/
+
+        if(Input.GetAxis("Special") == 1)
+        {
+            unit.ActivateSpecialAbility();
         }
     }
     public Vector3? GetMousePositionOnTerrain(out Unit other) // Return mouse position on terrain, returns null if nothing was hit.
