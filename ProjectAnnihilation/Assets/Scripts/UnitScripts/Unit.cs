@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 
 
 public enum TargetType
@@ -78,7 +75,6 @@ public class Unit : MonoBehaviour, ISelectable
     private GameObject targetableUnit;
     private GameObject currentTile;
     private UiMap uiMap; // Removed it from this editor for now since it isn't used yet
-    private UnitState lastCurrentOrder;
     private UnitState unitState;
     private UnitState currentOrder;
     private bool canAttack;
@@ -119,6 +115,21 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
     #region UNIT ACTIONS (TO OVERRIDE BY UNIT)
+    protected virtual void Initialize() // Can be overriden if a unit needs a specific initialization
+    {
+        inEndLag = false;
+
+        unitState = UnitState.IDLE;
+
+        speedBonusMultiplier = 1;
+        attackBonusMultiplier = 1;
+        defenseBonusMultiplier = 1;
+        speedBonusAdd = 0;
+        attackBonusAdd = 0;
+        defenseBonusAdd = 0;
+
+        isStunned = false;
+    }
     protected virtual bool Action(GameObject target = null) {
         if (actionCooldown > 0)
             return false;
@@ -424,11 +435,14 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
+    #region Monobehavior
+
     private void Awake()
     {
         gameObject.tag = isAttacker ? "Ally" : "Enemy";
         gameManager = GameManager.Instance;
     }
+
     private void Start()
     {
         selectModule = SelectModule.Instance;
@@ -452,22 +466,6 @@ public class Unit : MonoBehaviour, ISelectable
         Initialize();
     }
 
-    protected virtual void Initialize() // Can be overriden if a unit needs a specific initialization
-    {
-        inEndLag = false;
-
-        unitState = UnitState.IDLE;
-
-        speedBonusMultiplier = 1;
-        attackBonusMultiplier = 1;
-        defenseBonusMultiplier = 1;
-        speedBonusAdd = 0;
-        attackBonusAdd = 0;
-        defenseBonusAdd = 0;
-
-        isStunned = false;
-    }
-
     private void Update()
     {
         if (isStunned)
@@ -489,79 +487,12 @@ public class Unit : MonoBehaviour, ISelectable
         GroundUpdate();
     }
 
+    #endregion
+
     protected void UpdateUnitData()
     {
         navigation.speed = unitData.Speed;
     }
-
-    private void DecreaseCooldowns()
-    {
-        actionCooldown = Mathf.Max(actionCooldown - Time.deltaTime, 0);
-        specialActionCooldown = Mathf.Max(specialActionCooldown - Time.deltaTime, 0);
-    }
-
-    /// <summary>
-    /// Runs once per frame while in end lag.<br />
-    /// UpdateStateMachine is NOT called during end lag. This function is where you can act during those frames.<br />
-    /// 
-    /// By default DECREASES the endLagTimer (in seconds) normally.
-    /// </summary>
-    protected virtual void OnActionEndLag()
-    {
-        if (!inEndLag)
-            return;
-
-        endLagTimer -= Time.deltaTime;
-        if (endLagTimer <= 0f)
-        {
-            inEndLag = false;
-        }
-    }
-
-    public void ActivateSpecialAbility()
-    {
-        SpecialAction();
-    }
-
-    #region State management functions
-
-    public void SetCurrentOrderState(UnitState order)
-    {
-        currentOrder = order;
-    }
-    public void SetFollowedTarget(Transform target)
-    {
-        followedTarget = target;
-    }
-
-    #endregion
-
-    #region Helper functions
-    /// <summary>
-    /// Can the unit attack the target according to the AttackTargets property of the unit ?
-    /// </summary>
-    /// <param name="target">The target to test</param>
-    /// <param name="specialAttack">Set true to look for the SpecialAttackTargets property instead</param>
-    /// <returns>If the unit can target the target</returns>
-    public bool CanTarget(Unit target, bool specialAttack = false)
-    {
-        if (target.IsInvisible)
-            return false;
-
-        bool selfAttackRuleRespected = this != target || (specialAttack ? unitData.CanSelfSpecialAttack : unitData.CanSelfAttack);
-
-        return (specialAttack ? unitData.SpecialAttackTargets : unitData.AttackTargets) switch
-        {
-            TargetType.All => selfAttackRuleRespected,
-            TargetType.EnemiesOnly => isAttacker != target.IsAttacker && selfAttackRuleRespected,
-            TargetType.AlliesOnly => isAttacker == target.IsAttacker && selfAttackRuleRespected,
-            TargetType.SelfOnly => isAttacker == target, // self attack rule is ignored with this target type
-            TargetType.None => false,
-            _ => false,
-        };
-    }
-    
-    #endregion
 
     private void GroundUpdate()
     {
@@ -630,6 +561,88 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
 
+    private void DecreaseCooldowns()
+    {
+        actionCooldown = Mathf.Max(actionCooldown - Time.deltaTime, 0);
+        specialActionCooldown = Mathf.Max(specialActionCooldown - Time.deltaTime, 0);
+    }
+
+    /// <summary>
+    /// Runs once per frame while in end lag.<br />
+    /// UpdateStateMachine is NOT called during end lag. This function is where you can act during those frames.<br />
+    /// 
+    /// By default DECREASES the endLagTimer (in seconds) normally.
+    /// </summary>
+    protected virtual void OnActionEndLag()
+    {
+        if (!inEndLag)
+            return;
+
+        endLagTimer -= Time.deltaTime;
+        if (endLagTimer <= 0f)
+        {
+            inEndLag = false;
+        }
+
+        TurnTowardsTarget();
+    }
+
+    private void TurnTowardsTarget() {
+        if (targetableUnit == null)
+            return;
+
+        Vector3 direction = targetableUnit.transform.position - transform.position;
+
+        direction.y = 0;
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), .05f);
+    }
+
+
+    #region Public controllers
+
+    public void ActivateSpecialAbility()
+    {
+        SpecialAction();
+    }
+    public void SetCurrentOrderState(UnitState order)
+    {
+        currentOrder = order;
+    }
+    public void SetFollowedTarget(Transform target)
+    {
+        followedTarget = target;
+    }
+
+    #endregion
+
+    #region Helper functions
+    /// <summary>
+    /// Can the unit attack the target according to the AttackTargets property of the unit ?
+    /// </summary>
+    /// <param name="target">The target to test</param>
+    /// <param name="specialAttack">Set true to look for the SpecialAttackTargets property instead</param>
+    /// <returns>If the unit can target the target</returns>
+    public bool CanTarget(Unit target, bool specialAttack = false)
+    {
+        if (target.IsInvisible)
+            return false;
+
+        bool selfAttackRuleRespected = this != target || (specialAttack ? unitData.CanSelfSpecialAttack : unitData.CanSelfAttack);
+
+        return (specialAttack ? unitData.SpecialAttackTargets : unitData.AttackTargets) switch
+        {
+            TargetType.All => selfAttackRuleRespected,
+            TargetType.EnemiesOnly => isAttacker != target.IsAttacker && selfAttackRuleRespected,
+            TargetType.AlliesOnly => isAttacker == target.IsAttacker && selfAttackRuleRespected,
+            TargetType.SelfOnly => isAttacker == target, // self attack rule is ignored with this target type
+            TargetType.None => false,
+            _ => false,
+        };
+    }
+    
+    #endregion
+
     #region State Machine
 
     private void UpdateStateMachine()
@@ -680,8 +693,6 @@ public class Unit : MonoBehaviour, ISelectable
         }
         timeBeforeTargetting -= Time.deltaTime;
     }
-
-    #region States
 
     /// <summary>
     /// Does nothing.<br />
@@ -813,8 +824,6 @@ public class Unit : MonoBehaviour, ISelectable
             unitState = currentOrder;
         }
     }
-
-    #endregion
 
     #region Helper functions
     /// <summary>
@@ -962,7 +971,10 @@ public class Unit : MonoBehaviour, ISelectable
     }
     #endregion
 
-    public void BecomeKing() => isKing = true;
+    #region Game Management
+    private void BecomeKing() => isKing = true;
+
+    #endregion
 
     #region Unit selection (interface)
 
@@ -1055,10 +1067,7 @@ public class Unit : MonoBehaviour, ISelectable
 
                 AddRawBonus(powerUp);
 
-                if (powerUp.hasExitCondition)
-                    yield return new WaitUntil(powerUp.endCondition);
-                else
-                    yield return new WaitForSeconds(powerUp.duration);
+                yield return new WaitForSeconds(powerUp.duration);
 
                 RemoveRawBonus(powerUp);
 
@@ -1073,10 +1082,7 @@ public class Unit : MonoBehaviour, ISelectable
 
                 AddRawBonus(powerUp);
 
-                if (powerUp.hasExitCondition)
-                    yield return new WaitUntil(powerUp.endCondition);
-                else
-                    yield return new WaitForSeconds(powerUp.duration);
+                yield return new WaitForSeconds(powerUp.duration);
 
                 RemoveRawBonus(powerUp);
 
@@ -1091,11 +1097,7 @@ public class Unit : MonoBehaviour, ISelectable
 
                 AddRawBonus(powerUp);
 
-
-                if (powerUp.hasExitCondition)
-                    yield return new WaitUntil(powerUp.endCondition);
-                else
-                    yield return new WaitForSeconds(powerUp.duration);
+                yield return new WaitForSeconds(powerUp.duration);
 
                 RemoveRawBonus(powerUp);
 
@@ -1109,12 +1111,7 @@ public class Unit : MonoBehaviour, ISelectable
                 invincibilityPowerUpsActive++;
                 isInvincible = true;
 
-
-                if (powerUp.hasExitCondition)
-                    yield return new WaitUntil(powerUp.endCondition);
-                else
-                    yield return new WaitForSeconds(powerUp.duration);
-
+                yield return new WaitForSeconds(powerUp.duration);
 
                 invincibilityPowerUpsActive--;
 
@@ -1128,12 +1125,7 @@ public class Unit : MonoBehaviour, ISelectable
                 invulnerablePowerUpsActive++;
                 isInvulnerable = true;
 
-
-                if (powerUp.hasExitCondition)
-                    yield return new WaitUntil(powerUp.endCondition);
-                else
-                    yield return new WaitForSeconds(powerUp.duration);
-
+                yield return new WaitForSeconds(powerUp.duration);
 
                 invulnerablePowerUpsActive--;
 
@@ -1147,17 +1139,12 @@ public class Unit : MonoBehaviour, ISelectable
                 invisibilityPowerUpsActive++;
                 isInvisible = true;
 
-                if (powerUp.hasExitCondition)
-                    yield return new WaitUntil(powerUp.endCondition);
-                else
-                    yield return new WaitForSeconds(powerUp.duration);
-
+                yield return new WaitForSeconds(powerUp.duration);
 
                 invisibilityPowerUpsActive--;
 
                 if (invisibilityPowerUpsActive <= 0)
                     isInvisible = false;
-                
 
                 break;
 

@@ -1,6 +1,4 @@
-using JetBrains.Annotations;
 using System;
-using System.Data.SqlTypes;
 public enum PowerUpType
 {
     SpeedBoost,
@@ -22,9 +20,7 @@ public class StatusEffect<Ref> where Ref : class
     public float value;
     public float duration;
     public bool isMultiplier;
-    public bool hasExitCondition;
     public Ref reference;
-    public Func<bool> endCondition; // EndCondition is too complicated to put it into a delegate (so it's deprecated)
 
     /// <summary>
     /// Build your power up with this constructor.
@@ -41,20 +37,5 @@ public class StatusEffect<Ref> where Ref : class
         this.duration = duration;
         this.isMultiplier = isMultiplier;
         this.reference = reference;
-        hasExitCondition = false;
-    }
-
-    /// <summary>
-    /// Deprecated, use the constructor without the condition
-    /// </summary>
-    /// <param name="powerUpType">Test<br>Test</br></param>
-    public StatusEffect(PowerUpType powerUpType, float value, float duration, bool isMultiplier, Unit reference, Func<bool> endCondition)
-    {
-        this.type = powerUpType;
-        this.value = value;
-        this.duration = duration;
-        this.isMultiplier = isMultiplier;
-        this.endCondition = endCondition;
-        hasExitCondition = true;
     }
 }
