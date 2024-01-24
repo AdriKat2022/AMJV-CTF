@@ -11,6 +11,7 @@ public class SelectModule : MonoBehaviour
     private List<Unit> unitsList;
 
     private Camera mainCamera;
+    private GameManager gameManager;
 
     #region Singleton instance
 
@@ -49,12 +50,17 @@ public class SelectModule : MonoBehaviour
 
     private void Start()
     {
+        gameManager = GameManager.Instance;
+
         mainCamera = Camera.main;
         selectedUnits = new List<Unit>();
     }
 
     private void Update()
     {
+        if (!gameManager.GameStarted)
+            return;
+
         CheckSelection();
         CheckDeselection();
     }

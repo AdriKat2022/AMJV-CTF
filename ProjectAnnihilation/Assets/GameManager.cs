@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     public UnityEvent onFinalMoove;
     public UnityEvent onDeathOfTheKing;
 
+    [Header("UI")]
+    [SerializeField]
+    private Animator spaceButtonAnimator;
 
     static public GameManager Instance {
         get {
@@ -18,7 +21,9 @@ public class GameManager : MonoBehaviour
     }
     static private GameManager instance;
 
-    //[Header("Game settings")]
+
+    public bool GameStarted => gameStarted;
+    private bool gameStarted;
 
 
     private void Awake()
@@ -33,6 +38,30 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Cannot have multiple instances of GameManager !");
             Destroy(gameObject);
         }
+
+        gameStarted = false;
+    }
+
+    private void Update()
+    {
+        if(!gameStarted)
+            CheckGameStart();
+    }
+
+    private void CheckGameStart()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            spaceButtonAnimator.SetTrigger("press");
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            spaceButtonAnimator.SetTrigger("release");
+            StartGame();
+        }
+    }
+    private void StartGame()
+    {
+        gameStarted = true;
     }
 
     public void TriggerEnemyDeath()

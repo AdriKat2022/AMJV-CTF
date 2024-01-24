@@ -5,13 +5,13 @@ public class StartPoint : Tile
     #region variables
     
     #endregion
-    // Start is called before the first frame update
+
     void Start()
     {
         tileType = 4;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         
@@ -19,9 +19,10 @@ public class StartPoint : Tile
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Unit>().IsKing == true)
+        if (other.gameObject.TryGetComponent(out Unit unit))
         {
-            Debug.Log("You win");
+            if (unit.IsKing)
+                Debug.Log("Won ");
         }
     }
 }

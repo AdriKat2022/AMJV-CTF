@@ -25,12 +25,14 @@ public class UserInput : MonoBehaviour
 
     private Unit unit;
     private VisualTargetUnit visualTargetManager;
-
+    private GameManager gameManager;
 
     private bool wasSelected;
 
     private void Start()
     {
+        gameManager = GameManager.Instance;
+
         TryGetComponent(out unit);
         TryGetComponent(out visualTargetManager);
 
@@ -49,6 +51,9 @@ public class UserInput : MonoBehaviour
 
     private void Update()
     {
+        if (!gameManager.GameStarted)
+            return;
+
         visualTargetManager.ShowTarget(unit.IsSelected && unit.CurrentOrder != UnitState.NOTHING && unit.CurrentOrder != UnitState.IDLE);
 
         if(inputType == InputType.PlayerInput)
