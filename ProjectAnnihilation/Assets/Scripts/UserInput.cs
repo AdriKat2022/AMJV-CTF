@@ -55,6 +55,7 @@ public class UserInput : MonoBehaviour
             ManageAutoInput();
     }
 
+    public bool CanBeSelected => inputType == InputType.PlayerInput;
     private void ManagePlayerInput()
     {
         wasSelected &= unit.IsSelected;
@@ -118,15 +119,84 @@ public class UserInput : MonoBehaviour
 
     #region AutoInput
 
-    public bool CanBeSelected => inputType == InputType.PlayerInput;
-
     private void ManageAutoInput()
     {
-        // All units will act automatically
-        //SelectModule.Instance.GetAllUnits().ForEach(unit =>
-        //{
 
-        //});
+        if (Random.value > 0.8)
+            return;
+
+        Unit king = null;
+        Unit closestUnitInteractable = null;
+        float minDistance = 9999f;
+        
+        switch (unit.UnitData.AttackTargets)
+        {
+            case TargetType.AlliesOnly: // Most likely a healer
+
+                float smallestRatio = 1;
+
+                SelectModule.Instance.GetAllUnits().ForEach(otherUnit =>
+                {
+                    if (otherUnit == unit) return;
+
+                    if (otherUnit.IsKing) king = otherUnit;
+
+                    if (otherUnit.IsAttacker != unit.IsAttacker) return;
+
+                    float ratio = otherUnit.CurrentHealth/otherUnit.UnitData.MaxHP;
+
+                    if (ratio >= smallestRatio) return;
+                    
+                    smallestRatio = ratio;
+                    closestUnitInteractable = otherUnit;
+
+                });
+
+                if(closestUnitInteractable != null)
+                    OrderUnitToAttack(closestUnitInteractable, false);
+
+                break;
+
+            default: // Every other case
+                
+                SelectModule.Instance.GetAllUnits().ForEach(otherUnit =>
+                {
+                    if(otherUnit == unit) return;
+                    
+                    if (otherUnit.IsKing) king = otherUnit;
+
+                    if (otherUnit.IsAttacker == unit.IsAttacker) return;
+
+                    if(!CanSeePoint(otherUnit.transform)) return;
+
+                    if ((otherUnit.transform.position - transform.position).sqrMagnitude > minDistance) return;
+                    
+                    minDistance = (otherUnit.transform.position - transform.position).sqrMagnitude;
+                    closestUnitInteractable = otherUnit;
+                });
+
+                if (king != null && CanSeePoint(king.transform))
+                    OrderUnitToAttack(king, false);
+
+                else if(closestUnitInteractable != null)
+                    OrderUnitToAttack(closestUnitInteractable, false);
+
+                else if (king != null)
+                    OrderUnitToAttack(king, false);
+
+                if (Random.value > .95f)
+                    OrderUnitToSpecialAttack();
+                
+                break;
+        }
+
+    }
+
+    private bool CanSeePoint(Transform point)
+    {
+        if (unit == null) return false;
+
+        return Physics.Raycast(transform.position, point.position - transform.position, (point.position - transform.position).magnitude, LayerMask.GetMask("Ground"));
     }
 
     #endregion
@@ -177,6 +247,9 @@ public class UserInput : MonoBehaviour
         else
             LockTarget(unitToAttack);
     }
+
+    public void OrderUnitToSpecialAttack() => unit.ActivateSpecialAbility();
+    
 
     #region Visuals
     private void PlaceTarget(Vector3 location)

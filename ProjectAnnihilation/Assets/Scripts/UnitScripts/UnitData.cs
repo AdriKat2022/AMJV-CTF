@@ -1,9 +1,17 @@
 using UnityEngine;
 
+
+public enum UnitType // Unused
+{
+    Attacker,
+    Healer
+}
+
 [CreateAssetMenu(menuName = "Unit/New UnitData", order = 1)]
 public class UnitData : ScriptableObject
 {
     [field: SerializeField] public string UnitName { get; private set; }
+    //[field: SerializeField] public UnitType UnitType { get; private set; }
 
     [field: Header("Stats")]
     [field: SerializeField] public float MaxHP { get; private set; }

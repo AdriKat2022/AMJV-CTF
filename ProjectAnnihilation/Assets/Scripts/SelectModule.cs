@@ -21,12 +21,12 @@ public class SelectModule : MonoBehaviour
 
     private void Awake()
     {
-        unitsList = new List<Unit>();
-
         if (instance == null)
             instance = this;
         else
             Destroy(gameObject);
+
+        unitsList = new List<Unit>();
     }
 
     #endregion

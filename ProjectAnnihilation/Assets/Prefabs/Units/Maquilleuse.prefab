@@ -87,4 +87,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 231be425642f7ea4db9db32b6d73bcde, type: 2}
   isAttacker: 0
+  animator: {fileID: 0}
   invisibilityDuration: 15

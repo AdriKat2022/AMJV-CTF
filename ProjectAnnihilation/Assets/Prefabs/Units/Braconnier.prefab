@@ -90,6 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 600e35b42f05dbf4a849aef5297b4f91, type: 2}
   isAttacker: 0
+  animator: {fileID: 0}
   projectileScript: {fileID: 7365416709534532583}
   projectileNumber: 5
   speed: 20

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Lepublic : Unit
 {
+    [Header("Le public")]
     [SerializeField]
     private float radius;
     [SerializeField]

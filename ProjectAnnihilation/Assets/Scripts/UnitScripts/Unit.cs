@@ -48,6 +48,7 @@ public class Unit : MonoBehaviour, ISelectable
 
 
     // Shared variables
+    public float CurrentHealth => healthModule.CurrentHp;
     public float SpecialActionCooldown => specialActionCooldown;
     public UnitState CurrentOrder => currentOrder;
     public bool IsAttacker => isAttacker;
@@ -94,13 +95,9 @@ public class Unit : MonoBehaviour, ISelectable
     #endregion
 
     #region Unit registration
-    private void OnEnable()
-    {
-        SelectModule.Instance.Register(this);
-    }
     private void OnDisable()
     {
-        SelectModule.Instance.Unregister(this);
+        selectModule.Unregister(this);
     }
     #endregion
 
@@ -457,6 +454,8 @@ public class Unit : MonoBehaviour, ISelectable
     private void Start()
     {
         selectModule = SelectModule.Instance;
+        selectModule.Register(this);
+
 
         navigation = GetComponent<NavMeshAgent>();
         healthModule = GetComponent<HealthModule>();
@@ -662,49 +661,56 @@ public class Unit : MonoBehaviour, ISelectable
         {
             case UnitState.NOTHING:
 
-                animator.SetFloat("Speed", 0f);
+                if(animator != null)
+                    animator.SetFloat("Speed", 0f);
                 NothingState();
 
                 break;
 
             case UnitState.IDLE:
 
-                animator.SetFloat("Speed", 0f);
+                if (animator != null)
+                    animator.SetFloat("Speed", 0f);
                 HoldPosition();
 
                 break;
 
             case UnitState.MOVING:
 
-                animator.SetFloat("Speed", navigation.speed);
+                if(animator != null)
+                    animator.SetFloat("Speed", navigation.speed);
                 MovingAlertState();
 
                 break;
 
             case UnitState.MOVING_ALERT:
 
-                animator.SetFloat("Speed", navigation.speed);
+                if(animator != null)
+                    animator.SetFloat("Speed", navigation.speed);
                 MovingState();
 
                 break;
 
             case UnitState.MOVENATTACK:
 
-                animator.SetFloat("Speed", navigation.speed);
+                if(animator != null)
+                    animator.SetFloat("Speed", navigation.speed);
                 MoveNAttackState();
 
                 break;
 
             case UnitState.FOLLOWING:
 
-                animator.SetFloat("Speed", navigation.speed);
+                if(animator != null)
+                    animator.SetFloat("Speed", navigation.speed);
                 FollowingState();
 
                 break;
 
             case UnitState.PATROLLING:
 
-                animator.SetFloat("Speed", navigation.speed);
+                if(animator != null)
+                    animator.SetFloat("Speed", navigation.speed);
                 PatrollingState();
 
                 break;

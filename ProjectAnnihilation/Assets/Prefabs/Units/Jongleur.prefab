@@ -174,6 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 88d60cc541cb8214a8f44d5ef1256b8f, type: 2}
   isAttacker: 0
+  animator: {fileID: 0}
   projectileScript: {fileID: 5226914156621369831}
 --- !u!114 &5226914156621369831
 MonoBehaviour:

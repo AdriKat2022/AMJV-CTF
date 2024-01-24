@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Braconnier : Unit
 {
+    [Header("Braconnier")]
     [SerializeField]
     private ProjectileLauncher projectileScript;
     [Header("Projectile")]

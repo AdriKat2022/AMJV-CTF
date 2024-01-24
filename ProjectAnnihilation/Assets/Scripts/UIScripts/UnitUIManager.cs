@@ -148,12 +148,14 @@ public class UnitUIManager : MonoBehaviour
 
     public void ShowInability()
     {
-        sa_animator.SetTrigger("showInability");
+        if(sa_animator.isActiveAndEnabled)
+            sa_animator.SetTrigger("showInability");
     }
 
     public void Impatient()
     {
-        sa_animator.SetTrigger("blocked");
+        if (sa_animator.isActiveAndEnabled)
+            sa_animator.SetTrigger("blocked");
     }
 
     private void HideSpecialAttackIcon()

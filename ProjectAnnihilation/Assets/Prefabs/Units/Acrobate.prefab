@@ -87,4 +87,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 57ce130859499f442ad417af17cb7abe, type: 2}
   isAttacker: 0
+  animator: {fileID: 0}
   hitstun: 1

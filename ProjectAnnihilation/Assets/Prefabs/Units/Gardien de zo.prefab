@@ -90,6 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 3bd907a5980d6ce4e97603a67d7f09b6, type: 2}
   isAttacker: 0
+  animator: {fileID: 0}
   launcher: {fileID: 4977121368183999028}
   nDarts: 3
   dartSpeed: 6
