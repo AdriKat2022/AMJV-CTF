@@ -40,24 +40,17 @@ public class Unit : MonoBehaviour, ISelectable
     protected bool isAttacker; // Defines the team of the unit
                                // UIMap variable moved below in Private Script Variables
 
-
     // References
     protected SelectModule selectModule;
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
     protected Rigidbody rb;
-    private Image hiddenIcon;
-    private SpecialAttackUI specialAttackUI;
-    private ParticleSystem flamethrowerParticles;
-    private ParticleSystem selfDestructParticles;
-    private ParticleSystem powerUpParticles;
-    private ParticleSystem speedUpParticles;
-    private ParticleSystem defenseUpParticles;
-    private GameObject unitVisual;
+    private UnitUIManager unitUiManager;
 
 
     // Shared variables
+    public float SpecialActionCooldown => specialActionCooldown;
     public UnitState CurrentOrder => currentOrder;
     public bool IsAttacker => isAttacker;
     public bool IsInvisible => isInvisible;
@@ -110,202 +103,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region Visuals & animation
-
-    private GameObject statusObject; // Defined by UserInput
-    private TMP_Text unitText; // Defined by UserInput
-
-    public void SetStatusObject(GameObject statusObject) => this.statusObject = statusObject;
-    public void SetUnitText(TMP_Text unitText) => this.unitText = unitText;
-    public void SetFlameThrowerParticles(ParticleSystem flamethrowerParticles) => this.flamethrowerParticles = flamethrowerParticles;
-    public void SetSelfDestructParticles(ParticleSystem selfDestructParticles) => this.selfDestructParticles = selfDestructParticles;
-    public void SetPowerUpParticles(ParticleSystem powerUpParticles) {
-        this.powerUpParticles = powerUpParticles;
-        ParticleSystem.EmissionModule emission = powerUpParticles.emission;
-        emission.enabled = false;
-    }
-    public void SetSpeedUpParticles(ParticleSystem speedUpParticles) {
-        this.speedUpParticles = speedUpParticles;
-        ParticleSystem.EmissionModule emission = speedUpParticles.emission;
-        emission.enabled = false;
-    }
-    public void SetDefenseUpParticles(ParticleSystem defenseUpParticles) {
-        this.defenseUpParticles = defenseUpParticles;
-        ParticleSystem.EmissionModule emission = defenseUpParticles.emission;
-        emission.enabled = false;
-    }
-    public void SetHiddenIcon(Image hiddenIcon) {
-        this.hiddenIcon = hiddenIcon;
-        hiddenIcon.color = Color.clear;
-    }
-    private void CheckCurrentOrderChange()
-    {
-        if(currentOrder != lastCurrentOrder)
-        {
-            lastCurrentOrder = currentOrder;
-            UpdateStateVisual();
-        }
-    }
-    private void UpdateStateVisual()
-    {
-        if (statusObject == null || !statusObject.TryGetComponent(out Renderer rend))
-            return;
-
-        switch (currentOrder)
-        {
-            case UnitState.NOTHING:
-                rend.material.color = unitData.NothingColor;
-                break;
-
-            case UnitState.IDLE:
-                rend.material.color = unitData.IdleColor;
-                break;
-
-            case UnitState.MOVING:
-                rend.material.color = unitData.MovingColor;
-                break;
-
-            case UnitState.MOVING_ALERT:
-                rend.material.color = unitData.MovingFocusedColor;
-                break;
-
-            case UnitState.MOVENATTACK:
-                rend.material.color = unitData.ChaseColor;
-                break;
-
-            case UnitState.FOLLOWING:
-                //rend.material.color = unitData.color;
-                break;
-
-            case UnitState.PATROLLING:
-                //rend.material.color = unitData.nothingColor;
-                break;
-        }
-    }
-    private IEnumerator BlinkIfSelected()
-    {
-        statusObject.TryGetComponent(out Renderer rend);
-        statusObject.transform.localScale = Vector3.one * 2;
-
-        float blinkTimer = unitData.BlinkSpeed;
-        bool state = false;
-
-        while (isSelected)
-        {
-            if(state && blinkTimer >= unitData.BlinkSpeed)
-            {
-                blinkTimer = 0;
-                state = !state;
-                //rend.material.color = unitData.SelectedColor;
-
-                unitText.color = IsAttacker ? unitData.AttackerColor : unitData.DefenserColor;
-
-                if(unitData.UseFullBlink)
-                    statusObject.SetActive(false);
-            }
-            else if(!state && blinkTimer >= unitData.BlinkSpeed)
-            {
-                blinkTimer = 0;
-                state = !state;
-                //rend.material.color = unitData.color;
-
-                unitText.color = unitData.SelectedColor;
-
-                if (unitData.UseFullBlink)
-                    statusObject.SetActive(true);
-
-                UpdateStateVisual();
-            }
-
-            blinkTimer += Time.deltaTime;
-
-            yield return null;
-        }
-        statusObject.transform.localScale = Vector3.one;
-        statusObject.SetActive(true);
-        unitText.color = IsAttacker ? unitData.AttackerColor : unitData.DefenserColor;
-
-        UpdateStateVisual();
-    }
-    private IEnumerator StunAnimation()
-    {
-        Vector3 basePosition = unitVisual.transform.localPosition;
-
-        float t = 0;
-        bool state = false;
-
-        while(isStunned)
-        {
-            if (state)
-            {
-                unitVisual.transform.localPosition = basePosition + Vector3.right * .1f;
-                t -= Time.deltaTime;
-                if(t < 0)
-                    state = false;
-            }
-            else
-            {
-                unitVisual.transform.localPosition = basePosition - Vector3.right * .1f;
-                t += Time.deltaTime;
-                if(t > .01f)
-                    state = true;
-            }
-
-            stunTimer -= Time.deltaTime;
-
-            yield return null;
-        }
-    }
-    private void ManageAnimations()
-    {
-        if (isSelected && selectModule.IsSelectionNotMultiple)
-        {
-            if(unitData.IsSpecialAttackPassive || unitData.SpecialAttackRechargeTime == 0)
-                specialAttackUI.UpdateAttackRecharge(1);
-            else
-                specialAttackUI.UpdateAttackRecharge(1 - specialActionCooldown / unitData.SpecialAttackRechargeTime);
-            
-            specialAttackUI.Show();
-        }
-        else 
-            specialAttackUI.Hide();
-    }
-    private void SetUpFlameThrowerParticles(float duration, float maxDistance, float angle)
-    {
-        float _SPEED = 15;
-
-        if (flamethrowerParticles == null)
-        {
-            Debug.LogError("No flamethrower particles");
-            return;
-        }
-        ParticleSystem.MainModule main = flamethrowerParticles.main;
-        ParticleSystem.ShapeModule shape = flamethrowerParticles.shape;
-        main.duration = duration;
-        shape.angle = angle;
-        main.startLifetime = maxDistance / _SPEED;
-        main.startSpeed = _SPEED;
-
-        flamethrowerParticles.Play();
-    }
-    private void SetUpSelfDestructParticles(float duration, float radius)
-    {
-        float _SPEED = 15;
-
-        if (selfDestructParticles == null)
-        {
-            Debug.LogError("No flamethrower particles");
-            return;
-        }
-        ParticleSystem.MainModule main = selfDestructParticles.main;
-        main.duration = duration;
-        main.startLifetime = radius / _SPEED;
-        main.startSpeed = _SPEED;
-
-        selfDestructParticles.Play();
-    }
-    #endregion
-
     #region DEBUG (Gizmos)
     void OnDrawGizmosSelected()
     {
@@ -337,13 +134,13 @@ public class Unit : MonoBehaviour, ISelectable
 
         if(unitData.IsSpecialAttackPassive)
         {
-            specialAttackUI.ShowInability();
+            unitUiManager.ShowInability();
             return false;
         }
 
         if (specialActionCooldown > 0)
         {
-            specialAttackUI.Impatient();
+            unitUiManager.Impatient();
             return false;
         }
 
@@ -351,7 +148,7 @@ public class Unit : MonoBehaviour, ISelectable
         inEndLag = true;
         endLagTimer = unitData.SpecialAttackEndLag;
         specialActionCooldown = unitData.SpecialAttackRechargeTime;
-        specialAttackUI.Press();
+        unitUiManager.Press();
 
         return true;
     }
@@ -446,8 +243,6 @@ public class Unit : MonoBehaviour, ISelectable
                 forceFactor *= (radius - (unit.transform.position - transform.position).magnitude);
 
             DealKnockback(unit.gameObject, direction * forceFactor, useAttackBonus: useAttackBonus);
-
-            Debug.Log("Dealt knockback");
         }
     }
     /// <summary>
@@ -521,17 +316,15 @@ public class Unit : MonoBehaviour, ISelectable
         DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier);
 
         Vector3 direction = (target.transform.position - transform.position).normalized;
-        //Vector3 perpendicularDirection = Vector3.Cross(Vector3.up, direction);
 
-        SetUpFlameThrowerParticles(duration, maxDistance, angle);
+        unitUiManager.SetUpFlameThrowerParticles(duration, maxDistance, angle);
 
-        Vector3 perpendicularDirection = Vector3.Cross(Vector3.up, direction).normalized;
+        //Vector3 perpendicularDirection = Vector3.Cross(Vector3.up, direction).normalized;
 
         while (Time.time - _startTime < duration)
         {
             Collider[] cols = new Collider[15];
 
-            //Physics.OverlapBoxNonAlloc(transform.position + direction * maxDistance / 2, direction * maxDistance / 2 + Mathf.Sin(angle * Mathf.PI * 180) * maxDistance * perpendicularDirection, cols);
             Physics.OverlapBoxNonAlloc(transform.position + direction * maxDistance / 2, Mathf.Sin(angle * Mathf.PI / 180) * maxDistance * Vector3.right + maxDistance * Vector3.forward + Vector3.up, cols, transform.rotation);
 
             foreach (Collider col in cols)
@@ -539,7 +332,6 @@ public class Unit : MonoBehaviour, ISelectable
                 if (col == null)
                     continue;
 
-                //Debug.Log(Vector3.Angle(direction, col.bounds.center - transform.position));
                 Debug.Log(col.gameObject.name);
 
                 if (Mathf.Abs(Vector3.Angle(direction, col.bounds.center - transform.position)) > angle)
@@ -592,7 +384,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier);
 
-        SetUpSelfDestructParticles(duration, radius);
+        unitUiManager.SetUpSelfDestructParticles(duration, radius);
 
         while (Time.time - _startTime < duration)
         {
@@ -632,8 +424,6 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-
-
     private void Awake()
     {
         gameObject.tag = isAttacker ? "Ally" : "Enemy";
@@ -646,9 +436,7 @@ public class Unit : MonoBehaviour, ISelectable
         navigation = GetComponent<NavMeshAgent>();
         healthModule = GetComponent<HealthModule>();
         rb = GetComponent<Rigidbody>();
-        specialAttackUI = GetComponent<SpecialAttackUI>();
-
-        unitVisual = transform.Find("BasicMotionsDummyModel").gameObject;
+        unitUiManager = GetComponent<UnitUIManager>();
 
         bonusSpeedMaintainers = new();
         bonusAttackMaintainers = new();
@@ -660,8 +448,6 @@ public class Unit : MonoBehaviour, ISelectable
         navigation.speed = unitData.Speed;
 
         PassKnockbackFunctionToHealthModule();
-
-        UpdateStateVisual();
 
         Initialize();
     }
@@ -688,10 +474,6 @@ public class Unit : MonoBehaviour, ISelectable
             return;
 
         DecreaseCooldowns();
-
-        ManageAnimations();
-
-        CheckCurrentOrderChange(); // For the visual of the unit
 
         if (inEndLag)
         {
@@ -1186,12 +968,11 @@ public class Unit : MonoBehaviour, ISelectable
 
     public void Select()
     {
+        if(unitData.BlinkOnSelected && !isSelected)
+            unitUiManager.BlinkSelected();
+
         isSelected = true;
-
-        if(unitData.BlinkOnSelected)
-            StartCoroutine(BlinkIfSelected());
     }
-
     public void Deselect()
     {
         isSelected = false;
@@ -1266,13 +1047,11 @@ public class Unit : MonoBehaviour, ISelectable
     }
     private IEnumerator ApplyPowerUp(StatusEffect<Unit> powerUp)
     {
-        ParticleSystem.EmissionModule emission;
         switch (powerUp.type)
         {
             case PowerUpType.SpeedBoost:
 
-                emission = speedUpParticles.emission;
-                emission.enabled = true;
+                unitUiManager.ToogleSpeedUpParticles(true);
 
                 AddRawBonus(powerUp);
 
@@ -1284,14 +1063,13 @@ public class Unit : MonoBehaviour, ISelectable
                 RemoveRawBonus(powerUp);
 
                 if(speedBoostPowerUpsActive == 0)
-                    emission.enabled = false;
+                    unitUiManager.ToogleSpeedUpParticles(false);
 
                 break;
 
             case PowerUpType.AttackBoost:
 
-                emission = powerUpParticles.emission;
-                emission.enabled = true;
+                unitUiManager.TooglePowerUpParticles(true);
 
                 AddRawBonus(powerUp);
 
@@ -1303,14 +1081,13 @@ public class Unit : MonoBehaviour, ISelectable
                 RemoveRawBonus(powerUp);
 
                 if (attackBoostPowerUpsActive == 0)
-                    emission.enabled = false;
+                    unitUiManager.TooglePowerUpParticles(false);
 
                 break;
 
             case PowerUpType.DefenseBoost:
 
-                emission = defenseUpParticles.emission;
-                emission.enabled = true;
+                unitUiManager.ToogleDefenseUpParticles(true);
 
                 AddRawBonus(powerUp);
 
@@ -1323,7 +1100,7 @@ public class Unit : MonoBehaviour, ISelectable
                 RemoveRawBonus(powerUp);
 
                 if (defenseBoostPowerUpsActive == 0)
-                    emission.enabled = false;
+                    unitUiManager.ToogleDefenseUpParticles(false);
 
                 break;
 
@@ -1367,15 +1144,8 @@ public class Unit : MonoBehaviour, ISelectable
 
             case PowerUpType.Invisibility:
 
-                if(invisibilityPowerUpsActive == 0)
-                {
-                    hiddenIcon.color = Color.white;
-                }
-
                 invisibilityPowerUpsActive++;
                 isInvisible = true;
-
-               
 
                 if (powerUp.hasExitCondition)
                     yield return new WaitUntil(powerUp.endCondition);
@@ -1386,10 +1156,8 @@ public class Unit : MonoBehaviour, ISelectable
                 invisibilityPowerUpsActive--;
 
                 if (invisibilityPowerUpsActive <= 0)
-                {
                     isInvisible = false;
-                    hiddenIcon.color = Color.clear;
-                }
+                
 
                 break;
 
@@ -1399,10 +1167,8 @@ public class Unit : MonoBehaviour, ISelectable
                 isStunned = true;
 
                 if (stunActive == 0)
-                {
-                    //hiddenIcon.color = Color.white;
-                    StartCoroutine(StunAnimation());
-                }
+                    unitUiManager.StartStunAnimation();
+                
 
                 stunActive++;
 
@@ -1411,10 +1177,8 @@ public class Unit : MonoBehaviour, ISelectable
                 stunActive--;
 
                 if (stunActive <= 0)
-                {
                     isStunned = false;
-                    //hiddenIcon.color = Color.clear;
-                }
+                
 
                 break;
         }

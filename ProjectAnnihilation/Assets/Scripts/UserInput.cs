@@ -20,24 +20,6 @@ public class UserInput : MonoBehaviour
     [SerializeField]
     private LayerMask terrainLayer;
 
-    [Header("Visual references")]
-    [SerializeField]
-    private GameObject stateVisual;
-    [SerializeField]
-    private TMP_Text unitText;
-    [SerializeField]
-    private ParticleSystem flamethrowerParticles;
-    [SerializeField]
-    private ParticleSystem selfDestructParticles;
-    [SerializeField]
-    private Image hiddenIcon;
-    [SerializeField]
-    private ParticleSystem powerUpParticles;
-    [SerializeField]
-    private ParticleSystem speedUpParticles;
-    [SerializeField]
-    private ParticleSystem defenseUpParticles;
-
 
     private Unit unit;
     private VisualTargetUnit visualTargetManager;
@@ -56,20 +38,9 @@ public class UserInput : MonoBehaviour
             Debug.LogWarning("Visual target manager not detected", gameObject);
 
         wasSelected = false;
-        unit.SetStatusObject(stateVisual);
-        unit.SetUnitText(unitText);
-        unit.SetFlameThrowerParticles(flamethrowerParticles);
-        unit.SetSelfDestructParticles(selfDestructParticles);
-        unit.SetHiddenIcon(hiddenIcon);
-        unit.SetPowerUpParticles(powerUpParticles);
-        unit.SetSpeedUpParticles(speedUpParticles);
-        unit.SetDefenseUpParticles(defenseUpParticles);
 
         visualTargetManager.UnlockTarget();
         visualTargetManager.ShowTarget(false);
-
-        unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
-        unitText.text = unit.UnitData.UnitName;
 
         inputType = unit.IsAttacker ? InputType.PlayerInput : InputType.Auto;
     }

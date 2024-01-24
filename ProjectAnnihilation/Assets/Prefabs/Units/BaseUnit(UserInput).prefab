@@ -14792,14 +14792,6 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
-  stateVisual: {fileID: 3479139204541209448}
-  unitText: {fileID: 8471262148704796631}
-  flamethrowerParticles: {fileID: 6289321036848835780}
-  selfDestructParticles: {fileID: 6898517598102355612}
-  hiddenIcon: {fileID: 528744829052050025}
-  powerUpParticles: {fileID: 5553309553802258242}
-  speedUpParticles: {fileID: 4134030267080395716}
-  defenseUpParticles: {fileID: 5705857162798277539}
 --- !u!114 &-6477774855389630524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14845,9 +14837,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f5ffa7d4514eda4e9a7398d4b3bf178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 8073025752801040290}
-  specialAttackIcon: {fileID: 1436936785428491953}
-  animator: {fileID: 7123774383182513}
+  statusObject: {fileID: 3479139204541209448}
+  unitText: {fileID: 8471262148704796631}
+  sa_canvas: {fileID: 8073025752801040290}
+  sa_icon: {fileID: 1436936785428491953}
+  sa_animator: {fileID: 7123774383182513}
+  flamethrowerParticles: {fileID: 6289321036848835780}
+  selfDestructParticles: {fileID: 6898517598102355612}
+  powerUpParticles: {fileID: 5553309553802258242}
+  speedUpParticles: {fileID: 4134030267080395716}
+  defenseUpParticles: {fileID: 5705857162798277539}
+  hiddenIcon: {fileID: 528744829052050025}
+  unitVisual: {fileID: 7949608243477991097}
 --- !u!54 &2807951573426850550
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -19777,7 +19778,7 @@ GameObject:
   - component: {fileID: 4538351730813181981}
   - component: {fileID: 8054806883595936165}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: StatusCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30492,5 +30493,10 @@ PrefabInstance:
 --- !u!4 &7949608243477762905 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400120, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
+  m_PrefabInstance: {fileID: 7949608243477891489}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7949608243477991097 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100120, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
   m_PrefabInstance: {fileID: 7949608243477891489}
   m_PrefabAsset: {fileID: 0}
