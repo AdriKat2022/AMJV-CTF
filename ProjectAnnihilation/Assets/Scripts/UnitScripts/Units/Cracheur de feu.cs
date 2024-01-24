@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class Cracheurdefeu : Unit
@@ -6,8 +5,6 @@ public class Cracheurdefeu : Unit
     private const float deltaTimeTick = .2f;
 
     [Header("Flame Thrower")]
-    //[SerializeField]
-    //private float damageOverTime;
     [SerializeField]
     private float duration;
     [SerializeField]
@@ -56,9 +53,8 @@ public class Cracheurdefeu : Unit
         if(target == null)
             return false;
 
-        float totalTicks = duration / deltaTimeTick;
 
-        StartCoroutine(CreateDamageCone(target, unitData.Attack/totalTicks, duration, angle, maxDistance, damageDeltaTime: deltaTimeTick));
+        StartCoroutine(CreateDamageCone(target, unitData.Attack, duration, angle, maxDistance, ignoreDefense:true, damageDeltaTime: deltaTimeTick));
 
         return true;
     }

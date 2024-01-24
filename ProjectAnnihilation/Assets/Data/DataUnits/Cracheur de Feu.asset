@@ -15,7 +15,7 @@ MonoBehaviour:
   <UnitName>k__BackingField: Cracheur de feu
   <MaxHP>k__BackingField: 30
   <Speed>k__BackingField: 3
-  <Attack>k__BackingField: 0
+  <Attack>k__BackingField: 2
   <Armor>k__BackingField: 0
   <AttackRange>k__BackingField: 5
   <AttackTargets>k__BackingField: 1

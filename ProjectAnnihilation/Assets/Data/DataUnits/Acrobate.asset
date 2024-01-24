@@ -18,12 +18,12 @@ MonoBehaviour:
   <Attack>k__BackingField: 5
   <Armor>k__BackingField: 2
   <AttackRange>k__BackingField: 3
-  <AttackTargets>k__BackingField: 0
+  <AttackTargets>k__BackingField: 1
   <CanSelfAttack>k__BackingField: 0
   <AttackEndLag>k__BackingField: 4
   <AttackRechargeTime>k__BackingField: 0
   <SpecialAttackName>k__BackingField: Saut de l'ange
-  <SpecialAttackTargets>k__BackingField: 0
+  <SpecialAttackTargets>k__BackingField: 3
   <CanSelfSpecialAttack>k__BackingField: 0
   <SpecialAttackEndLag>k__BackingField: 0
   <SpecialAttackRechargeTime>k__BackingField: 0

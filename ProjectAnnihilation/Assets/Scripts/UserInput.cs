@@ -60,7 +60,7 @@ public class UserInput : MonoBehaviour
         wasSelected &= unit.IsSelected;
 
         // If selection key is held, it's to select other units, not give orders
-        if (!unit.IsSelected || Input.GetKey(SelectModule.Instance.keepSelectionKey)) 
+        if (!unit.IsSelected || Input.GetKey(SelectModule.Instance.KeepSelectionKey)) 
             return;
 
         if (!wasSelected) // Prevents selection from killing the current action
@@ -123,6 +123,10 @@ public class UserInput : MonoBehaviour
     private void ManageAutoInput()
     {
         // All units will act automatically
+        //SelectModule.Instance.GetAllUnits().ForEach(unit =>
+        //{
+
+        //});
     }
 
     #endregion

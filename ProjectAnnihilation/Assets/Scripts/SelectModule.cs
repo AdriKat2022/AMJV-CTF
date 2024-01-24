@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class SelectModule : MonoBehaviour
 {
-    public KeyCode keepSelectionKey;
+    public KeyCode KeepSelectionKey;
     [SerializeField]
     private KeyCode deselectionKey;
 
     private List<Unit> selectedUnits;
+    private List<Unit> unitsList;
 
     private Camera mainCamera;
 
@@ -20,6 +21,8 @@ public class SelectModule : MonoBehaviour
 
     private void Awake()
     {
+        unitsList = new List<Unit>();
+
         if (instance == null)
             instance = this;
         else
@@ -29,18 +32,31 @@ public class SelectModule : MonoBehaviour
     #endregion
 
 
+    #region Unit list
+    public List<Unit> GetAllUnits() => unitsList;
+
+    public void Register(Unit unit)
+    {
+        unitsList.Add(unit);
+    }
+
+    public void Unregister(Unit unit)
+    {
+        unitsList.Remove(unit);
+    }
+
+    #endregion
+
     private void Start()
     {
         mainCamera = Camera.main;
         selectedUnits = new List<Unit>();
     }
 
-
     private void Update()
     {
         CheckSelection();
         CheckDeselection();
-
     }
 
     private void CheckDeselection()
@@ -51,14 +67,14 @@ public class SelectModule : MonoBehaviour
 
     private void CheckSelection()
     {
-        if (!Input.GetMouseButtonDown(0) || (selectedUnits.Count > 0 && !Input.GetKey(keepSelectionKey)))
+        if (!Input.GetMouseButtonDown(0) || (selectedUnits.Count > 0 && !Input.GetKey(KeepSelectionKey)))
             return;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (!Input.GetKey(keepSelectionKey))
+            if (!Input.GetKey(KeepSelectionKey))
                 DeselectAllUnits();
 
             if (hit.collider.gameObject.TryGetComponent(out UserInput other) && other.CanBeSelected)

@@ -92,6 +92,16 @@ public class Unit : MonoBehaviour, ISelectable
     protected float specialActionCooldown;
     #endregion
 
+    #region Unit registration
+    private void OnEnable()
+    {
+        SelectModule.Instance.Register(this);
+    }
+    private void OnDisable()
+    {
+        SelectModule.Instance.Unregister(this);
+    }
+    #endregion
 
     #region Events
 
@@ -324,7 +334,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         float _startTime = Time.time;
 
-        DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier);
+        DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier, ignoreDefense:ignoreDefense);
 
         Vector3 direction = (target.transform.position - transform.position).normalized;
 
