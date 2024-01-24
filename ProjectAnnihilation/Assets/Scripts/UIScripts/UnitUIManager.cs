@@ -140,6 +140,20 @@ public class UnitUIManager : MonoBehaviour
     #endregion
 
     #region Special Attack UI
+    public void Press()
+    {
+        sa_animator.SetTrigger("pressed");
+    }
+
+    public void ShowInability()
+    {
+        sa_animator.SetTrigger("showInability");
+    }
+
+    public void Impatient()
+    {
+        sa_animator.SetTrigger("blocked");
+    }
 
     private void HideSpecialAttackIcon()
     {
@@ -171,20 +185,6 @@ public class UnitUIManager : MonoBehaviour
             HideSpecialAttackIcon();
     }
 
-    public void Press()
-    {
-        sa_animator.SetTrigger("pressed");
-    }
-
-    public void ShowInability()
-    {
-        sa_animator.SetTrigger("showInability");
-    }
-
-    public void Impatient()
-    {
-        sa_animator.SetTrigger("blocked");
-    }
 
     #endregion
 
