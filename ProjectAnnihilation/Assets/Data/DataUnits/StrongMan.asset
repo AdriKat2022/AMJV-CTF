@@ -18,13 +18,13 @@ MonoBehaviour:
   <Attack>k__BackingField: 12
   <Armor>k__BackingField: 2
   <AttackRange>k__BackingField: 1
-  <AttackTargets>k__BackingField: 0
+  <AttackTargets>k__BackingField: 1
   <CanSelfAttack>k__BackingField: 0
   <AttackEndLag>k__BackingField: 4
   <AttackRechargeTime>k__BackingField: 0
   <SpecialAttackName>k__BackingField: Immortel
-  <SpecialAttackTargets>k__BackingField: 0
-  <CanSelfSpecialAttack>k__BackingField: 0
+  <SpecialAttackTargets>k__BackingField: 3
+  <CanSelfSpecialAttack>k__BackingField: 1
   <SpecialAttackEndLag>k__BackingField: 0.5
   <SpecialAttackRechargeTime>k__BackingField: Infinity
   <IsSpecialAttackPassive>k__BackingField: 1

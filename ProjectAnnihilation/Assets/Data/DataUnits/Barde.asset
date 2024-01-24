@@ -20,7 +20,7 @@ MonoBehaviour:
   <AttackRange>k__BackingField: 1
   <AttackTargets>k__BackingField: 1
   <CanSelfAttack>k__BackingField: 0
-  <AttackEndLag>k__BackingField: 0.6
+  <AttackEndLag>k__BackingField: 2
   <AttackRechargeTime>k__BackingField: 0
   <SpecialAttackName>k__BackingField: Musique Royale
   <SpecialAttackTargets>k__BackingField: 0
