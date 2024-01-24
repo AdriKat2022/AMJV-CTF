@@ -23,6 +23,7 @@ public class Lepublic : Unit
         if (target == null)
             return false;
 
+        animator.SetBool("Attack", true);
         CreateRepulsiveSphere(radius, knockbackForce, useAttackBonus: true);
 
         return true;
