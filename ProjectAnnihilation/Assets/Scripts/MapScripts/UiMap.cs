@@ -31,17 +31,24 @@ public class UiMap : MonoBehaviour
         gameManager = GameManager.Instance;
 
         Time.timeScale = 1;
+
         background.SetActive(false);
+
         GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
+
         enemyNumber = entities.Length;
         allyNumber = allies.Length;
 
         gameManager.onEnemyDeath.AddListener(OnEnemyDeath);
-        gameManager.onFinalMoove.AddListener(setFlag);
+        gameManager.onFinalMoove.AddListener(SetFlag);
         gameManager.onAllyDeath.AddListener(OnAllyDeath);
         gameManager.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
+
         backToMenu.onClick.AddListener(OnClick);
+
+        enemies.text = "";
+        timer.text = "";
     }
 
     // Update is called once per frame
@@ -91,7 +98,7 @@ public class UiMap : MonoBehaviour
         if(enemyNumber == 0)
         {
             UpdateEnemies();
-            setGameOver();
+            SetGameOver();
         }
     }
     private void OnAllyDeath()
@@ -99,14 +106,14 @@ public class UiMap : MonoBehaviour
         allyNumber--;
         if(allyNumber == 0)
         {
-            setGameOver();
+            SetGameOver();
         }
     }
 
     private void OnDeathOfTheKing()
     {
         isKingDead = true;
-        setGameOver();
+        SetGameOver();
     }
 
     public void OnClick()
@@ -116,15 +123,15 @@ public class UiMap : MonoBehaviour
         SceneManager.LoadSceneAsync(0);
     }
 
-    public void setGameOver()
+    public void SetGameOver()
     {
         isGameOver = true;
         Time.timeScale = 0;
     }
-    public void setFlag()
+    public void SetFlag()
     {
         flag = true;
-        setGameOver();
+        SetGameOver();
     }
     private void ManageGameOver()
     {
