@@ -12,8 +12,8 @@ public class StrongMan : Unit
         if (!base.Action())
             return false;
 
+        animator.SetBool("Attack", true);
         DealDamage(target,unitData.Attack);
-
         return true;
     }
 
