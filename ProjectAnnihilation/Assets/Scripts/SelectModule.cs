@@ -78,7 +78,7 @@ public class SelectModule : MonoBehaviour
             selectedUnits.Add(unit);
         }
     }
-    private void DeselectUnit(Unit unit)
+    public void DeselectUnit(Unit unit)
     {
         if(unit == null) return;
 

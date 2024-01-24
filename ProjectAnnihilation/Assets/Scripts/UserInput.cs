@@ -106,6 +106,8 @@ public class UserInput : MonoBehaviour
                 unit.SetCurrentOrderState(UnitState.IDLE);
             else
                 unit.SetCurrentOrderState(UnitState.NOTHING);
+
+            SelectModule.Instance.DeselectUnit(unit);
         }
         else if (Input.GetMouseButtonDown(0))
         {
