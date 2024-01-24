@@ -22,26 +22,34 @@ public class UiMap : MonoBehaviour
     private int minute;
     private int second;
 
+    private GameManager gameManager;
+
     #endregion
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameManager.Instance;
+
         Time.timeScale = 1;
         background.SetActive(false);
         GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
         enemyNumber = entities.Length;
         allyNumber = allies.Length;
-        GameManager.Instance.onEnemyDeath.AddListener(OnEnemyDeath);
-        GameManager.Instance.onFinalMoove.AddListener(setFlag);
-        GameManager.Instance.onAllyDeath.AddListener(OnAllyDeath);
-        GameManager.Instance.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
+
+        gameManager.onEnemyDeath.AddListener(OnEnemyDeath);
+        gameManager.onFinalMoove.AddListener(setFlag);
+        gameManager.onAllyDeath.AddListener(OnAllyDeath);
+        gameManager.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
         backToMenu.onClick.AddListener(OnClick);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.GameStarted)
+            return;
+
         if (isGameOver == false)
         {
             UpdateTime();
@@ -56,8 +64,6 @@ public class UiMap : MonoBehaviour
             finalEnemies.gameObject.SetActive(true);
             timer.gameObject.SetActive(false);
             finalTimer.gameObject.SetActive(true);
-
-            
         }
     }
 
