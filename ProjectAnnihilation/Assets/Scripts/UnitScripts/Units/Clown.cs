@@ -47,12 +47,12 @@ public class Clown : Unit
 
     private IEnumerator BeInvisible(float maxTime)
     {
-        PowerUp<Unit> pu = new(PowerUpType.Invisibility, 0, .2f, false);
+        StatusEffect<Unit> pu = new(PowerUpType.Invisibility, 0, .2f, false);
         float _startTime = Time.time;
 
         while (!acted && Time.time - _startTime < maxTime)
         {
-            ApplyBonus(pu);
+            ApplyStatus(pu);
             yield return new WaitForSeconds(.2f);
         }
     }

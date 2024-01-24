@@ -26,18 +26,18 @@ public class StrongMan : Unit
 
     private IEnumerator PassiveInvulnerability()
     {
-        PowerUp<Unit> pow = new(PowerUpType.Invulnerability, 0, .1f, false);
+        StatusEffect<Unit> pow = new(PowerUpType.Invulnerability, 0, .1f, false);
 
         yield return new WaitForSeconds(.5f);
 
         while(healthModule.CurrentHp > 0.1f)
         {
-            ApplyBonus(pow);
+            ApplyStatus(pow);
             yield return null;
         }
         
         pow = new(PowerUpType.Invulnerability, 0, lastInvulnerability, false);
-        ApplyBonus(pow);
+        ApplyStatus(pow);
     
         yield return new WaitForSeconds(lastInvulnerability);
     }

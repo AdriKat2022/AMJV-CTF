@@ -21,14 +21,14 @@ public class Maquilleuse : Unit
         if (!base.SpecialAction())
             return false;
 
-        PowerUp<Unit> pw = new(PowerUpType.Invisibility, 0, invisibilityDuration, false);
+        StatusEffect<Unit> pw = new(PowerUpType.Invisibility, 0, invisibilityDuration, false);
 
         Unit farest = GetFarestAlly();
 
         Debug.Log(farest);
 
         if(farest != null)
-            farest.ApplyBonus(pw);
+            farest.ApplyStatus(pw);
 
         return true;
     }

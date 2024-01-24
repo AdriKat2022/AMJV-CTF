@@ -57,6 +57,8 @@ public class HealthModule : MonoBehaviour, IDamageable
 
             if(dmgData.knockback != null)
                 ApplyKnockback((Vector3)dmgData.knockback);
+
+            ApplyStun(dmgData);
         }
             // Some shield animation ? on the hp bar itself for example ?
         
@@ -90,6 +92,8 @@ public class HealthModule : MonoBehaviour, IDamageable
 
     private float ComputeDamage(DamageData dmgData)
     {
+        dmgData.damage -= dmgData.ignoreDefense ? 0 : unit.GetArmor();
+
         if (unit.IsInvulnerable)
             return Mathf.Clamp(dmgData.damage, 0, currentHP - .1f);
 
@@ -114,7 +118,15 @@ public class HealthModule : MonoBehaviour, IDamageable
         // Or launch a fancy coroutine to show it died idk
     }
 
+    private void ApplyStun(DamageData dd)
+    {
+        if (dd.hitStun <= 0)
+            return;
 
+        StatusEffect<Unit> po = new(PowerUpType.Stun, 0, dd.hitStun, false);
+
+        unit.ApplyStatus(po);
+    }
 
     #region HPBar Visual
     private void InitializeHPBarVisual()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -53,6 +54,7 @@ public class Unit : MonoBehaviour, ISelectable
     private ParticleSystem powerUpParticles;
     private ParticleSystem speedUpParticles;
     private ParticleSystem defenseUpParticles;
+    private GameObject unitVisual;
 
 
     // Shared variables
@@ -61,6 +63,7 @@ public class Unit : MonoBehaviour, ISelectable
     public bool IsInvisible => isInvisible;
     public bool IsInvincible => isInvincible;
     public bool IsInvulnerable => isInvulnerable;
+    public bool IsStunned => isStunned;
     public bool IsSelected => isSelected;
     public bool IsKing => isKing;
     public bool IsInWater => isInWater; // Is this useful ?
@@ -74,6 +77,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected bool isSelected = false;
     protected bool isKing = false;
     protected bool isInWater = false; // Serializing this is useless (except for debugging) so i removed it
+    protected bool isStunned = false;
 
 
     // Private script variables (add serializeField to see it in the inspector (for debug)
@@ -93,6 +97,7 @@ public class Unit : MonoBehaviour, ISelectable
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
+    protected float stunTimer;
     protected float endLagTimer;
     protected float actionCooldown;
     protected float specialActionCooldown;
@@ -222,6 +227,35 @@ public class Unit : MonoBehaviour, ISelectable
 
         UpdateStateVisual();
     }
+    private IEnumerator StunAnimation()
+    {
+        Vector3 basePosition = unitVisual.transform.localPosition;
+
+        float t = 0;
+        bool state = false;
+
+        while(isStunned)
+        {
+            if (state)
+            {
+                unitVisual.transform.localPosition = basePosition + Vector3.right * .1f;
+                t -= Time.deltaTime;
+                if(t < 0)
+                    state = false;
+            }
+            else
+            {
+                unitVisual.transform.localPosition = basePosition - Vector3.right * .1f;
+                t += Time.deltaTime;
+                if(t > .01f)
+                    state = true;
+            }
+
+            stunTimer -= Time.deltaTime;
+
+            yield return null;
+        }
+    }
     private void ManageAnimations()
     {
         if (isSelected && selectModule.IsSelectionNotMultiple)
@@ -332,9 +366,9 @@ public class Unit : MonoBehaviour, ISelectable
     /// <param name="damage">How much damage</param>
     /// <param name="hitstun">Is there hitstun ? (acts as endlag)</param>
     /// <param name="knockback">Is there knockback ?</param>
-    /// <param name="excludeAttackBonus">Do you want to ignore attack bonuses ?</param>
+    /// <param name="ignoreAttackBonus">Do you want to ignore attack bonuses ?</param>
     /// <param name="ignoreDefense">Do you want to ignore the target's defense ?</param>
-    protected void DealDamage(GameObject target, float damage, float hitstun = 0, Vector3? knockback = null, bool excludeAttackBonus = false, bool ignoreDefense = false) // Just deal simple damage to target
+    protected void DealDamage(GameObject target, float damage, float hitstun = 0, Vector3? knockback = null, bool ignoreAttackBonus = false, bool ignoreDefense = false) // Just deal simple damage to target
     {
         if(target == null)
         {
@@ -344,7 +378,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (target.TryGetComponent(out IDamageable damageableTarget))
         {
-            DamageData dd = new(excludeAttackBonus ? damage : ((damage+attackBonusAdd) * attackBonusMultiplier), hitstun, knockback, ignoreDefense);
+            DamageData dd = new(GetAttack(ignoreAttackBonus), hitstun, knockback, ignoreDefense);
             damageableTarget.Damage(dd, healthModule);
         }
     }
@@ -353,11 +387,11 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     /// <param name="target">The target</param>
     /// <param name="heal">Amount to heal</param>
-    protected void Heal(GameObject target, float heal, bool excludeAttackMultiplier = false)
+    protected void Heal(GameObject target, float heal, bool excludeAttackBonus = false)
     {
         if (target.TryGetComponent(out IDamageable targetHealthModule))
         {
-            targetHealthModule.Heal(excludeAttackMultiplier ? heal : ((heal + attackBonusAdd) * attackBonusMultiplier));
+            targetHealthModule.Heal(excludeAttackBonus ? heal : ((heal + attackBonusAdd) * attackBonusMultiplier));
         }
         else
             Debug.LogWarning("Tried to heal a non healable target", gameObject);
@@ -432,7 +466,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         float _startTime = Time.time;
 
-        PowerUp<Unit> powerUp = new(powerUpType, power, powerUpDeltaTime, isMultiplier, this);
+        StatusEffect<Unit> powerUp = new(powerUpType, power, powerUpDeltaTime, isMultiplier, this);
 
 
         while (Time.time - _startTime < duration)
@@ -449,17 +483,17 @@ public class Unit : MonoBehaviour, ISelectable
                     switch (targets)
                     {
                         case TargetType.All:
-                            unit.ApplyBonus(powerUp);
+                            unit.ApplyStatus(powerUp);
                             break;
 
                         case TargetType.AlliesOnly:
                             if(unit.IsAttacker == this.IsAttacker)
-                                unit.ApplyBonus(powerUp);
+                                unit.ApplyStatus(powerUp);
                             break;
 
                         case TargetType.EnemiesOnly:
                             if (unit.IsAttacker != this.IsAttacker)
-                                unit.ApplyBonus(powerUp);
+                                unit.ApplyStatus(powerUp);
                             break;
                     }
                 }
@@ -614,6 +648,8 @@ public class Unit : MonoBehaviour, ISelectable
         rb = GetComponent<Rigidbody>();
         specialAttackUI = GetComponent<SpecialAttackUI>();
 
+        unitVisual = transform.Find("BasicMotionsDummyModel").gameObject;
+
         bonusSpeedMaintainers = new();
         bonusAttackMaintainers = new();
         bonusDefenseMaintainers = new();
@@ -643,11 +679,14 @@ public class Unit : MonoBehaviour, ISelectable
         attackBonusAdd = 0;
         defenseBonusAdd = 0;
 
-        timeBeforeTargetting = 0;
+        isStunned = false;
     }
 
     private void Update()
     {
+        if (isStunned)
+            return;
+
         DecreaseCooldowns();
 
         ManageAnimations();
@@ -672,6 +711,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         navigation.speed = unitData.Speed;
     }
+
     private void DecreaseCooldowns()
     {
         actionCooldown = Mathf.Max(actionCooldown - Time.deltaTime, 0);
@@ -1176,18 +1216,33 @@ public class Unit : MonoBehaviour, ISelectable
     private int invulnerablePowerUpsActive = 0;
     private int invisibilityPowerUpsActive = 0;
 
+    private int stunActive = 0;
+
     private Dictionary<Unit, int> bonusSpeedMaintainers;
     private Dictionary<Unit, int> bonusAttackMaintainers;
     private Dictionary<Unit, int> bonusDefenseMaintainers;
 
-    public void ApplyBonuses(PowerUp<Unit>[] powerUps)
+    public float GetAttack(bool ignoreBonuses = false)
     {
-        foreach (PowerUp<Unit> powerUp in powerUps)
+        return ignoreBonuses ? unitData.Attack : (attackBonusMultiplier * (attackBonusAdd + unitData.Attack));
+    }
+    public float GetSpeed(bool ignoreBonuses = false)
+    {
+        return ignoreBonuses ? unitData.Speed : (speedBonusMultiplier * (speedBonusAdd + unitData.Speed));
+    }
+    public float GetArmor(bool ignoreBonuses = false)
+    {
+        return ignoreBonuses ? unitData.Armor : (defenseBonusMultiplier * (defenseBonusAdd + unitData.Armor));
+    }
+
+    public void ApplyStatuses(StatusEffect<Unit>[] powerUps)
+    {
+        foreach (StatusEffect<Unit> powerUp in powerUps)
         {
-            ApplyBonus(powerUp);
+            ApplyStatus(powerUp);
         }
     }
-    public void ApplyBonus(PowerUp<Unit> powerUp)
+    public void ApplyStatus(StatusEffect<Unit> powerUp)
     {
         switch (powerUp.type)
         {
@@ -1209,7 +1264,7 @@ public class Unit : MonoBehaviour, ISelectable
         
         StartCoroutine(ApplyPowerUp(powerUp));
     }
-    private IEnumerator ApplyPowerUp(PowerUp<Unit> powerUp)
+    private IEnumerator ApplyPowerUp(StatusEffect<Unit> powerUp)
     {
         ParticleSystem.EmissionModule emission;
         switch (powerUp.type)
@@ -1337,51 +1392,35 @@ public class Unit : MonoBehaviour, ISelectable
                 }
 
                 break;
-                /*invincibleTimer = 0;
 
-                if (isInvincible)
-                    yield break;
+            case PowerUpType.Stun:
 
+                stunTimer = powerUp.duration;
+                isStunned = true;
 
-                OnPlayerInvincibility?.Invoke();
-
-                heartParticlesEmissionModule.enabled = true;
-
-                AudioClip lastMusic = SoundManager.Instance.GetCurrentMusic();
-
-                SoundManager.Instance.PlayMusic(SoundManager.Instance.invincibility);
-
-                rainbow.Activate();
-
-                float previousMass = rb.mass;
-                rb.mass = 9999;
-
-                while (invincibleTimer < powerUp.duration)
+                if (stunActive == 0)
                 {
-                    isInvincible = true;
-
-                    invincibleTimer += Time.deltaTime;
-                    yield return null;
+                    //hiddenIcon.color = Color.white;
+                    StartCoroutine(StunAnimation());
                 }
 
-                OnPlayerInvincibilityEnd?.Invoke();
+                stunActive++;
 
-                isInvincible = false;
+                yield return new WaitForSeconds(powerUp.duration);
 
-                rainbow.Deactivate();
+                stunActive--;
 
-                heartParticlesEmissionModule.enabled = false;
+                if (stunActive <= 0)
+                {
+                    isStunned = false;
+                    //hiddenIcon.color = Color.clear;
+                }
 
-
-                rb.mass = previousMass;
-
-                SoundManager.Instance.PlayMusic(lastMusic);
-
-                break;*/
+                break;
         }
     }
 
-    private void AddRawBonus(PowerUp<Unit> powerUp)
+    private void AddRawBonus(StatusEffect<Unit> powerUp)
     {
         switch (powerUp.type)
         {
@@ -1432,7 +1471,7 @@ public class Unit : MonoBehaviour, ISelectable
         }
     }
 
-    private void RemoveRawBonus(PowerUp<Unit> powerUp)
+    private void RemoveRawBonus(StatusEffect<Unit> powerUp)
     {
         switch (powerUp.type)
         {

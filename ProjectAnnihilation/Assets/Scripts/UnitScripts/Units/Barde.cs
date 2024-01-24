@@ -31,7 +31,7 @@ public class Barde : Unit
         if (target == null)
             return false;
 
-        DealDamage(target, unitData.Attack);
+        DealDamage(target, unitData.Attack, 1);
 
         return true;
     }

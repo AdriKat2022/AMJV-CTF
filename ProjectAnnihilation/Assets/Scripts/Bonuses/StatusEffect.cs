@@ -9,12 +9,14 @@ public enum PowerUpType
 
     Invincibility,
     Invulnerability,
-    Invisibility
+    Invisibility,
+
+    Stun
 }
 
 
 [Serializable]
-public class PowerUp<Ref> where Ref : class
+public class StatusEffect<Ref> where Ref : class
 {
     public PowerUpType type;
     public float value;
@@ -32,7 +34,7 @@ public class PowerUp<Ref> where Ref : class
     /// <param name="duration">How long is the power up gonna last.</param>
     /// <param name="isMultiplier">False: the parameter will be ADDED. True: the parameter will be a MULTIPLIER.</param>
     /// <param name="reference">Put null for single use. This is to ensure the same referenced power up is not applied twice to the same entity.</param>
-    public PowerUp(PowerUpType powerUpType, float value, float duration, bool isMultiplier, Ref reference = null)
+    public StatusEffect(PowerUpType powerUpType, float value, float duration, bool isMultiplier, Ref reference = null)
     {
         this.type = powerUpType;
         this.value = value;
@@ -46,7 +48,7 @@ public class PowerUp<Ref> where Ref : class
     /// Deprecated, use the constructor without the condition
     /// </summary>
     /// <param name="powerUpType">Test<br>Test</br></param>
-    public PowerUp(PowerUpType powerUpType, float value, float duration, bool isMultiplier, Unit reference, Func<bool> endCondition)
+    public StatusEffect(PowerUpType powerUpType, float value, float duration, bool isMultiplier, Unit reference, Func<bool> endCondition)
     {
         this.type = powerUpType;
         this.value = value;
