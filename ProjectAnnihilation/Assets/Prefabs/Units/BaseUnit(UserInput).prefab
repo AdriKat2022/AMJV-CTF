@@ -14955,6 +14955,7 @@ GameObject:
   - component: {fileID: -6477774855389630524}
   - component: {fileID: 3814868992091234696}
   - component: {fileID: 6102296146037594196}
+  - component: {fileID: 8207961667687124613}
   - component: {fileID: 2807951573426850550}
   - component: {fileID: 6861614830946568033}
   - component: {fileID: 4217066859977169042}
@@ -15066,6 +15067,19 @@ MonoBehaviour:
   invincibleIcon: {fileID: 797978411311073425}
   invulnerableIcon: {fileID: 1788396736007530572}
   unitVisual: {fileID: 7949608243477991097}
+--- !u!114 &8207961667687124613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3059320389565504913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4cda0072cd408141b67e795f4697050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageNumber: {fileID: 5789967376057694008, guid: 1f6300ac29e49f945b69631f23c9502f, type: 3}
 --- !u!54 &2807951573426850550
 Rigidbody:
   m_ObjectHideFlags: 0

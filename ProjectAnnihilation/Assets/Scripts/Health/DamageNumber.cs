@@ -7,15 +7,18 @@ public class DamageNumber : MonoBehaviour
 {
     [SerializeField]
     private float duration;
+    [SerializeField]
+    private float speed;
     [SerializeField, Range(0f,1f)]
     private float timeThreshold;
     [SerializeField]
     private TMP_Text textNumber;
 
 
-    private void Start()
+    public void Initialize(float number)
     {
-        
+        textNumber.text = number.ToString();
+        StartCoroutine(Animate());
     }
 
     private IEnumerator Animate()
@@ -24,10 +27,16 @@ public class DamageNumber : MonoBehaviour
 
         while (timer < duration)
         {
+            transform.position += speed * Time.deltaTime * Vector3.up;
 
-
+            if(timer/duration > timeThreshold)
+            {
+                textNumber.alpha = Mathf.Clamp01(1 - ((timer - timer*timeThreshold)/(duration*timeThreshold)));
+            }
             timer += Time.deltaTime;
             yield return null;
         }
+
+        Destroy(gameObject);
     }
 }

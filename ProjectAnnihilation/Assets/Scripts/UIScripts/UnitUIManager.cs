@@ -51,14 +51,15 @@ public class UnitUIManager : MonoBehaviour
 
     private Unit unit;
     private SelectModule selectModule;
+    private DamageNumberSpawner damageNumberSpawner;
 
     #endregion
-
 
     private void Start()
     {
         selectModule = SelectModule.Instance;
         TryGetComponent(out unit);
+        TryGetComponent(out damageNumberSpawner);
 
         ResetAllParticles();
         UpdateUIStatus();
@@ -189,6 +190,7 @@ public class UnitUIManager : MonoBehaviour
     #endregion
 
     #region Unit Display & status effects
+    public void ShowDamage(float amount) => damageNumberSpawner.SpawnDamageNumber(amount);
     public void PulseInvincibilityIcon() => invincibleIcon.SetTrigger("pulse");
     public void PulseInvulnerableIcon() => invulnerableIcon.SetTrigger("pulse");
     private void UpdateUIStatus()
