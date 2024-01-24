@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1436936785428491953, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 460f440ee41900b4fbb39c6ee1f48b2b, type: 3}
+    - target: {fileID: 1621271446315979718, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 460f440ee41900b4fbb39c6ee1f48b2b, type: 3}
     - target: {fileID: 3059320389565504913, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_Name
       value: Strong Man
@@ -79,4 +87,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitData: {fileID: 11400000, guid: 22ff9644f06e8de4bb68747c87561b19, type: 2}
   isAttacker: 0
-  lastInvulnerabilityAfterDying: 20
+  lastInvulnerability: 20
