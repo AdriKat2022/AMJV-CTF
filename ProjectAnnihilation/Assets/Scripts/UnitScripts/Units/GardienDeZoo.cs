@@ -50,6 +50,8 @@ public class GardienDeZoo : Unit
 
         for (int i = 0; i < nBullets; i++)
         {
+            if (target == null)
+                yield break;
             launcher.LaunchRect((target.transform.position - transform.position).normalized * dartSpeed, dd, dartRange / dartSpeed);
             yield return new WaitForSeconds(dT);
         }
