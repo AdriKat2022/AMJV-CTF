@@ -18,7 +18,7 @@ public class Clown : Unit
             return false;
 
         acted = true;
-
+        animator.SetBool("Attack", true);
         StartCoroutine(Hits(target, unitData.Attack, 2f, 0.4f));
 
         return true;

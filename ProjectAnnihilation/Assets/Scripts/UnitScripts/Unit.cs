@@ -44,6 +44,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected GameManager gameManager;
     protected Rigidbody rb;
     private UnitUIManager unitUiManager;
+    public Animator animator;
 
 
     // Shared variables
@@ -651,42 +652,49 @@ public class Unit : MonoBehaviour, ISelectable
         {
             case UnitState.NOTHING:
 
+                animator.SetFloat("Speed", 0f);
                 NothingState();
 
                 break;
 
             case UnitState.IDLE:
 
+                animator.SetFloat("Speed", 0f);
                 HoldPosition();
 
                 break;
 
             case UnitState.MOVING:
 
+                animator.SetFloat("Speed", navigation.speed);
                 MovingAlertState();
 
                 break;
 
             case UnitState.MOVING_ALERT:
 
+                animator.SetFloat("Speed", navigation.speed);
                 MovingState();
 
                 break;
 
             case UnitState.MOVENATTACK:
 
+                animator.SetFloat("Speed", navigation.speed);
                 MoveNAttackState();
 
                 break;
 
             case UnitState.FOLLOWING:
 
+                animator.SetFloat("Speed", navigation.speed);
                 FollowingState();
 
                 break;
 
             case UnitState.PATROLLING:
 
+                animator.SetFloat("Speed", navigation.speed);
                 PatrollingState();
 
                 break;
