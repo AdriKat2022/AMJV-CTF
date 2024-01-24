@@ -31,6 +31,7 @@ public class GardienDeZoo : Unit
         if (target == null)
             return false;
 
+        animator.SetBool("Attack", true);
         StartCoroutine(LaunchSeveralBullets(target, nDarts, timeBetweenDarts));
 
         return true;
