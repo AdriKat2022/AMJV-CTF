@@ -9897,7 +9897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00000023841858, y: 0.8261999}
+  m_AnchoredPosition: {x: -0.00000023841858, y: 1.3}
   m_SizeDelta: {x: 8, y: 1.2113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3644547134274011537
@@ -15008,6 +15008,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  debug: 0
 --- !u!114 &-6477774855389630524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20669,8 +20670,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00000047683716, y: -0.34000003}
-  m_SizeDelta: {x: 6.3853, y: 1.1211}
+  m_AnchoredPosition: {x: 0.000016212463, y: -0.6227}
+  m_SizeDelta: {x: 8, y: 2.1655}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2036087678094642543
 MonoBehaviour:
@@ -20739,8 +20740,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1
-  m_fontSizeBase: 1
+  m_fontSize: 2
+  m_fontSizeBase: 2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -25666,7 +25667,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -4, y: 2.13}
-  m_SizeDelta: {x: 8, y: 2.8611}
+  m_SizeDelta: {x: 8, y: 4.7763}
   m_Pivot: {x: 0, y: 0}
 --- !u!223 &5428025584522019470
 Canvas:

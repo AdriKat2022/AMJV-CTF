@@ -1,16 +1,14 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class UserInput : MonoBehaviour
 {
+    private const float Y_OFFSET = 1f;
+
     private enum InputType
     {
         PlayerInput,
         Auto
     }
-
 
     public Unit Unit => unit;
 
@@ -19,6 +17,10 @@ public class UserInput : MonoBehaviour
     private InputType inputType;
     [SerializeField]
     private LayerMask terrainLayer;
+
+    [Header("Debug")]
+    [SerializeField]
+    private bool debug;
 
 
     private Unit unit;
@@ -186,7 +188,13 @@ public class UserInput : MonoBehaviour
 
                 if (Random.value > .95f)
                     OrderUnitToSpecialAttack();
-                
+
+                if (debug)
+                {
+                    Debug.Log(gameObject);
+                    Debug.Log(closestUnitInteractable, gameObject);
+                }
+
                 break;
         }
 
@@ -194,9 +202,25 @@ public class UserInput : MonoBehaviour
 
     private bool CanSeePoint(Transform point)
     {
-        if (unit == null) return false;
+        if (point == null) return false;
 
-        return Physics.Raycast(transform.position, point.position - transform.position, (point.position - transform.position).magnitude, LayerMask.GetMask("Ground"));
+        if (debug)
+        {
+            Debug.DrawLine(transform.position + Vector3.up * Y_OFFSET, transform.position + Vector3.up * Y_OFFSET, Color.magenta, 1f);
+        }
+
+        RaycastHit hit;
+
+        bool blocked = Physics.Raycast(
+            transform.position + Vector3.up * Y_OFFSET,
+            point.position - transform.position + Vector3.up * Y_OFFSET,
+            out hit,
+            (point.position - transform.position).magnitude,
+            LayerMask.GetMask("Ground"));
+
+        //Debug.Log(hit);
+
+        return !blocked;
     }
 
     #endregion

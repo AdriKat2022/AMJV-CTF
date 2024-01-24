@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public UnityEvent onAllyDeath;
     public UnityEvent onFinalMoove;
     public UnityEvent onDeathOfTheKing;
+
+
     static public GameManager Instance {
         get {
             return instance;
