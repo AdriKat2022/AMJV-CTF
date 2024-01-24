@@ -26,6 +26,7 @@ public class UiMap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
         background.SetActive(false);
         GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
@@ -112,6 +113,7 @@ public class UiMap : MonoBehaviour
     public void setGameOver()
     {
         isGameOver = true;
+        Time.timeScale = 0;
     }
     public void setFlag()
     {

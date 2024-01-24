@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/UI.unity
     guid: f0021c771fb425845974c836b1c97c9b
   - enabled: 1
-    path: Assets/Scenes/Adrien.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Scenes/Tutorial.unity
+    guid: 173b460254d9ae647876f63393dc05c2
   - enabled: 1
     path: Assets/Scenes/CircusLevel.unity
     guid: f32d2a64e1723c641a9d5dabee140f7b
@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Bastion.unity
     guid: 5e04e1cf3cdea7a41a37b6deaf27b0ce
+  - enabled: 1
+    path: Assets/Scenes/Adrien.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
