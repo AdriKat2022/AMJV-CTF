@@ -55,7 +55,9 @@ public class HealthModule : MonoBehaviour, IDamageable
     {
         if (CanTakeDamage())
         {
-            currentHP -= ComputeDamage(dmgData);
+            float dmg = ComputeDamage(dmgData);
+            currentHP -= dmg;
+            unitUIManager.ShowDamage(dmg);
 
             if(dmgData.knockback != null)
                 ApplyKnockback((Vector3)dmgData.knockback);
@@ -106,7 +108,7 @@ public class HealthModule : MonoBehaviour, IDamageable
             return Mathf.Clamp(dmgData.damage, 0, currentHP - .1f);
         }
 
-        return dmgData.damage;
+        return Mathf.Max(0, dmgData.damage);
     }
 
     public void KnockedDown()

@@ -15080,6 +15080,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageNumber: {fileID: 5789967376057694008, guid: 1f6300ac29e49f945b69631f23c9502f, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
+  posVariance: 1
 --- !u!54 &2807951573426850550
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7322629453300745369}
   - component: {fileID: 807085812888674093}
   - component: {fileID: 5789967376057694008}
+  - component: {fileID: 191679938448716014}
   m_Layer: 5
   m_Name: DamageNumber
   m_TagString: Untagged
@@ -85,7 +86,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &807085812888674093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,6 +120,18 @@ MonoBehaviour:
   speed: 3
   timeThreshold: 0.5
   textNumber: {fileID: 3912892356641875742}
+--- !u!114 &191679938448716014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788731812307002580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 968af3e01f689c944a0e8156aed984da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8567089958895552235
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,8 +206,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281940479
+  m_fontColor: {r: 1, g: 0.2216981, b: 0.2216981, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -211,8 +224,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1
-  m_fontSizeBase: 1
+  m_fontSize: 0.5
+  m_fontSizeBase: 0.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

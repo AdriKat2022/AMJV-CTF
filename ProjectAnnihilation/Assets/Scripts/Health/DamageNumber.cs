@@ -31,7 +31,10 @@ public class DamageNumber : MonoBehaviour
 
             if(timer/duration > timeThreshold)
             {
-                textNumber.alpha = Mathf.Clamp01(1 - ((timer - timer*timeThreshold)/(duration*timeThreshold)));
+                //float value = Mathf.Clamp01(1 - ((timer - timer * timeThreshold) / (duration * timeThreshold)));
+                float value = Time.deltaTime / (duration * (1-timeThreshold));
+                textNumber.alpha -= value;
+                textNumber.transform.localScale += Vector3.up * value;
             }
             timer += Time.deltaTime;
             yield return null;
