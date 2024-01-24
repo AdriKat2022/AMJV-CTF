@@ -19,7 +19,6 @@ public class HealthBarModule : MonoBehaviour
     private UnitData unitData;
     private float currentHP;
 
-    private Animator animator;
     private RectTransform rectTransform;
 
     private const float maxWidth = 4f;

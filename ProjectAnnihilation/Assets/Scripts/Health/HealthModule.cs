@@ -25,6 +25,7 @@ public class HealthModule : MonoBehaviour, IDamageable
 
     private Func<Vector3, Rigidbody, IEnumerator> knockback_CR;
     private Rigidbody rb_unit;
+    private UnitUIManager unitUIManager;
 
     public bool IsAttacker => unit.IsAttacker;
     public float CurrentHp => currentHP;
@@ -41,6 +42,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     private void Start()
     {
         TryGetComponent(out unit);
+        TryGetComponent(out unitUIManager);
 
         unitData = unit.UnitData;
         currentHP = unitData.MaxHP;
@@ -85,7 +87,10 @@ public class HealthModule : MonoBehaviour, IDamageable
     private bool CanTakeDamage()
     {
         if (unit.IsInvincible)
+        {
+            unitUIManager.PulseInvincibilityIcon();
             return false;
+        }
         
         return true;
     }
@@ -95,7 +100,11 @@ public class HealthModule : MonoBehaviour, IDamageable
         dmgData.damage -= dmgData.ignoreDefense ? 0 : unit.GetArmor();
 
         if (unit.IsInvulnerable)
+        {
+            if (dmgData.damage > currentHP)
+                unitUIManager.PulseInvulnerableIcon();
             return Mathf.Clamp(dmgData.damage, 0, currentHP - .1f);
+        }
 
         return dmgData.damage;
     }

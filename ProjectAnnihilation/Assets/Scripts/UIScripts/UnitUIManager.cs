@@ -8,7 +8,7 @@ public class UnitUIManager : MonoBehaviour
     #region Variables
     [Header("Unit display & status")]
     [SerializeField]
-    private GameObject statusObject;
+    private GameObject statusCircleObject;
     [SerializeField]
     private TMP_Text unitText;
 
@@ -38,6 +38,10 @@ public class UnitUIManager : MonoBehaviour
     [Header("Display status effects")]
     [SerializeField]
     private Image hiddenIcon;
+    [SerializeField]
+    private Animator invincibleIcon;
+    [SerializeField]
+    private Animator invulnerableIcon;
 
 
     [Header("Stun effects")]
@@ -185,7 +189,8 @@ public class UnitUIManager : MonoBehaviour
     #endregion
 
     #region Unit Display & status effects
-
+    public void PulseInvincibilityIcon() => invincibleIcon.SetTrigger("pulse");
+    public void PulseInvulnerableIcon() => invulnerableIcon.SetTrigger("pulse");
     private void UpdateUIStatus()
     {
         unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
@@ -193,7 +198,7 @@ public class UnitUIManager : MonoBehaviour
     }
     private void UpdateStateCircle()
     {
-        if (statusObject == null || !statusObject.TryGetComponent(out Renderer rend))
+        if (statusCircleObject == null || !statusCircleObject.TryGetComponent(out Renderer rend))
             return;
 
         switch (unit.CurrentOrder)
@@ -230,11 +235,13 @@ public class UnitUIManager : MonoBehaviour
     private void UpdateStatusEffects()
     {
         hiddenIcon.gameObject.SetActive(unit.IsInvisible);
+        invulnerableIcon.gameObject.SetActive(unit.IsInvulnerable);
+        invincibleIcon.gameObject.SetActive(unit.IsInvincible);
     }
     private IEnumerator BlinkIfSelected()
     {
         //statusObject.TryGetComponent(out Renderer rend);
-        statusObject.transform.localScale = Vector3.one * 2;
+        statusCircleObject.transform.localScale = Vector3.one * 2;
 
         float blinkTimer = unit.UnitData.BlinkSpeed;
         bool state = false;
@@ -253,7 +260,7 @@ public class UnitUIManager : MonoBehaviour
                 unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
 
                 if (unit.UnitData.UseFullBlink)
-                    statusObject.SetActive(false);
+                    statusCircleObject.SetActive(false);
             }
             else if (!state && blinkTimer >= unit.UnitData.BlinkSpeed)
             {
@@ -264,15 +271,15 @@ public class UnitUIManager : MonoBehaviour
                 unitText.color = unit.UnitData.SelectedColor;
 
                 if (unit.UnitData.UseFullBlink)
-                    statusObject.SetActive(true);
+                    statusCircleObject.SetActive(true);
             }
 
             blinkTimer += Time.deltaTime;
 
             yield return null;
         }
-        statusObject.transform.localScale = Vector3.one;
-        statusObject.SetActive(true);
+        statusCircleObject.transform.localScale = Vector3.one;
+        statusCircleObject.SetActive(true);
         unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
     }
     public void BlinkSelected()
