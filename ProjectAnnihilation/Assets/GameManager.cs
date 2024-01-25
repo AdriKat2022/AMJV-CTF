@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Animator spaceButtonAnimator;
 
+    private SoundManager soundManager;
+
+
     static public GameManager Instance {
         get {
             return instance;
@@ -42,6 +45,12 @@ public class GameManager : MonoBehaviour
         gameStarted = false;
     }
 
+    private void Start()
+    {
+        soundManager = SoundManager.Instance;
+        soundManager.StopMusic();
+    }
+
     private void Update()
     {
         if(!gameStarted)
@@ -62,6 +71,7 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         gameStarted = true;
+        soundManager.PlayMusic(Random.value < .5f ? soundManager.music1 : soundManager.music2);
     }
 
     public void TriggerEnemyDeath()
