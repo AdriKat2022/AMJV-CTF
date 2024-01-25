@@ -74,6 +74,7 @@ public class ButtonAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void OnEnable()
     {
+        baseScale = transform.localScale;
         _time = 0;
 
         if (bypassTimescale && !isActive)
