@@ -48,7 +48,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         soundManager = SoundManager.Instance;
-        soundManager.StopMusic();
+        if (soundManager != null)
+            soundManager.StopMusic();
     }
 
     private void Update()

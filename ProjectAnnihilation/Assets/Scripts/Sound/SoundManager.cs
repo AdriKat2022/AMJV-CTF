@@ -4,7 +4,8 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
 
-    [SerializeField] private AudioSource musicSource, effectSource;
+    [SerializeField]
+    private AudioSource musicSource, effectSource;
 
     [Header("Musics")]
     public AudioClip music1;

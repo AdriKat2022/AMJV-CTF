@@ -1,8 +1,16 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectModule : MonoBehaviour
 {
+    [Header("Drag")]
+    [SerializeField]
+    private float minimumDragLength;
+    [SerializeField]
+    private Image selectionImage;
+
     public KeyCode KeepSelectionKey;
     [SerializeField]
     private KeyCode deselectionKey;
@@ -12,6 +20,11 @@ public class SelectModule : MonoBehaviour
 
     private Camera mainCamera;
     private GameManager gameManager;
+
+    private Vector3 point1;
+    private Vector3 point2;
+    private bool isDragging;
+    private RectTransform rectSelectImage;
 
     #region Singleton instance
 
@@ -53,8 +66,13 @@ public class SelectModule : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.Instance;
-
         mainCamera = Camera.main;
+
+        selectionImage.TryGetComponent(out rectSelectImage);
+        Color c = selectionImage.color;
+        c.a = 0;
+        selectionImage.color = c;
+
         selectedUnits = new List<Unit>();
     }
 
@@ -65,6 +83,7 @@ public class SelectModule : MonoBehaviour
 
         CheckSelection();
         CheckDeselection();
+        CheckDrag();
     }
 
     private void CheckDeselection()
@@ -87,6 +106,127 @@ public class SelectModule : MonoBehaviour
 
             if (hit.collider.gameObject.TryGetComponent(out UserInput other) && other.CanBeSelected)
                 SelectUnit(other.Unit);
+        }
+    }
+
+    private void CheckDrag()
+    {
+        if (Input.GetMouseButtonDown(0))
+            point1 = Input.mousePosition;
+
+        else if (Input.GetMouseButton(0))
+        {
+            point2 = Input.mousePosition;
+
+            bool hasReachedMinimumDrag = (point2 - point1).magnitude > minimumDragLength;
+
+            if (hasReachedMinimumDrag && !isDragging){
+                isDragging = true;
+                StartCoroutine(AnimateSelectionArea());
+            }
+            else if (!hasReachedMinimumDrag)
+            {
+                isDragging = false;
+            }
+        }
+        else if (Input.GetMouseButtonUp(0) && isDragging)
+        {
+            if (!Input.GetKey(KeepSelectionKey))
+            {
+                Debug.Log("deselect");
+                DeselectAllUnits();
+            }
+
+            // Do the selection
+            foreach (Unit unit in unitsList)
+            {
+                if (!unit.IsAttacker)
+                    continue;
+
+                Vector2 unitScreenPos = mainCamera.WorldToScreenPoint(unit.transform.position);
+                if (IsPointInSelection(unitScreenPos))
+                    SelectUnit(unit);
+            }
+        }
+    }
+
+    private IEnumerator AnimateSelectionArea()
+    {
+        Color color = selectionImage.color;
+
+        color.a = .3f;
+        selectionImage.color = color;
+
+        yield return new WaitUntil(() => (Input.GetMouseButtonUp(0) || !isDragging));
+
+        if (!isDragging)
+        {
+            color.a = 0f;
+            selectionImage.color = color;
+            yield break;
+        }
+
+        isDragging = false;
+        color.a = .5f;
+        selectionImage.color = color;
+
+        while(color.a > 0)
+        {
+            if (isDragging)
+                yield break;
+
+            color.a -= Time.deltaTime;
+            selectionImage.color = color;
+
+            yield return null;
+        }
+    }
+
+    private (Vector2,Vector2) GetNormalizedPoints(Vector2 point1, Vector2 point2)
+    {
+        if (!(point1.x < point2.x))
+        {
+            (point1.x, point2.x) = (point2.x, point1.x);
+        }
+        if (!(point1.y > point2.y))
+        {
+            (point1.y, point2.y) = (point2.y, point1.y);
+        }
+        return (point1, point2);
+    }
+
+    private bool IsPointInSelection(Vector2 point)
+    {
+        (Vector2 p1, Vector2 p2) = GetNormalizedPoints(point1, point2);
+
+
+        //Debug.Log(point1);
+        //Debug.Log(point2);
+        //Debug.Log(p1);
+        //Debug.Log(p2);
+
+        return 
+            point.x > p1.x && point.x < p2.x &&
+            point.y < p1.y && point.y > p2.y;
+            ;
+    }
+
+    private void OnGUI()
+    {
+        if (isDragging)
+        {
+            (Vector2 p1, Vector2 p2) = GetNormalizedPoints(point1, point2);
+
+            p1.y = Screen.height - p1.y;
+            p2.y = Screen.height - p2.y;
+
+            float xBorder1 = p1.x; //
+            float xBorder2 = - Screen.width + p2.x;
+            float yBorder1 = - p1.y;
+            float yBorder2 = (Screen.height - p2.y);
+
+            rectSelectImage.offsetMax = new Vector2(xBorder2, yBorder1);
+            rectSelectImage.offsetMin = new Vector2(xBorder1, yBorder2);
         }
     }
 
