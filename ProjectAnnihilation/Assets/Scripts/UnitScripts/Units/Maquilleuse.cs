@@ -26,8 +26,6 @@ public class Maquilleuse : Unit
 
         Unit farest = GetFarestAlly();
 
-        Debug.Log(farest);
-
         if(farest != null)
             farest.ApplyStatus(pw);
 

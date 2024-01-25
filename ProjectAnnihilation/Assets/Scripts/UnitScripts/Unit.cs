@@ -277,7 +277,7 @@ public class Unit : MonoBehaviour, ISelectable
     /// The little, the better, but the more costly in performances.</br>
     /// I don't think a value very close to zero will work.</param>
     /// <returns></returns>
-    protected IEnumerator CreatePowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, bool isMultiplier = true, TargetType targets = TargetType.All, float powerUpDeltaTime = .5f)
+    protected IEnumerator CreatePowerUpSphere(float power, float radius, float duration, PowerUpType powerUpType, bool isMultiplier = true, TargetType targets = TargetType.All, float powerUpDeltaTime = .1f)
     {
         float _startTime = Time.time;
 
@@ -287,7 +287,7 @@ public class Unit : MonoBehaviour, ISelectable
         while (Time.time - _startTime < duration)
         {
             Collider[] cols = new Collider[15];
-            Physics.OverlapSphereNonAlloc(transform.position, radius, cols);
+            Physics.OverlapSphereNonAlloc(transform.position, radius, cols, LayerMask.GetMask("Unit"));
 
             foreach (Collider col in cols)
             {
