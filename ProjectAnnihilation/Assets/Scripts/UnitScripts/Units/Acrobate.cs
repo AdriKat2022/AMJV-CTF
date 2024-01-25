@@ -14,6 +14,8 @@ public class Acrobate : Unit
         if(target == null)
             return false;
 
+        animator.SetBool("Attack", true);
+
         DealDamage(target, unitData.Attack, hitstun);
 
         return true;
