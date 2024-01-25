@@ -114,17 +114,10 @@ public class HealthModule : MonoBehaviour, IDamageable
     public void KnockedDown()
     {
         isAlive = false;
-        if(gameObject.GetComponent<Unit>().IsKing == true) {
+
+        if (unit.IsKing)
             GameManager.Instance.TriggerDeathOfTheKing();
-        }
-        if (gameObject.CompareTag("Enemy"))
-        {
-            GameManager.Instance.TriggerEnemyDeath();
-        }
-        if (gameObject.CompareTag("Ally"))
-        {
-            GameManager.Instance.TriggerAllyDeath();
-        }
+
         Destroy(gameObject);
         // Or launch a fancy coroutine to show it died idk
     }

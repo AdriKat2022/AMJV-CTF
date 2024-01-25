@@ -50,9 +50,7 @@ public class UiMap : MonoBehaviour
 
         ScanUnits();
 
-        gameManager.onEnemyDeath.AddListener(OnEnemyDeath);
         gameManager.onFinalMoove.AddListener(SetFlag);
-        gameManager.onAllyDeath.AddListener(OnAllyDeath);
         gameManager.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
 
         backToMenu.onClick.AddListener(OnClick);
@@ -65,7 +63,7 @@ public class UiMap : MonoBehaviour
         if (!gameManager.GameStarted)
             return;
 
-        if (isGameOver == false)
+        if (!isGameOver)
         {
             UpdateTime();
             UpdateEnemiesText();
@@ -74,7 +72,7 @@ public class UiMap : MonoBehaviour
         {
             ManageGameOver();
             finalTimer.text = string.Format("{0}m {1}s", minute, second);
-            finalEnemies.text = string.Format("{0} Enemies left", enemyNumber);
+            finalEnemies.text = string.Format("{0} Enemies left", selectModule.NEnemies);
             enemies.gameObject.SetActive(false);
             finalEnemies.gameObject.SetActive(true);
             timer.gameObject.SetActive(false);
@@ -82,14 +80,6 @@ public class UiMap : MonoBehaviour
         }
     }
 
-
-    public void NotifyUnitDeath(bool isAttacker)
-    {
-        if (isAttacker)
-            OnAllyDeath();
-        else
-            OnEnemyDeath();
-    }
 
     private void ScanUnits()
     {
@@ -118,29 +108,12 @@ public class UiMap : MonoBehaviour
     }
     private void UpdateEnemiesText()
     {
-        if(enemyNumber < 2)
+        if(selectModule.NEnemies < 2)
             enemies.text = "One left";
         else
-            enemies.text = string.Format("{0} enemies left", enemyNumber);
+            enemies.text = string.Format("{0} enemies left", selectModule.NEnemies);
     }
 
-    private void OnEnemyDeath()
-    {
-        enemyNumber--;
-        if(enemyNumber == 0)
-        {
-            UpdateEnemiesText();
-            SetGameOver();
-        }
-    }
-    private void OnAllyDeath()
-    {
-        allyNumber--;
-        if(allyNumber == 0)
-        {
-            SetGameOver();
-        }
-    }
     private void OnDeathOfTheKing()
     {
         isKingDead = true;
@@ -148,11 +121,10 @@ public class UiMap : MonoBehaviour
     }
     public void OnClick()
     {
-        Debug.Log("ButtonClicked");
+        //Debug.Log("ButtonClicked");
         SceneManager.MoveGameObjectToScene(GameManager.Instance.gameObject, SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(0);
     }
-
     public void SetGameOver()
     {
         isGameOver = true;

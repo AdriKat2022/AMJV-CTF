@@ -99,7 +99,6 @@ public class Unit : MonoBehaviour, ISelectable
     private void OnDisable()
     {
         selectModule.Unregister(this);
-        uimap.NotifyUnitDeath(IsAttacker);
     }
     #endregion
 

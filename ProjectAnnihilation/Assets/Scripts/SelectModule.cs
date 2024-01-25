@@ -18,6 +18,9 @@ public class SelectModule : MonoBehaviour
     private List<Unit> selectedUnits;
     private List<Unit> unitsList;
 
+    private int nAllies;
+    private int nEnemies;
+
     private Camera mainCamera;
     private GameManager gameManager;
 
@@ -25,6 +28,11 @@ public class SelectModule : MonoBehaviour
     private Vector3 point2;
     private bool isDragging;
     private RectTransform rectSelectImage;
+
+
+    public int NAllies => nAllies;
+    public int NEnemies => nEnemies;
+
 
     #region Singleton instance
 
@@ -52,11 +60,20 @@ public class SelectModule : MonoBehaviour
     public void Register(Unit unit)
     {
         unitsList.Add(unit);
+        if(unit.IsAttacker)
+            nAllies++;
+        else
+            nEnemies++;
     }
 
     public void Unregister(Unit unit)
     {
-        if(selectedUnits.Contains(unit))
+        if (unit.IsAttacker)
+            nAllies--;
+        else
+            nEnemies--;
+
+        if (selectedUnits.Contains(unit))
             selectedUnits.Remove(unit);
         unitsList.Remove(unit);
     }
