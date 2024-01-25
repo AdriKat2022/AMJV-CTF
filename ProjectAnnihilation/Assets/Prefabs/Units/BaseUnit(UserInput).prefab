@@ -15056,6 +15056,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusCircleObject: {fileID: 3479139204541209448}
   unitText: {fileID: 8471262148704796631}
+  holdCtrlToZoomText: 1
   sa_canvas: {fileID: 8073025752801040290}
   sa_icon: {fileID: 1436936785428491953}
   sa_animator: {fileID: 6068789122346497305}
