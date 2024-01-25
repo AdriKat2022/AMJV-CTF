@@ -33,6 +33,7 @@ public class Vétérinaire : Unit
         if (target == null)
             return false;
 
+        animator.SetBool("Attack", true);
         Heal(target, unitData.Attack);
 
         return true;
