@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class ButtonAnimation : MonoBehaviour
+public class ButtonAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Time")]
     [SerializeField]
@@ -57,6 +58,8 @@ public class ButtonAnimation : MonoBehaviour
     private bool isMouseOver;
     private bool isMouseOverFirstFrame;
 
+    private Vector3 baseScale;
+
 
 #if UNITY_EDITOR
 
@@ -82,16 +85,20 @@ public class ButtonAnimation : MonoBehaviour
 
     private void OnDisable()
     {
+        transform.localScale = baseScale;
+        isMouseOver = false;
         isActive = false;
     }
 
     private void Start()
     {
+        baseScale = transform.localScale;
+
         isActive = activateOnAwake;
 
-        transform.localScale = Vector3.one;
-        scaleOnHover = Vector3.one * (1 + hoverDepth);
-        scaleOnClick = Vector3.one * (1 - clickDepth);
+
+        scaleOnHover = baseScale * (1 + hoverDepth);
+        scaleOnClick = baseScale * (1 - clickDepth);
         _time = 0;
 
         isMouseOver = false;
@@ -106,7 +113,7 @@ public class ButtonAnimation : MonoBehaviour
             if (enableRotation)
                 HandleWaveMotion();
 
-            isMouseOverFirstFrame &= IsMouseOver();
+            isMouseOverFirstFrame &= isMouseOver;
 
 
             if (enableHoverScale)
@@ -138,7 +145,7 @@ public class ButtonAnimation : MonoBehaviour
         if (enableRotation)
             HandleWaveMotion();
 
-        isMouseOverFirstFrame &= IsMouseOver();
+        isMouseOverFirstFrame &= isMouseOver;
 
         if (enableHoverScale)
             HandleGrowthOnHover(Time.deltaTime);
@@ -168,7 +175,7 @@ public class ButtonAnimation : MonoBehaviour
         }
         else
         {
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one, dTime * hoverSpeed);
+            transform.localScale = Vector3.Lerp(transform.localScale, baseScale, dTime * hoverSpeed);
         }
     }
 
@@ -180,14 +187,23 @@ public class ButtonAnimation : MonoBehaviour
     }
 
 
-    private bool IsMouseOver()
+    //private bool IsMouseOver()
+    //{
+    //    // Check if the mouse is over the button
+    //    //RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out Vector2 localPoint);
+
+    //    //isMouseOver = rectTransform.rect.Contains(localPoint);
+
+    //    return isMouseOver;
+    //}
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        // Check if the mouse is over the button
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out Vector2 localPoint);
+        isMouseOver = true;
+    }
 
-        isMouseOver = rectTransform.rect.Contains(localPoint);
-
-        return isMouseOver;
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isMouseOver = false;
     }
 }
