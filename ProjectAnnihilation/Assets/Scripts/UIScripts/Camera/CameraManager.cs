@@ -93,7 +93,7 @@ public class CameraManager : MonoBehaviour
 
     private void ScrollCamera()
     {
-        if (destination.y + (Input.mouseScrollDelta.y * scrollSpeed * transform.forward).y <= 1f)
+        if (Input.GetKey(KeyCode.LeftAlt) || destination.y + (Input.mouseScrollDelta.y * scrollSpeed * transform.forward).y <= 1f)
             return;
 
         destination += Input.mouseScrollDelta.y * scrollSpeed * transform.forward;

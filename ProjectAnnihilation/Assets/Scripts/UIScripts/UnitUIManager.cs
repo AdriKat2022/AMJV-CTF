@@ -11,6 +11,8 @@ public class UnitUIManager : MonoBehaviour
     private GameObject statusCircleObject;
     [SerializeField]
     private TMP_Text unitText;
+    [SerializeField]
+    private bool holdLeftAltToZoomText;
 
 
     [Header("Special attack UI")]
@@ -73,6 +75,7 @@ public class UnitUIManager : MonoBehaviour
         UpdateStatusEffects();
         UpdateStateCircle();
         UpdateSpecialAttackUI();
+        UpdateUIStatus();
     }
 
     #region Particles effects
@@ -199,6 +202,10 @@ public class UnitUIManager : MonoBehaviour
     {
         unitText.color = unit.IsAttacker ? unit.UnitData.AttackerColor : unit.UnitData.DefenserColor;
         unitText.text = unit.UnitData.UnitName;
+        if(holdLeftAltToZoomText && Input.GetKey(KeyCode.LeftAlt))
+        {
+            unitText.fontSize += Input.mouseScrollDelta.y / 10;
+        }
     }
     private void UpdateStateCircle()
     {
