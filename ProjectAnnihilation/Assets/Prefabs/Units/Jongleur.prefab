@@ -83,7 +83,7 @@ PrefabInstance:
     - target: {fileID: 6102296146037594196, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: unitVisual
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7060423313955699175}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.22
@@ -274,6 +274,11 @@ PrefabInstance:
 --- !u!95 &4346068064060225831 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 3b2e6721ec80c4744953801962fb8246, type: 3}
+  m_PrefabInstance: {fileID: 7870814719827379382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7060423313955699175 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b2e6721ec80c4744953801962fb8246, type: 3}
   m_PrefabInstance: {fileID: 7870814719827379382}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7687777829014430557 stripped

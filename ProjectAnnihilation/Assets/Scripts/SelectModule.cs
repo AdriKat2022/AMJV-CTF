@@ -43,6 +43,8 @@ public class SelectModule : MonoBehaviour
 
     public void Unregister(Unit unit)
     {
+        if(selectedUnits.Contains(unit))
+            selectedUnits.Remove(unit);
         unitsList.Remove(unit);
     }
 

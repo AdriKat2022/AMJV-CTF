@@ -55,7 +55,7 @@ PrefabInstance:
     - target: {fileID: 6102296146037594196, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: unitVisual
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5751228496099014457}
     - target: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -223,5 +223,10 @@ Animator:
 --- !u!4 &4943729133007252867 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 851a62c0b61d1fa4e8be1f5d5a62d58d, type: 3}
+  m_PrefabInstance: {fileID: 4832676900895246952}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5751228496099014457 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 851a62c0b61d1fa4e8be1f5d5a62d58d, type: 3}
   m_PrefabInstance: {fileID: 4832676900895246952}
   m_PrefabAsset: {fileID: 0}

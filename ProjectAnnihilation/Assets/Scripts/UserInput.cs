@@ -194,11 +194,11 @@ public class UserInput : MonoBehaviour
                 if (Random.value > .95f)
                     OrderUnitToSpecialAttack();
 
-                if (debug)
-                {
-                    Debug.Log(gameObject);
-                    Debug.Log(closestUnitInteractable, gameObject);
-                }
+                //if (debug)
+                //{
+                //    Debug.Log(gameObject);
+                //    Debug.Log(closestUnitInteractable, gameObject);
+                //}
 
                 break;
         }

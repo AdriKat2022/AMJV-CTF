@@ -55,7 +55,7 @@ PrefabInstance:
     - target: {fileID: 6102296146037594196, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: unitVisual
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 9038265760773838956}
     - target: {fileID: 7949608243477991097, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -148,7 +148,7 @@ MonoBehaviour:
   unitData: {fileID: 11400000, guid: 22ff9644f06e8de4bb68747c87561b19, type: 2}
   isAttacker: 0
   animator: {fileID: 8959177441956059469}
-  lastInvulnerability: 20
+  lastInvulnerability: 10
 --- !u!4 &6208411248008188094 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}
