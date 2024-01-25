@@ -35,7 +35,7 @@ public class UserInput : MonoBehaviour
 
         TryGetComponent(out unit);
         TryGetComponent(out visualTargetManager);
-
+        
         if (unit == null)
             Debug.LogWarning("Warning: UserInput requires a unit to work.");
         if (visualTargetManager == null)

@@ -103,6 +103,8 @@ public class SelectModule : MonoBehaviour
         CheckDrag();
     }
 
+    #region Selection
+
     private void CheckDeselection()
     {
         if (selectedUnits.Count > 0 && Input.GetKeyDown(deselectionKey))
@@ -242,6 +244,8 @@ public class SelectModule : MonoBehaviour
             rectSelectImage.offsetMin = new Vector2(xBorder1, yBorder2);
         }
     }
+
+    #endregion
 
     #region Select functions
 

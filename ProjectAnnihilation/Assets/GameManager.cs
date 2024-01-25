@@ -5,9 +5,7 @@ public class GameManager : MonoBehaviour
 {
     public bool PlayerIsAttacker => playerIsAttacker;
     private bool playerIsAttacker;
-    public UnityEvent onEnemyDeath;
-    public UnityEvent onAllyDeath;
-    public UnityEvent onFinalMoove;
+    public UnityEvent onFinalMove;
     public UnityEvent onDeathOfTheKing;
 
     [Header("UI")]
@@ -71,18 +69,10 @@ public class GameManager : MonoBehaviour
         soundManager.PlayMusic(Random.value < .5f ? soundManager.music1 : soundManager.music2);
     }
 
-    public void TriggerEnemyDeath()
-    {
-        onEnemyDeath?.Invoke();
-    }
-    public void TriggerAllyDeath()
-    {
-        onAllyDeath?.Invoke();
-    }
 
     public void TriggerFinalMoove()
     {
-        onFinalMoove?.Invoke();
+        onFinalMove?.Invoke();
     }
 
     public void TriggerDeathOfTheKing()

@@ -30,7 +30,7 @@ public class StrongMan : Unit
 
         yield return new WaitForSeconds(.5f);
 
-        while(healthModule.CurrentHp > 0.1f)
+        while(healthModule.CurrentHp > 1)
         {
             ApplyStatus(pow);
             yield return null;

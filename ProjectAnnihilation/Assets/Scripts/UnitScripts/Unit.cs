@@ -352,8 +352,6 @@ public class Unit : MonoBehaviour, ISelectable
                 if (col == null)
                     continue;
 
-                Debug.Log(col.gameObject.name);
-
                 if (Mathf.Abs(Vector3.Angle(direction, col.bounds.center - transform.position)) > angle)
                     continue;
 
@@ -550,7 +548,7 @@ public class Unit : MonoBehaviour, ISelectable
             currentTile = hit.collider.gameObject;
 
             // Type 4 is the starting point, where you are supposed to bring the flag back
-            if (tileType == 4 && IsKing==true)
+            if (tileType == 4 && IsKing == true)
             {
                 GameManager.Instance.TriggerFinalMoove();
             }

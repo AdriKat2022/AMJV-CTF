@@ -17,9 +17,6 @@ public class UiMap : MonoBehaviour
     [SerializeField] private GameObject defeat;
     private bool isGameOver = false;
     private bool flag = false;
-    private bool isKingDead = false;
-    private int enemyNumber;
-    private int allyNumber;
     private float elapsedTime = 0f;
     private int minute;
     private int second;
@@ -48,9 +45,7 @@ public class UiMap : MonoBehaviour
 
         background.SetActive(false);
 
-        ScanUnits();
-
-        gameManager.onFinalMoove.AddListener(SetFlag);
+        gameManager.onFinalMove.AddListener(SetFlag);
         gameManager.onDeathOfTheKing.AddListener(OnDeathOfTheKing);
 
         backToMenu.onClick.AddListener(OnClick);
@@ -58,6 +53,7 @@ public class UiMap : MonoBehaviour
         enemies.text = "";
         timer.text = "";
     }
+
     void Update()
     {
         if (!gameManager.GameStarted)
@@ -67,12 +63,13 @@ public class UiMap : MonoBehaviour
         {
             UpdateTime();
             UpdateEnemiesText();
+            CheckGameOver();
         }
         else
         {
             ManageGameOver();
             finalTimer.text = string.Format("{0}m {1}s", minute, second);
-            finalEnemies.text = string.Format("{0} Enemies left", selectModule.NEnemies);
+            finalEnemies.text = string.Format("Ennemis restants : {0}", selectModule.NEnemies);
             enemies.gameObject.SetActive(false);
             finalEnemies.gameObject.SetActive(true);
             timer.gameObject.SetActive(false);
@@ -81,18 +78,10 @@ public class UiMap : MonoBehaviour
     }
 
 
-    private void ScanUnits()
-    {
-        allyNumber = 0;
-        enemyNumber = 0;
 
-        selectModule.GetAllUnits().ForEach((unit) =>
-        {
-            if (unit.IsAttacker)
-                allyNumber++;
-            else
-                enemyNumber++;
-        });
+    private void CheckGameOver()
+    {
+        isGameOver = selectModule.NEnemies == 0 || selectModule.NAllies == 0;
     }
     private void UpdateTime()
     {
@@ -116,7 +105,6 @@ public class UiMap : MonoBehaviour
 
     private void OnDeathOfTheKing()
     {
-        isKingDead = true;
         SetGameOver();
     }
     public void OnClick()
@@ -137,7 +125,7 @@ public class UiMap : MonoBehaviour
     }
     private void ManageGameOver()
     {
-        if(enemyNumber == 0 || flag == true)
+        if(selectModule.NEnemies == 0 || flag == true)
         {
             Victory();
         }
