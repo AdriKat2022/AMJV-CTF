@@ -123,7 +123,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region UNIT ACTIONS (TO OVERRIDE BY UNIT)
+    #region UNIT ACTIONS (TO OVERRIDE BY UNIT) ~50
     protected virtual void Initialize() // Can be overriden if a unit needs a specific initialization
     {
         inEndLag = false;
@@ -175,7 +175,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region Unit actions
+    #region Unit actions (to use by unit) ~300
     /// <summary>
     /// Deal simple damage to the target
     /// </summary>
@@ -444,7 +444,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region Monobehavior
+    #region Monobehavior ~60
 
     private void Awake()
     {
@@ -610,7 +610,7 @@ public class Unit : MonoBehaviour, ISelectable
     }
 
 
-    #region Public controllers
+    #region Public controllers ~20
 
     public void ActivateSpecialAbility()
     {
@@ -628,34 +628,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region Helper functions
-    /// <summary>
-    /// Can the unit attack the target according to the AttackTargets property of the unit ?
-    /// </summary>
-    /// <param name="target">The target to test</param>
-    /// <param name="specialAttack">Set true to look for the SpecialAttackTargets property instead</param>
-    /// <returns>If the unit can target the target</returns>
-    public bool CanTarget(Unit target, bool specialAttack = false)
-    {
-        if (target.IsInvisible)
-            return false;
-
-        bool selfAttackRuleRespected = this != target || (specialAttack ? unitData.CanSelfSpecialAttack : unitData.CanSelfAttack);
-
-        return (specialAttack ? unitData.SpecialAttackTargets : unitData.AttackTargets) switch
-        {
-            TargetType.All => selfAttackRuleRespected,
-            TargetType.EnemiesOnly => isAttacker != target.IsAttacker && selfAttackRuleRespected,
-            TargetType.AlliesOnly => isAttacker == target.IsAttacker && selfAttackRuleRespected,
-            TargetType.SelfOnly => isAttacker == target, // self attack rule is ignored with this target type
-            TargetType.None => false,
-            _ => false,
-        };
-    }
-    
-    #endregion
-
-    #region State Machine
+    #region State Machine ~340
 
     private void UpdateStateMachine()
     {
@@ -853,6 +826,29 @@ public class Unit : MonoBehaviour, ISelectable
 
     #region Helper functions
     /// <summary>
+    /// Can the unit attack the target according to the AttackTargets property of the unit ?
+    /// </summary>
+    /// <param name="target">The target to test</param>
+    /// <param name="specialAttack">Set true to look for the SpecialAttackTargets property instead</param>
+    /// <returns>If the unit can target the target</returns>
+    public bool CanTarget(Unit target, bool specialAttack = false)
+    {
+        if (target.IsInvisible)
+            return false;
+
+        bool selfAttackRuleRespected = this != target || (specialAttack ? unitData.CanSelfSpecialAttack : unitData.CanSelfAttack);
+
+        return (specialAttack ? unitData.SpecialAttackTargets : unitData.AttackTargets) switch
+        {
+            TargetType.All => selfAttackRuleRespected,
+            TargetType.EnemiesOnly => isAttacker != target.IsAttacker && selfAttackRuleRespected,
+            TargetType.AlliesOnly => isAttacker == target.IsAttacker && selfAttackRuleRespected,
+            TargetType.SelfOnly => isAttacker == target, // self attack rule is ignored with this target type
+            TargetType.None => false,
+            _ => false,
+        };
+    }
+    /// <summary>
     /// Check if the unit has arrived to its destination point of the NavMesh
     /// </summary>
     /// <returns></returns>
@@ -974,7 +970,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion State Machine
 
-    #region Knockback - HealthModule
+    #region Knockback - HealthModule ~20
     private IEnumerator GetKnockback(Vector3 knockback, Rigidbody rb)
     {
         rb.AddForce(knockback, ForceMode.Impulse);
@@ -1018,7 +1014,7 @@ public class Unit : MonoBehaviour, ISelectable
 
     #endregion
 
-    #region PowerUps
+    #region PowerUps ~300
 
     protected float speedBonusMultiplier = 1;
     protected float attackBonusMultiplier = 1;
