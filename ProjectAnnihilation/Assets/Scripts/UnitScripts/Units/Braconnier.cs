@@ -38,6 +38,8 @@ public class Braconnier : Unit
         if (target == null)
             return false;
 
+        animator.SetBool("Attack", true);
+
         LaunchProjectilesAt(projectileNumber, target, angleDispersionPerBullet, timespan);
 
         return true;
