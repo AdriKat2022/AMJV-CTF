@@ -27,10 +27,12 @@ public class Jongleur : Unit
         transform.LookAt(target.transform.position);
         if (!specialState)
         {
+            animator.SetBool("Attack", true);
             projectileScript.LaunchArc(target.transform.position, new DamageData(unitData.Attack));
         }
         else
         {
+            animator.SetBool("Attack", true);
             DealDamage(target, unitData.Attack); // Melee attack if specialState is activated
         }
 
