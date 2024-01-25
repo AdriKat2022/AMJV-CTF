@@ -243,8 +243,8 @@ MonoBehaviour:
   animator: {fileID: 1779583925649259516}
   duration: 1.5
   angle: 45
-  maxDistance: 8
-  s_damageOverTime: 2
-  s_duration: 4
-  s_radius: 8
+  maxDistance: 12
+  s_damageOverTime: 3
+  s_duration: 5
+  s_radius: 15
   direction: {x: 0, y: 0, z: 0}

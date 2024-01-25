@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Braconnier
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: Braconnier
-  <MaxHP>k__BackingField: 50
+  <MaxHP>k__BackingField: 65
   <Speed>k__BackingField: 3
-  <Attack>k__BackingField: 10
+  <Attack>k__BackingField: 25
   <Armor>k__BackingField: 1
   <AttackRange>k__BackingField: 10
   <AttackTargets>k__BackingField: 1

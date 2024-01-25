@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Le public
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: Le public
-  <MaxHP>k__BackingField: 80
+  <MaxHP>k__BackingField: 120
   <Speed>k__BackingField: 2
   <Attack>k__BackingField: 2
   <Armor>k__BackingField: 3

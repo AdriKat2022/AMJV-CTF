@@ -229,5 +229,5 @@ MonoBehaviour:
   unitData: {fileID: 11400000, guid: 55afbf663ad9aa84fac10afa7de2e44e, type: 2}
   isAttacker: 0
   animator: {fileID: 5652222420973569457}
-  radius: 8
+  radius: 12
   duration: 15

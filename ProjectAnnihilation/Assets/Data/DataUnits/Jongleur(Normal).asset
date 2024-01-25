@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Jongleur(Normal)
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: Jongleur
-  <MaxHP>k__BackingField: 20
+  <MaxHP>k__BackingField: 40
   <Speed>k__BackingField: 5
-  <Attack>k__BackingField: 30
+  <Attack>k__BackingField: 50
   <Armor>k__BackingField: 0
   <AttackRange>k__BackingField: 15
   <AttackTargets>k__BackingField: 1

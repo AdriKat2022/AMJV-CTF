@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Gardien de Zoo
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: Gardien de Zoo
-  <MaxHP>k__BackingField: 40
+  <MaxHP>k__BackingField: 50
   <Speed>k__BackingField: 3
-  <Attack>k__BackingField: 15
+  <Attack>k__BackingField: 24
   <Armor>k__BackingField: 1
   <AttackRange>k__BackingField: 5
   <AttackTargets>k__BackingField: 1

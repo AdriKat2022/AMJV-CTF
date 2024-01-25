@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Jongleur(Special)
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: Jongleur (special form)
-  <MaxHP>k__BackingField: 20
+  <MaxHP>k__BackingField: 40
   <Speed>k__BackingField: 5
-  <Attack>k__BackingField: 4
+  <Attack>k__BackingField: 8
   <Armor>k__BackingField: 0
   <AttackRange>k__BackingField: 2
   <AttackTargets>k__BackingField: 1

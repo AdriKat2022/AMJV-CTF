@@ -199,7 +199,7 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   projectile: {fileID: 6487667384869958684, guid: 93a8fe12e91103f4184ea5f6ca5cf261, type: 3}
   gravityConstant: 9.8
-  alpha: 45
+  alpha: 65
   timeBeforeCrash: 0
 --- !u!4 &5330766542810778935 stripped
 Transform:

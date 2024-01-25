@@ -146,8 +146,8 @@ MonoBehaviour:
   animator: {fileID: 7571580267309893017}
   radius: 2.5
   knockbackForce: 40
-  defenseBoost: 1
-  duration: 5
+  defenseBoost: 2
+  duration: 10
 --- !u!4 &5603955094628174029 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8439548610329571475, guid: 36bbf9db6a5d37f4ebe9eb7d36810b7c, type: 3}

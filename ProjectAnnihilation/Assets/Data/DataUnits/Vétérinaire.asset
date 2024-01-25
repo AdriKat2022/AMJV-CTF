@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: "V\xE9t\xE9rinaire"
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: "V\xE9t\xE9rinaire"
-  <MaxHP>k__BackingField: 25
-  <Speed>k__BackingField: 2
+  <MaxHP>k__BackingField: 40
+  <Speed>k__BackingField: 3
   <Attack>k__BackingField: 15
   <Armor>k__BackingField: 2
-  <AttackRange>k__BackingField: 3
+  <AttackRange>k__BackingField: 4
   <AttackTargets>k__BackingField: 2
   <CanSelfAttack>k__BackingField: 0
-  <AttackEndLag>k__BackingField: 3
+  <AttackEndLag>k__BackingField: 4.5
   <AttackRechargeTime>k__BackingField: 5
   <SpecialAttackName>k__BackingField: Zone Divine
   <SpecialAttackTargets>k__BackingField: 0

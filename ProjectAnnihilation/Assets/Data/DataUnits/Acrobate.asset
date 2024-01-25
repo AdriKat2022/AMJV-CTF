@@ -20,7 +20,7 @@ MonoBehaviour:
   <AttackRange>k__BackingField: 3
   <AttackTargets>k__BackingField: 1
   <CanSelfAttack>k__BackingField: 0
-  <AttackEndLag>k__BackingField: 4
+  <AttackEndLag>k__BackingField: 2
   <AttackRechargeTime>k__BackingField: 0
   <SpecialAttackName>k__BackingField: Saut de l'ange
   <SpecialAttackTargets>k__BackingField: 3
