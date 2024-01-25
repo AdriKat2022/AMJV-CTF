@@ -14,10 +14,10 @@ public class UnitData : ScriptableObject
     //[field: SerializeField] public UnitType UnitType { get; private set; }
 
     [field: Header("Stats")]
-    [field: SerializeField] public float MaxHP { get; private set; }
-    [field: SerializeField] public float Speed { get; private set; }
-    [field: SerializeField] public float Attack { get; private set; }
-    [field: SerializeField] public float Armor { get; private set; }
+    [field: SerializeField] public int MaxHP { get; private set; }
+    [field: SerializeField] public int Speed { get; private set; }
+    [field: SerializeField] public int Attack { get; private set; }
+    [field: SerializeField] public int Armor { get; private set; }
     [field: SerializeField] public float AttackRange { get; private set; }
 
     [field : Header("Standard attack")]

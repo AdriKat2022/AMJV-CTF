@@ -132,12 +132,8 @@ public class SelectModule : MonoBehaviour
         else if (Input.GetMouseButtonUp(0) && isDragging)
         {
             if (!Input.GetKey(KeepSelectionKey))
-            {
-                Debug.Log("deselect");
                 DeselectAllUnits();
-            }
 
-            // Do the selection
             foreach (Unit unit in unitsList)
             {
                 if (!unit.IsAttacker)

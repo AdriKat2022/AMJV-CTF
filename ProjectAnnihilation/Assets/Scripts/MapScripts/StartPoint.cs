@@ -2,19 +2,9 @@ using UnityEngine;
 
 public class StartPoint : Tile
 {
-    #region variables
-    
-    #endregion
-
     void Start()
     {
         tileType = 4;
-    }
-
-
-    void Update()
-    {
-        
     }
 
     private void OnTriggerEnter(Collider other)

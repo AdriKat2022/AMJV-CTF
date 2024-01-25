@@ -20,7 +20,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     private UnitData unitData;
 
     [SerializeField]
-    private float currentHP;
+    private int currentHP;
     private bool isAlive = true;
 
     private Func<Vector3, Rigidbody, IEnumerator> knockback_CR;
@@ -28,7 +28,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     private UnitUIManager unitUIManager;
 
     public bool IsAttacker => unit.IsAttacker;
-    public float CurrentHp => currentHP;
+    public int CurrentHp => currentHP;
 
 #if UNITY_EDITOR
 
@@ -55,7 +55,7 @@ public class HealthModule : MonoBehaviour, IDamageable
     {
         if (CanTakeDamage())
         {
-            float dmg = ComputeDamage(dmgData);
+            int dmg = ComputeDamage(dmgData);
             currentHP -= dmg;
             unitUIManager.ShowDamage(dmg);
 
@@ -75,7 +75,7 @@ public class HealthModule : MonoBehaviour, IDamageable
         }
     }
 
-    public void Heal(float heal)
+    public void Heal(int heal)
     {
         if (!isAlive)
             return;
@@ -97,7 +97,7 @@ public class HealthModule : MonoBehaviour, IDamageable
         return true;
     }
 
-    private float ComputeDamage(DamageData dmgData)
+    private int ComputeDamage(DamageData dmgData)
     {
         dmgData.damage -= dmgData.ignoreDefense ? 0 : unit.GetArmor();
 
@@ -105,7 +105,7 @@ public class HealthModule : MonoBehaviour, IDamageable
         {
             if (dmgData.damage > currentHP)
                 unitUIManager.PulseInvulnerableIcon();
-            return Mathf.Clamp(dmgData.damage, 0, currentHP - .1f);
+            return Mathf.Clamp(dmgData.damage, 0, currentHP - 1);
         }
 
         return Mathf.Max(0, dmgData.damage);

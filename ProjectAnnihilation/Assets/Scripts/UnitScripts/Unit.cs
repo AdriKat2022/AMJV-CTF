@@ -207,7 +207,7 @@ public class Unit : MonoBehaviour, ISelectable
     {
         if (target.TryGetComponent(out IDamageable targetHealthModule))
         {
-            targetHealthModule.Heal(excludeAttackBonus ? heal : ((heal + attackBonusAdd) * attackBonusMultiplier));
+            targetHealthModule.Heal((int)(excludeAttackBonus ? heal : ((heal + attackBonusAdd) * attackBonusMultiplier)));
         }
         else
             Debug.LogWarning("Tried to heal a non healable target", gameObject);
@@ -401,7 +401,7 @@ public class Unit : MonoBehaviour, ISelectable
 
         float _startTime = Time.time;
 
-        DamageData dd = new(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier);
+        DamageData dd = new((int)(excludeAttackBonus ? damageOverTime : (damageOverTime+attackBonusAdd)*attackBonusMultiplier));
 
         unitUiManager.SetUpSelfDestructParticles(duration, radius);
 
@@ -1039,17 +1039,17 @@ public class Unit : MonoBehaviour, ISelectable
     private Dictionary<Unit, int> bonusAttackMaintainers;
     private Dictionary<Unit, int> bonusDefenseMaintainers;
 
-    public float GetAttack(bool ignoreBonuses = false)
+    public int GetAttack(bool ignoreBonuses = false)
     {
-        return ignoreBonuses ? unitData.Attack : (attackBonusMultiplier * (attackBonusAdd + unitData.Attack));
+        return (int)(ignoreBonuses ? unitData.Attack : (attackBonusMultiplier * (attackBonusAdd + unitData.Attack)));
     }
     public float GetSpeed(bool ignoreBonuses = false)
     {
         return ignoreBonuses ? unitData.Speed : (speedBonusMultiplier * (speedBonusAdd + unitData.Speed));
     }
-    public float GetArmor(bool ignoreBonuses = false)
+    public int GetArmor(bool ignoreBonuses = false)
     {
-        return ignoreBonuses ? unitData.Armor : (defenseBonusMultiplier * (defenseBonusAdd + unitData.Armor));
+        return (int)(ignoreBonuses ? unitData.Armor : (defenseBonusMultiplier * (defenseBonusAdd + unitData.Armor)));
     }
 
     public void ApplyStatuses(StatusEffect<Unit>[] powerUps)
