@@ -53,7 +53,7 @@ public class Cracheurdefeu : Unit
         if(target == null)
             return false;
 
-
+        animator.SetBool("Attack", true);
         StartCoroutine(CreateDamageCone(target, unitData.Attack, duration, angle, maxDistance, ignoreDefense:true, damageDeltaTime: deltaTimeTick));
 
         return true;
