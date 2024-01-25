@@ -17,11 +17,7 @@ public class GameManager : MonoBehaviour
     private SoundManager soundManager;
 
 
-    static public GameManager Instance {
-        get {
-            return instance;
-        }
-    }
+    static public GameManager Instance => instance;
     static private GameManager instance;
 
 
@@ -34,7 +30,7 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {

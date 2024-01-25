@@ -42,6 +42,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected NavMeshAgent navigation;
     protected HealthModule healthModule;
     protected GameManager gameManager;
+    protected UiMap uimap;
     protected Rigidbody rb;
     private UnitUIManager unitUiManager;
     public Animator animator;
@@ -84,7 +85,7 @@ public class Unit : MonoBehaviour, ISelectable
     private bool inEndLag;
     private bool usingTiles = true;
     private float timeBeforeTargetting;
-    private Transform followedTarget; // Following
+    private Unit followedTarget; // Following
     private Vector3 pointA; // Patrolling
     private Vector3 pointB;
 
@@ -98,6 +99,7 @@ public class Unit : MonoBehaviour, ISelectable
     private void OnDisable()
     {
         selectModule.Unregister(this);
+        uimap.NotifyUnitDeath(IsAttacker);
     }
     #endregion
 
@@ -621,7 +623,8 @@ public class Unit : MonoBehaviour, ISelectable
     }
     public void SetFollowedTarget(Transform target)
     {
-        followedTarget = target;
+        if(target.TryGetComponent(out Unit unit))
+        followedTarget = unit;
     }
 
     #endregion
@@ -786,9 +789,9 @@ public class Unit : MonoBehaviour, ISelectable
     /// </summary>
     protected virtual void MoveNAttackState()
     {
-        if (followedTarget != null && currentOrder == UnitState.MOVENATTACK)
+        if (followedTarget != null && !followedTarget.IsInvisible && currentOrder == UnitState.MOVENATTACK)
         {
-            SetDestination(followedTarget.position);
+            SetDestination(followedTarget.transform.position);
             ResumeNavigation();
 
             if (CanAttack(followedTarget.gameObject))
@@ -813,7 +816,7 @@ public class Unit : MonoBehaviour, ISelectable
     protected virtual void FollowingState()
     {
         if(followedTarget != null)
-            SetDestination(followedTarget.position);
+            SetDestination(followedTarget.transform.position);
         else
         {
             SetDestination(null);

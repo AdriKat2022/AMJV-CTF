@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class UiMap : MonoBehaviour
 {
     #region variables
+    public static UiMap Instance { get; private set; }
+
     [SerializeField] private Button backToMenu;
     [SerializeField] private TMPro.TextMeshProUGUI timer;
     [SerializeField] private TMPro.TextMeshProUGUI enemies;
@@ -23,22 +25,30 @@ public class UiMap : MonoBehaviour
     private int second;
 
     private GameManager gameManager;
+    private SelectModule selectModule;
 
     #endregion
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        if(Instance != null)
+        {
+            Destroy(gameManager);
+            return;
+        }
+
+        Instance = this;
+    }
+
     void Start()
     {
         gameManager = GameManager.Instance;
+        selectModule = SelectModule.Instance;
 
         Time.timeScale = 1;
 
         background.SetActive(false);
 
-        GameObject[] entities = GameObject.FindGameObjectsWithTag("Enemy");
-        GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
-
-        enemyNumber = entities.Length;
-        allyNumber = allies.Length;
+        ScanUnits();
 
         gameManager.onEnemyDeath.AddListener(OnEnemyDeath);
         gameManager.onFinalMoove.AddListener(SetFlag);
@@ -50,8 +60,6 @@ public class UiMap : MonoBehaviour
         enemies.text = "";
         timer.text = "";
     }
-
-    // Update is called once per frame
     void Update()
     {
         if (!gameManager.GameStarted)
@@ -60,7 +68,7 @@ public class UiMap : MonoBehaviour
         if (isGameOver == false)
         {
             UpdateTime();
-            UpdateEnemies();
+            UpdateEnemiesText();
         }
         else
         {
@@ -74,6 +82,28 @@ public class UiMap : MonoBehaviour
         }
     }
 
+
+    public void NotifyUnitDeath(bool isAttacker)
+    {
+        if (isAttacker)
+            OnAllyDeath();
+        else
+            OnEnemyDeath();
+    }
+
+    private void ScanUnits()
+    {
+        allyNumber = 0;
+        enemyNumber = 0;
+
+        selectModule.GetAllUnits().ForEach((unit) =>
+        {
+            if (unit.IsAttacker)
+                allyNumber++;
+            else
+                enemyNumber++;
+        });
+    }
     private void UpdateTime()
     {
         elapsedTime += Time.deltaTime;
@@ -86,10 +116,12 @@ public class UiMap : MonoBehaviour
         //update meshText in the specified format
         timer.text = string.Format("{0}m {1}s", minute, second);
     }
-
-    private void UpdateEnemies()
+    private void UpdateEnemiesText()
     {
-        enemies.text = string.Format("{0} Enemies left", enemyNumber);
+        if(enemyNumber < 2)
+            enemies.text = "One left";
+        else
+            enemies.text = string.Format("{0} enemies left", enemyNumber);
     }
 
     private void OnEnemyDeath()
@@ -97,7 +129,7 @@ public class UiMap : MonoBehaviour
         enemyNumber--;
         if(enemyNumber == 0)
         {
-            UpdateEnemies();
+            UpdateEnemiesText();
             SetGameOver();
         }
     }
@@ -109,13 +141,11 @@ public class UiMap : MonoBehaviour
             SetGameOver();
         }
     }
-
     private void OnDeathOfTheKing()
     {
         isKingDead = true;
         SetGameOver();
     }
-
     public void OnClick()
     {
         Debug.Log("ButtonClicked");
